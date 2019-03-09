@@ -4,7 +4,10 @@ from flask import Flask, request, render_template, redirect, session, url_for
 from flask.json import jsonify
 import os, requests
 
+
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
+global authorization_url
 
 app.secret_key = os.urandom(24)
 client_id = 'columbiac150'
@@ -28,6 +31,7 @@ def user_authorization():
     oauth_session = OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri,
                                   scope=scope)
     authorization_url, state = oauth_session.create_authorization_url(authorization_base_url)
+
     return redirect(authorization_url)
 
 
