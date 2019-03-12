@@ -7,18 +7,18 @@ import os, requests
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-global authorization_url
 
 app.secret_key = os.urandom(24)
 client_id = 'columbiac150'
 client_secret = 'kzSN7CYgZYUMzb8DfhEqRnqrHAqiAEUHOgSAJo8'
-scope = ["athlete:profile", "workouts:read"]
+scope = ["coach:athletes", "workouts:read"]
 redirect_uri = "https://localhost:5000"
 authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authorize'
 token_url = 'https://oauth.sandbox.trainingpeaks.com/oauth/token'
-global authorization_response
-authorization_response = ""
-
+id = []
+all_athlete_hours = []
+name = []
+all_athlete_hours_name = []
 
 @app.route("/")
 def index():
@@ -32,6 +32,7 @@ def user_authorization():
                                   scope=scope)
     authorization_url, state = oauth_session.create_authorization_url(authorization_base_url)
 
+    
     return redirect(authorization_url)
 
 
@@ -39,8 +40,8 @@ def user_authorization():
 def callback():
     oauth_session = OAuth2Session(client_id, client_secret,
             redirect_uri=redirect_uri, scope=scope)
-    
-    authorization_response = input(str("authorization_response: "))
+  
+    authorization_response =  input(str("authorization_response: "))
 
     token = oauth_session.fetch_access_token(token_url,
                 authorization_response=authorization_response)
@@ -57,18 +58,34 @@ def callback():
     headers = {'host': 'api.sandbox.trainingpeaks.com', 'content-type':
             'application/json', 'Authorization': 'Bearer ' + token['access_token']}
 
-    print(headers)
 
-    r = requests.get('https://api.sandbox.trainingpeaks.com/v1/athlete/profile', headers=headers)
+    r = requests.get('https://api.sandbox.trainingpeaks.com/v1/coach/athletes', headers=headers)
     response_json = r.json() 
     print(response_json)
-    id = response_json["Id"]
-    print(id)  
-    url = 'https://api.sandbox.trainingpeaks.com/v1/workouts/{}/{}/{}'.format(id,'2019-02-08', '2019-03-08')
-    print(url)
-    todays_workouts = requests.get(url, headers=headers)
+    #get all athlete ids and names
+    for athlete in response_json:
+        id.append(athlete['Id'])
+        full_name = athlete["FirstName"]+" "+athlete["LastName"]
+        name.append(full_name)
+    print(id)
+    #for each athlete calculate their total time for the week
+    index = 0
+    for i in id:
+        totalTime = 0
+        url = 'https://api.sandbox.trainingpeaks.com/v1/workouts/{}/{}/{}'.format(id[index],'2019-02-25', '2019-03-03')
+        aw = requests.get(url, headers=headers)
+        athlete_workout = aw.json()
+        for workout in athlete_workout:
+            if workout['TotalTime'] != None:
+                totalTime += workout['TotalTime']
+        name_and_hours = name[index]+": "+str(totalTime)
+        all_athlete_hours.append(name_and_hours)
+        index += 1
+    print(all_athlete_hours)
 
-    print(todays_workouts.json())
+    #orginize hours to correspond with athlete names
+
+    #print(todays_workouts.json())
 
     #print(oauth_session.get("https://api.sandbox.trainingpeaks.com/v1/athlete/profile"))
     return render_template("index.html")
