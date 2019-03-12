@@ -3,7 +3,28 @@
     <a href="/authorize">
 	<button>Click Me for Authorization!</button>
     </a>
-    <a href="/token">
-	<button>Click Me for Token!</button>
+    <a href="/hours">
+	<button>Click Me to get your hours this week!</button>
     </a>
+    <a href="/db/insert">
+	<button>Click me to print insert sql statement</button>
+    </a>
+    <a href="/athletes">
+	<button>Click me to get athletes data</button>
+    </a>
+    <h3>
+	My hours this week: {{ last_weeks_hours }}
+    </h3>
+    {% if len is defined %}
+	<ol>
+	{%for i in range(0, len)%}
+	    
+	    <li>{{athletes[i]}}</li>
+	{% else %}
+	    <li></li>
+	{%endfor%}
+	</ol>
+    {% else %}
+	<li>No Data</li>
+    {% endif %}
 </div>
