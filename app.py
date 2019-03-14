@@ -15,7 +15,7 @@ scope = ["coach:athletes", "workouts:read"]
 redirect_uri = "https://localhost:5000"
 authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authorize'
 token_url = 'https://oauth.sandbox.trainingpeaks.com/oauth/token'
-id = []
+ids = []
 all_athlete_hours = []
 name = []
 all_athlete_hours_name = []
@@ -55,40 +55,48 @@ def callback():
         authorize_url = authorization_base_url,
         client_kwargs={'scope': scope}
     )
-    headers = {'host': 'api.sandbox.trainingpeaks.com', 'content-type':
-            'application/json', 'Authorization': 'Bearer ' + token['access_token']}
+    
+    getRankings(token)
+
+    return render_template("index.html")
+
+def getRankings(token):
+    headers = getHeader(token)
+    ids = getAthleteIds(headers)
+    #print(ids)
+    hours = getAthleteHours(ids, headers)
+    print(hours)
 
 
+def getHeader(token):
+    headers = {'host': 'api.sandbox.trainingpeaks.com', 'content-type': 'application/json', 
+        'Authorization': 'Bearer ' + token['access_token']}
+    return headers
+
+def getAthleteIds(headers):
     r = requests.get('https://api.sandbox.trainingpeaks.com/v1/coach/athletes', headers=headers)
     response_json = r.json() 
-    print(response_json)
-    #get all athlete ids and names
     for athlete in response_json:
-        id.append(athlete['Id'])
+        ids.append(athlete['Id'])
         full_name = athlete["FirstName"]+" "+athlete["LastName"]
         name.append(full_name)
-    print(id)
-    #for each athlete calculate their total time for the week
+    return ids
+    
+def getAthleteHours(ids, headers):
     index = 0
-    for i in id:
+    for i in ids:
         totalTime = 0
-        url = 'https://api.sandbox.trainingpeaks.com/v1/workouts/{}/{}/{}'.format(id[index],'2019-02-25', '2019-03-03')
-        aw = requests.get(url, headers=headers)
-        athlete_workout = aw.json()
+        url = 'https://api.sandbox.trainingpeaks.com/v1/workouts/{}/{}/{}'.format(ids[index],'2019-02-25', '2019-03-03')
+        athlete_workout_request = requests.get(url, headers=headers)
+        athlete_workout = athlete_workout_request.json()
         for workout in athlete_workout:
             if workout['TotalTime'] != None:
                 totalTime += workout['TotalTime']
         name_and_hours = name[index]+": "+str(totalTime)
         all_athlete_hours.append(name_and_hours)
         index += 1
-    print(all_athlete_hours)
-
-    #orginize hours to correspond with athlete names
-
-    #print(todays_workouts.json())
-
-    #print(oauth_session.get("https://api.sandbox.trainingpeaks.com/v1/athlete/profile"))
-    return render_template("index.html")
+    return all_athlete_hours
+    
 
 
 if __name__ == "__main__":
