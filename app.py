@@ -6,7 +6,10 @@ import os
 import requests
 import helpers
 
+
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
+global authorization_url
 
 app.secret_key = os.urandom(24)
 client_id = 'columbiac150'
