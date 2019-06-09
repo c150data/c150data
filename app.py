@@ -54,34 +54,14 @@ def insertNewToken():
 def getData():
     print("started")
     start_date = request.args.get('start_date')
+    print("Start date: ", start_date)
     end_date = request.args.get('end_date')
-    len, athletes = getAllAthletes(start_date, end_date)
+    print("End date: ", end_date)
+
+    len, athletes = helpers.getAllAthletes(start_date, end_date)
     return render_template("data.html", len=len, athletes=athletes)
 
 
-def getAllAthletes(start_date, end_date):
-    headers = helpers.getHeaders()
-    r = requests.get('https://api.sandbox.trainingpeaks.com/v1/coach/athletes',
-                     headers=headers)
-    athletes = list()
-    r_json = r.json()
-    for athlete in r_json:
-        # date formatted YYYY-MM-DD
-        hours = helpers.getHoursForAthlete(athlete['Id'],
-                                           start_date, end_date)
-        rounded_hours = round(hours, 2)
-        athlete_info = {
-            "name": "{} {}".format(athlete["FirstName"], athlete["LastName"]),
-            "hours": hours,
-            "rounded_hours": rounded_hours
-        }
-        athletes.append(athlete_info)
-
-    # sort list of athletes based on number of hours
-    sorted_athletes = sorted(athletes, key=itemgetter('hours'), reverse=True)
-    print(sorted_athletes)
-
-    return (len(athletes), sorted_athletes)
 
 
 if __name__ == "__main__":

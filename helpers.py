@@ -5,6 +5,7 @@ Helper methods for the c150.data data retrieval process
 import MySQLdb
 import datetime
 import requests
+import operator
 from authlib.client import OAuth2Session
 
 api_base_url = 'https://api.sandbox.trainingpeaks.com'
@@ -25,8 +26,10 @@ def connectToDB():
     return MySQLdb.connect(host=db_host, user=db_user, passwd=db_passwd,
                            db=db_name)
 
-def deleteToken(conn):
-    if conn is None:
+
+def deleteToken(conn=None):
+    has_passed_connection = False if conn is None else True
+    if has_passed_connection is False:
         conn = connectToDB()
 
     cursor = conn.cursor()
@@ -40,10 +43,11 @@ def deleteToken(conn):
         except MySQLdb.IntegrityError:
             print("Failed to delete access token row.")
         finally:
-            conn.close()
+            if has_passed_connection is False:
+                conn.close()
             return 1
 
-    return None 
+    return None
 
 
 def executeTokenInsert(token):
@@ -57,7 +61,7 @@ def executeTokenInsert(token):
     expires_at_date = expires_at_date.replace(microsecond=0)
     insert_statement = "INSERT INTO `access_token` (`access_token`, `token_type`,`expires_at`, `refresh_token`, `scope`) VALUES ('{}', '{}', '{}', '{}','{}');".format(
             access_token, token_type, expires_at_date, refresh_token, scope)
-    select_statement = "SELECT * FROM 'access_token'"
+    select_statement = "SELECT * FROM access_token"
     conn = connectToDB()
     cursor = conn.cursor()
     try:
@@ -156,3 +160,34 @@ def getHoursForAthlete(id, start_date, end_date):
         if type(total_time) is float:
             sum_hours += float(total_time)
     return sum_hours
+
+
+
+def getAllAthletes(start_date, end_date):
+    headers = getHeaders()
+    r = requests.get('https://api.sandbox.trainingpeaks.com/v1/coach/athletes',
+                     headers=headers)
+    athletes = list()
+    r_json = r.json()
+    # convert inputted dates from MM/DD/YYYY to YYYY-MM-DD
+    dStart = datetime.datetime.strptime(start_date, '%m/%d/%Y')
+    dEnd = datetime.datetime.strptime(end_date, '%m/%d/%Y')
+    start_date_f = dStart.strftime('%Y-%m-%d')
+    end_date_f = dEnd.strftime('%Y-%m-%d')
+    for athlete in r_json:
+        # date formatted YYYY-MM-DD
+        hours = getHoursForAthlete(athlete['Id'],
+                                           start_date_f, end_date_f)
+        rounded_hours = round(hours, 2)
+        athlete_info = {
+            "name": "{} {}".format(athlete["FirstName"], athlete["LastName"]),
+            "hours": hours,
+            "rounded_hours": rounded_hours
+        }
+        athletes.append(athlete_info)
+
+    # sort list of athletes based on number of hours
+    sorted_athletes = sorted(athletes, key=operator.itemgetter('hours'), reverse=True)
+    print(sorted_athletes)
+
+    return (len(athletes), sorted_athletes)
