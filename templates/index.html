@@ -1,131 +1,64 @@
 <!doctype html>
 <html lang="en">
-    <head>
+
+<head>
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="Data and Statistics for Columbia Lightweight Rowing Team">
+	<meta name="author" content="Max Amsterdam and Lukas Geiger">
+
+	<title>C150 Data</title>
 
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+	<link rel="stylesheet" href="static/css/style.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+		integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	<script src
-		="https://momentjs.com/downloads/moment-with-locales.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
-
-	<title>C150data</title>
-    </head>
-    <body>
-	<div class="container-fluid">
-	    <div class="row">
-		<a class="auth" href="/authorize">
-		    <button>Begin authorization</button>
-		</a>
-		<a class="auth" href="/insertNewToken">
-		    <button>Insert a new token!</button>
-		</a>
-	    </div>
-	    <div class="row">
-		<div class='col'>
-		    <div class="form-group">
-			<div class="input-group date"
-			     id="datetimepickerStart" data-target-input="nearest">
-			    <label for="startDateInput">Start Date</label>
-			    <input type="text" id= "startDateInput" class="form-control
-			    datetimepicker-input"
-								    data-target="#datetimepickerStart"/>
-			    <div class="input-group-append"
-				 data-target="#datetimepickerStart" data-toggle="datetimepicker">
-				<div class="input-group-text"><i class="fa fa-calendar"></i></div>
-			    </div>
-			</div>
-		    </div>
-		</div>
-		<div class='col'>
-		    <div class="form-group">
-			<div class="input-group date"
-			     id="datetimepickerEnd" data-target-input="nearest">
-			    <label for="endDateInput">End Date</label>
-			    <input type="text" id = "endDateInput" class="form-control
-			    datetimepicker-input"
-								   data-target="#datetimepickerEnd"/>
-			    <div class="input-group-append"
-				 data-target="#datetimepickerEnd" data-toggle="datetimepicker">
-				<div class="input-group-text"><i class="fa fa-calendar"></i></div>
-			    </div>
-			</div>
-		    </div>
-		</div>
-	    </div>
-	    <div class="row">
-		<button type="submit" id="dataSubmitButton" class = "btn btn-primary">Get Hours</button>
-	    </div>
-	    <div id="hours_table_div"></div>
-	</div> 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	<!-- Optional JavaScript -->
-	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-	<script type="text/javascript">
-	    $("#dataSubmitButton").click(function(e){
-		e.preventDefault();
-		$.ajax({
-		    url: "/getData",
-		    type: "get",
-		    data: {
-			'start_date': $("#startDateInput").val(),
-			'end_date': $("#endDateInput").val()
-		    },
-		    success: function(response){
-			$("#hours_table_div").html(response);
-		    },
-		    error: function(xhr){
-			//handle error	
-		    }
-		});
-	    });
-$(function () {
-    $('#datetimepickerStart').datetimepicker({
-	format: 'L'
-    });
-    $('#datetimepickerEnd').datetimepicker({
-	format: 'L',
-	useCurrent: false
-    });
-    $("#datetimepickerStart").on("change.datetimepicker", function (e) {
-	$('#datetimepickerEnd').datetimepicker('minDate', e.date);
-    });
-    $("#datetimepickerEnd").on("change.datetimepicker", function (e) {
-	$('#datetimepickerStart').datetimepicker('maxDate', e.date);
-    });
-});
-
-
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
 	</script>
-    </body>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+	</script>
+	<script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
+</head>
+
+<body>
+
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+		<div class="container">
+		  <a class="navbar-brand js-scroll-trigger" href="#page-top">C150 Data</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		  </button>
+		  <div class="collapse navbar-collapse" id="navbarResponsive">
+			<ul class="navbar-nav ml-auto">
+			  <li class="nav-item">
+				<a class="nav-link" href="/">About</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="/hours">Hours</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="/contact">Contact</a>
+			  </li>
+			</ul>
+		  </div>
+		</div>
+	</nav>
+
+	<section class="bg-primary text-white">
+		<div class="container text-center">
+			<h1>Welcome to C150Data.com!</h1>
+			<p class="lead">A website designed to meaningfully display the Columbia Lightweight Rowing team's training data.</p>
+		</div>
+	</section>
+
+</body>
+
 </html>
