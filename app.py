@@ -1,6 +1,6 @@
 from authlib.client import OAuth2Session
 
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, url_for
 from operator import itemgetter
 import os
 import requests
@@ -18,8 +18,12 @@ authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authoriz
 token_base_url = 'https://oauth.sandbox.trainingpeaks.com/oauth/token'
 
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/", methods=['GET'])
 def index():
+    return redirect(url_for('about'))
+
+@app.route("/about", methods=['GET', 'POST'])
+def about():
     if request.method == 'POST':
         start_date = request.form['start_date']
         end_date = request.form['end_date']

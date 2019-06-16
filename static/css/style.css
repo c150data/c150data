@@ -1,14 +1,36 @@
-a.auth {
-}
+
 header {
     padding: 156px 0 100px;
 }
 
 html, body {
     height: 100%;
+    width: 100%;
+    overflow: auto;
 }
   
 section {
-    padding: 300px 0;
-    height: 100%;
+    padding-top: 100px;
+}
+
+#about-page {
+    padding: 400px 0;
+    height:100%;
+}
+
+
+#auth-buttons {
+    display: none;
+}
+
+#main-content{
+    height:100%;
+} 
+
+#hours-table-div {
+    padding-top: 50px;
+}
+
+footer{
+    position: absolute
 }

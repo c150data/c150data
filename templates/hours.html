@@ -11,20 +11,35 @@
 	<title>C150 Data</title>
 
 	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-	<link rel="stylesheet" href="static/css/style.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
-		integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+	<!-- Local CSS -->
+	<link rel="stylesheet" href="/static/css/style.css">
+
+	<!-- FontAwesome -->
+	<script src="https://kit.fontawesome.com/12c10442a5.js"></script>
+
+	<!-- Boostrap JS-->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
 	</script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
 	</script>
-	<script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
+
+	<!-- Moment JS -->
+	<script src="https://momentjs.com/downloads/moment.js"></script>
+
+	<!-- Tempus Dominus JS + CSS -->
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js">
+	</script>
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+
 </head>
 
 <body>
@@ -32,102 +47,81 @@
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
 		<div class="container">
-		  <a class="navbar-brand js-scroll-trigger" href="#page-top">C150 Data</a>
-		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		  </button>
-		  <div class="collapse navbar-collapse" id="navbarResponsive">
-			<ul class="navbar-nav ml-auto">
-			  <li class="nav-item">
-				<a class="nav-link" href="/">About</a>
-			  </li>
-			  <li class="nav-item">
-				<a class="nav-link" href="/">Hours</a>
-			  </li>
-			  <li class="nav-item">
-				<a class="nav-link" href="/">Contact</a>
-			  </li>
-			</ul>
-		  </div>
+			<a class="navbar-brand js-scroll-trigger" href="/about">
+				C150 Data
+			</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+				aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="/about">About</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/hours">Hours</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/contact">Contact</a>
+					</li>
+				</ul>
+			</div>
 		</div>
 	</nav>
 
-	<section id="main_content">
-		<div class="container">
+	<section id="main-content">
+		<div class="container-fluid" id="auth-buttons">
 			<div class="row">
-				<div class="col-lg-8 mx-auto">
-					<h2>About</h2>
-					<p class="lead">C150 data is blah blah blah....</p>
+				<a class="" href="/authorize">
+					<button class="btn btn-dark">Begin authorization</button>
+				</a>
+				<a class="" href="/insertNewToken">
+					<button class="btn btn-dark">Insert a new token!</button>
+				</a>
+			</div>
+		</div>
+		<div class="container-fluid" id="hours-content">
+			<div class="row">
+				<div class='col-lg-5 align-self-center'>
+					<div class="form-group">
+						<div class="input-group date" id="datetimepickerStart" data-target-input="nearest">
+							<input type="text" placeholder="Start Date" id="startDateInput"
+								class="form-control datetimepicker-input" data-target="#datetimepickerStart" />
+							<div class="input-group-append" data-target="#datetimepickerStart"
+								data-toggle="datetimepicker">
+								<div class="input-group-text"><i class="fa fa-calendar-alt"></i></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class='col-lg-5 align-self-center'>
+					<div class="form-group">
+						<div class="input-group date" id="datetimepickerEnd" data-target-input="nearest">
+							<input type="text" placeholder="End Date" id="endDateInput"
+								class="form-control datetimepicker-input" data-target="#datetimepickerEnd" />
+							<div class="input-group-append" data-target="#datetimepickerEnd"
+								data-toggle="datetimepicker">
+								<div class="input-group-text"><i class="fa fa-calendar-alt"></i></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-2">
+					<button type="submit" id="dataSubmitButton" class="btn btn-primary">Get Hours</button>
 				</div>
 			</div>
+			<div class="row" id="hours-table-div"></div>
 		</div>
 	</section>
 
-	<div class="container-fluid">
-		<div class="row">
-			<a class="auth" href="/authorize">
-				<button>Begin authorization</button>
-			</a>
-			<a class="auth" href="/insertNewToken">
-				<button>Insert a new token!</button>
-			</a>
+	<!-- Footer -->
+	<footer class="py-5 bg-dark">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; C150Data 2019</p>
 		</div>
-		<div class="row">
-			<div class='col'>
-				<div class="form-group">
-					<div class="input-group date" id="datetimepickerStart" data-target-input="nearest">
-						<label for="startDateInput">Start Date</label>
-						<input type="text" id="startDateInput" class="form-control
-			    datetimepicker-input" data-target="#datetimepickerStart" />
-						<div class="input-group-append" data-target="#datetimepickerStart" data-toggle="datetimepicker">
-							<div class="input-group-text"><i class="fa fa-calendar"></i></div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class='col'>
-				<div class="form-group">
-					<div class="input-group date" id="datetimepickerEnd" data-target-input="nearest">
-						<label for="endDateInput">End Date</label>
-						<input type="text" id="endDateInput" class="form-control
-			    datetimepicker-input" data-target="#datetimepickerEnd" />
-						<div class="input-group-append" data-target="#datetimepickerEnd" data-toggle="datetimepicker">
-							<div class="input-group-text"><i class="fa fa-calendar"></i></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<button type="submit" id="dataSubmitButton" class="btn btn-primary">Get Hours</button>
-		</div>
-		<div id="hours_table_div"></div>
-	</div>
+	</footer>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	<!-- Optional JavaScript -->
-	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 	<script type="text/javascript">
 		$("#dataSubmitButton").click(function (e) {
 			e.preventDefault();
@@ -139,7 +133,7 @@
 					'end_date': $("#endDateInput").val()
 				},
 				success: function (response) {
-					$("#hours_table_div").html(response);
+					$("#hours-table-div").html(response);
 				},
 				error: function (xhr) {
 					//handle error	
