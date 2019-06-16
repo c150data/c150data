@@ -16,7 +16,7 @@ app.secret_key = os.urandom(24)
 client_id = 'columbiac150'
 client_secret = 'kzSN7CYgZYUMzb8DfhEqRnqrHAqiAEUHOgSAJo8'
 coach_scope = ["coach:athletes", "workouts:read"]
-redirect_uri = "https://localhost:5000"
+redirect_uri = "www.c150data.com/"
 authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authorize'
 token_base_url = 'https://oauth.sandbox.trainingpeaks.com/oauth/token'
 
