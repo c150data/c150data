@@ -19,15 +19,15 @@ api_base_url = 'https://api.sandbox.trainingpeaks.com'
 # TODO create one variable that changes between prod and dev that changes all of this for you
 db_host = "localhost"
 db_name = "c150data"
-db_user = "root"
-db_passwd = ""
+db_user = "mamsterdam"
+db_passwd = "Columbia150"
 db_auth_token_table = "auth_token"
 
 grant_type = "refresh_token"
 client_id = 'columbiac150'
 client_secret = 'kzSN7CYgZYUMzb8DfhEqRnqrHAqiAEUHOgSAJo8'
 refresh_url = "https://oauth.sandbox.trainingpeaks.com/oauth/token"
-redirect_uri = "https://localhost:5000"
+redirect_uri = "www.c150data.com"
 
 
 
