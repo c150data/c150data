@@ -1,8 +1,10 @@
-from authlib.client import OAuth2Session, OAuthClient
+from authlib.client import OAuth2Session
 
-from flask import Flask, request, render_template, redirect, session, url_for
-from flask.json import jsonify
-import os, requests
+from flask import Flask, request, render_template, redirect
+from operator import itemgetter
+import os
+import requests
+import helpers
 
 
 app = Flask(__name__)
@@ -19,25 +21,39 @@ ids = []
 all_athlete_hours = []
 name = []
 all_athlete_hours_name = []
+=======
+coach_scope = ["coach:athletes", "workouts:read"]
+redirect_uri = "https://localhost:5000"
+authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authorize'
+token_base_url = 'https://oauth.sandbox.trainingpeaks.com/oauth/token'
 
-@app.route("/")
+
+@app.route("/", methods=['GET', 'POST'])
 def index():
-    return render_template("index.html")
+    if request.method == 'POST':
+        start_date = request.form['start_date']
+        end_date = request.form['end_date']
+        print("Start date: ", start_date)
+        print("End date: ", end_date)
+        len, athletes = getAllAthletes(start_date, end_date)
+        return render_template("index.html", len=len, athletes=athletes)
+    else:
+        return render_template("index.html")
 
 
 @app.route("/authorize")
 def user_authorization():
-    global authorization_response
     oauth_session = OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri,
-                                  scope=scope)
+                                  scope=coach_scope)
     authorization_url, state = oauth_session.create_authorization_url(authorization_base_url)
 
     
+    print(authorization_url)
     return redirect(authorization_url)
 
 
-@app.route("/token")
-def callback():
+@app.route("/insertNewToken")
+def insertNewToken():
     oauth_session = OAuth2Session(client_id, client_secret,
             redirect_uri=redirect_uri, scope=scope)
   
@@ -97,6 +113,26 @@ def getAthleteHours(ids, headers):
         index += 1
     return all_athlete_hours
     
+                                  redirect_uri=redirect_uri, scope=coach_scope)
+    authorization_response = input(str("authorization_response: "))
+    token = oauth_session.fetch_access_token(token_base_url,
+                                             authorization_response=authorization_response)
+    helpers.executeTokenInsert(token)
+    return render_template("index.html")
+
+
+@app.route("/getData")
+def getData():
+    print("started")
+    start_date = request.args.get('start_date')
+    print("Start date: ", start_date)
+    end_date = request.args.get('end_date')
+    print("End date: ", end_date)
+
+    len, athletes = helpers.getAllAthletes(start_date, end_date)
+    return render_template("data.html", len=len, athletes=athletes)
+
+
 
 
 if __name__ == "__main__":
