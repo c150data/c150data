@@ -85,3 +85,4 @@ def getData():
 
 if __name__ == "__main__":
     app.run(host="localhost", ssl_context='adhoc', debug=True)
+
