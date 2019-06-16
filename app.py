@@ -21,7 +21,6 @@ ids = []
 all_athlete_hours = []
 name = []
 all_athlete_hours_name = []
-=======
 coach_scope = ["coach:athletes", "workouts:read"]
 redirect_uri = "https://localhost:5000"
 authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authorize'
@@ -111,9 +110,7 @@ def getAthleteHours(ids, headers):
         name_and_hours = name[index]+": "+str(totalTime)
         all_athlete_hours.append(name_and_hours)
         index += 1
-    return all_athlete_hours
-    
-                                  redirect_uri=redirect_uri, scope=coach_scope)
+    return all_athlete_hours redirect_uri=redirect_uri, scope=coach_scope)
     authorization_response = input(str("authorization_response: "))
     token = oauth_session.fetch_access_token(token_base_url,
                                              authorization_response=authorization_response)
