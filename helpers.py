@@ -19,8 +19,8 @@ api_base_url = 'https://api.sandbox.trainingpeaks.com'
 # TODO create one variable that changes between prod and dev that changes all of this for you
 db_host = "localhost"
 db_name = "c150data"
-db_user = "mamsterdam"
-db_passwd = "Columbia150"
+db_user = "root"
+db_passwd = ""
 db_auth_token_table = "auth_token"
 
 grant_type = "refresh_token"

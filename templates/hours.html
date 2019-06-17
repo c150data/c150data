@@ -42,87 +42,96 @@
 
 </head>
 
-<body>
-
-	<!-- Navigation -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-		<div class="container">
-			<a class="navbar-brand js-scroll-trigger" href="/about">
-				C150 Data
-			</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-				aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarResponsive">
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item">
-						<a class="nav-link" href="/about">About</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/hours">Hours</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/contact">Contact</a>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</nav>
-
-	<section id="main-content">
-		<div class="container-fluid" id="auth-buttons">
-			<div class="row">
-				<a class="" href="/authorize">
-					<button class="btn btn-dark">Begin authorization</button>
+<body class="bg-light">
+	<div class="flex-container">
+		<!-- Navigation -->
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+			<div class="container">
+				<a class="navbar-brand js-scroll-trigger" href="/about">
+					C150 Data
 				</a>
-				<a class="" href="/insertNewToken">
-					<button class="btn btn-dark">Insert a new token!</button>
-				</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+					aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarResponsive">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item">
+							<a class="nav-link" href="/about">About</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/hours">Hours</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/contact">Contact</a>
+						</li>
+					</ul>
+				</div>
 			</div>
-		</div>
-		<div class="container-fluid" id="hours-content">
-			<div class="row">
-				<div class='col-lg-5 align-self-center'>
-					<div class="form-group">
-						<div class="input-group date" id="datetimepickerStart" data-target-input="nearest">
-							<input type="text" placeholder="Start Date" id="startDateInput"
-								class="form-control datetimepicker-input" data-target="#datetimepickerStart" />
-							<div class="input-group-append" data-target="#datetimepickerStart"
-								data-toggle="datetimepicker">
-								<div class="input-group-text"><i class="fa fa-calendar-alt"></i></div>
+		</nav>
+
+		<section id="main-content">
+			<div class="container-fluid" id="auth-buttons">
+				<div class="row">
+					<a class="" href="/authorize">
+						<button class="btn btn-dark">Begin authorization</button>
+					</a>
+					<a class="" href="/insertNewToken">
+						<button class="btn btn-dark">Insert a new token!</button>
+					</a>
+				</div>
+			</div>
+			<div class="container-fluid" id="hours-content">
+				<div class="row">
+					<div class='col-lg-5 align-self-center'>
+						<div class="form-group">
+							<div class="input-group date" id="datetimepickerStart" data-target-input="nearest">
+								<input type="text" placeholder="Start Date" id="startDateInput"
+									class="form-control datetimepicker-input" data-target="#datetimepickerStart" />
+								<div class="input-group-append" data-target="#datetimepickerStart"
+									data-toggle="datetimepicker">
+									<div class="input-group-text"><i class="fa fa-calendar-alt"></i></div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class='col-lg-5 align-self-center'>
-					<div class="form-group">
-						<div class="input-group date" id="datetimepickerEnd" data-target-input="nearest">
-							<input type="text" placeholder="End Date" id="endDateInput"
-								class="form-control datetimepicker-input" data-target="#datetimepickerEnd" />
-							<div class="input-group-append" data-target="#datetimepickerEnd"
-								data-toggle="datetimepicker">
-								<div class="input-group-text"><i class="fa fa-calendar-alt"></i></div>
+					<div class='col-lg-5 align-self-center'>
+						<div class="form-group">
+							<div class="input-group date" id="datetimepickerEnd" data-target-input="nearest">
+								<input type="text" placeholder="End Date" id="endDateInput"
+									class="form-control datetimepicker-input" data-target="#datetimepickerEnd" />
+								<div class="input-group-append" data-target="#datetimepickerEnd"
+									data-toggle="datetimepicker">
+									<div class="input-group-text"><i class="fa fa-calendar-alt"></i></div>
+								</div>
 							</div>
 						</div>
 					</div>
+					<div class="col-lg-2">
+						<button type="submit" id="dataSubmitButton" class="btn btn-primary">
+							<span id='spinner' class="spinner-border spinner-border-sm" role="status"></span>
+							<span id='submitLabel'>Get Hours</span>
+						</button>
+					</div>
 				</div>
-				<div class="col-lg-2">
-					<button type="submit" id="dataSubmitButton" class="btn btn-primary">Get Hours</button>
-				</div>
+				<div class="row" id="hours-table-div"></div>
 			</div>
-			<div class="row" id="hours-table-div"></div>
-		</div>
-	</section>
-
-	<!-- Footer -->
-	<footer class="py-5 bg-dark">
-		<div class="container">
-			<p class="m-0 text-center text-white">Copyright &copy; C150Data 2019</p>
-		</div>
-	</footer>
+		</section>
+	</div>
 
 	<script type="text/javascript">
+		$('#spinner').hide();
+		$(document).on({
+			ajaxStart: function () {
+				$('#submitLabel').html("Loading...");
+				$('#spinner').show();
+			},
+			ajaxStop: function () {
+				$('#submitLabel').html("Get Hours");
+				$('#spinner').hide();
+			}
+		});
+
 		$("#dataSubmitButton").click(function (e) {
 			e.preventDefault();
 			$.ajax({
@@ -140,6 +149,7 @@
 				}
 			});
 		});
+
 		$(function () {
 			$('#datetimepickerStart').datetimepicker({
 				format: 'L'
