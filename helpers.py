@@ -2,45 +2,101 @@
 Helper methods for the c150.data data retrieval process
 """
 
-from __future__ import print_function
 import pymysql
 import datetime
 import requests
 import operator
 from authlib.client import OAuth2Session
-import sys
 
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
 
-api_base_url = 'https://api.sandbox.trainingpeaks.com'
+remote = False # CHANGE FOR DB CONNECTION
 
-# Change these values when running on remote server! These are strictly for development
-# TODO create one variable that changes between prod and dev that changes all of this for you
-db_host = "localhost"
-db_name = "c150data"
-db_user = "root"
-db_passwd = ""
+# DB schema
+db_schema_name = "c150data"
+# Local config
+db_local_host = "localhost"
+db_local_user = "root"
+db_local_passwd = ""
+db_local_port = 3306
+# Remote config
+db_remote_socket = "/var/run/mysqld/mysqld.sock" # In order to make connection on ssh it needs to use a socket instead of host
+db_remote_port = 3306 
+db_remote_user = "mamsterdam"
+db_remote_passwd = "Columbia150"
+# DB tables
 db_auth_token_table = "auth_token"
+db_athletes_table = "athletes"
 
+# TP API constants 
 grant_type = "refresh_token"
 client_id = 'columbiac150'
 client_secret = 'kzSN7CYgZYUMzb8DfhEqRnqrHAqiAEUHOgSAJo8'
+api_base_url = 'https://api.sandbox.trainingpeaks.com' # Will change when we get production access
 refresh_url = "https://oauth.sandbox.trainingpeaks.com/oauth/token"
-redirect_uri = "www.c150data.com"
+refresh_padding_time = 300
+redirect_uri = "www.c150data.com" if remote else "localhost:5000"
 
 
-
-def EXPIRES_PADDING_TIME_SEC():
-    return 300 #Edit to change padding time for refresh token
+def eprint(description):
+    print("ERROR: ", description)
 
 
 def connectToDB():
+    """
+    Gets a Connection object
+    
+    Returns:
+        Connection: Returns None on error
+    """
     try:
-        return pymysql.connect(host=db_host, user=db_user, passwd=db_passwd, db=db_name)
+        if remote:
+            return pymysql.connect(unix_socket=db_remote_socket, user=db_remote_user,
+                password=db_remote_passwd, db=db_schema_name)
+        else: 
+            return pymysql.connect(host=db_local_host, user=db_local_user, password=db_local_passwd,
+                db=db_schema_name)
     except:
-        print("Connection to database failed")
+        eprint("ERROR: Connection to database failed.")
         return None
+
+
+def executeSqlInsert(insert_stmnt):
+    """
+    Creates a connection, executes, and commits insert_stmnt
+    
+    Args:
+        insert_stmnt (str): sql insert statement
+    
+    Returns:
+        int: number of rows effected. 0 on error.
+    """
+    conn = connectToDB()
+    if conn is not None:
+        try:
+            cursor = conn.cursor()
+            num_rows_effected = cursor.execute(insert_stmnt)
+            conn.commit()
+            return num_rows_effected
+        except:
+            eprint("Failed to execute insert statement: ", insert_stmnt)
+        finally:
+            conn.close()
+    return 0 
+
+def executeSqlSelect(select_stmnt):
+    conn = connectToDB()
+    if conn is not None:
+        try:
+            cursor = conn.cursor()
+            response = cursor.execute(select_stmnt)
+            return response 
+        except:
+            eprint("Failed to execute insert statement: ", select_stmnt)
+        finally:
+            conn.close()
+    else:
+        return "" 
+
 
 
 """
@@ -55,7 +111,7 @@ def executeTokenInsert(token):
     refresh_token = token['refresh_token']
     scope = token['scope']
     # Give the expires_in time an extra 5 minutes as padding time
-    expires_at_date = datetime.datetime.now() + datetime.timedelta(seconds=(int(expires_in)-EXPIRES_PADDING_TIME_SEC()))
+    expires_at_date = datetime.datetime.now() + datetime.timedelta(seconds=(int(expires_in)-refresh_padding_time))
     expires_at_date = expires_at_date.replace(microsecond=0) # Format date for insertion into DB
     insert_statement = "INSERT INTO {} (`access_token`, `token_type`,`expires_at`, `refresh_token`, `scope`) VALUES ('{}', '{}', '{}', '{}','{}');".format(
             db_auth_token_table, access_token, token_type, expires_at_date, refresh_token, scope)
@@ -165,7 +221,7 @@ def getHoursForAthlete(id, start_date, end_date, headers):
 
 
 
-def getAllAthletes(start_date, end_date):
+def getAllAthletesHours(start_date, end_date):
     headers = getHeaders()
     r = requests.get('https://api.sandbox.trainingpeaks.com/v1/coach/athletes',
                      headers=headers)
@@ -197,3 +253,16 @@ def getAllAthletes(start_date, end_date):
     print(sorted_athletes)
 
     return (len(athletes), sorted_athletes)
+
+
+def insertAllAthletesIntoDB():
+    sql_insert = str()
+    sql_insert = """
+                    INSERT INTO athletes('id', 'name', 'email', 'dob', 'coach_id', 'weight', 'last_updated_workouts')
+                        VALUES
+                    """
+    athletes = getAllAthletes()
+    for athlete in athletes:
+        sql_insert.append("({}, {}, {}, {}, {}, {}, {}),")
+    sql_insert[sql_insert.len()-1] = ";" # Replace the last char in the insert statement (,) with a ;
+    execute_sql(sql_insert)

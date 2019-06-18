@@ -29,7 +29,7 @@ def about():
         end_date = request.form['end_date']
         print("Start date: ", start_date)
         print("End date: ", end_date)
-        len, athletes = helpers.getAllAthletes(start_date, end_date)
+        len, athletes = helpers.getAllAthletesHours(start_date, end_date)
         return render_template("index.html", len=len, athletes=athletes)
     else:
         return render_template("index.html")
@@ -79,7 +79,7 @@ def insertNewToken():
 def getData():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
-    len, athletes = helpers.getAllAthletes(start_date, end_date)
+    len, athletes = helpers.getAllAthletesHours(start_date, end_date)
     return render_template("data.html", len=len, athletes=athletes)
 
 
