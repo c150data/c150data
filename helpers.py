@@ -41,12 +41,17 @@ def eprint(description):
     print("ERROR: ", description)
 
 
+def iprint(description):
+    print("INFO: ", description)
+
+
 def connectToDB():
     """
     Gets a Connection object
     
     Returns:
-        Connection: Returns None on error
+        Connection: On success 
+        None: on error
     """
     try:
         if remote:
@@ -83,106 +88,118 @@ def executeSqlInsert(insert_stmnt):
             conn.close()
     return 0 
 
+
 def executeSqlSelect(select_stmnt):
+    """
+    Executes select and returns the rows themselves
+    
+    Args:
+        select_stmnt (str): sql select statement 
+    
+    Returns:
+        List of Rows: cursor object that executed the select statement
+        None: on error
+    """
     conn = connectToDB()
     if conn is not None:
         try:
             cursor = conn.cursor()
             response = cursor.execute(select_stmnt)
-            return response 
+            allRows = cursor.fetchall()
+            iprint("What a list of rows looks like: ", allRows)
+            return cursor.fetchall()
         except:
             eprint("Failed to execute insert statement: ", select_stmnt)
         finally:
             conn.close()
-    else:
-        return "" 
+    return None 
 
 
 
-"""
-Method to insert the passed in token into the database. No expiration date checking needs to be
-done here
-Return: Boolean, True if successful, False otherwise
-"""
-def executeTokenInsert(token):
-    access_token = token['access_token']
-    token_type = token['token_type']
-    expires_in = token['expires_in']
-    refresh_token = token['refresh_token']
-    scope = token['scope']
-    # Give the expires_in time an extra 5 minutes as padding time
-    expires_at_date = datetime.datetime.now() + datetime.timedelta(seconds=(int(expires_in)-refresh_padding_time))
-    expires_at_date = expires_at_date.replace(microsecond=0) # Format date for insertion into DB
+def insertNewToken(token):
+    """
+    Inserts token into database. This method does NOT do expiration date checking, 
+    that is to be done by the method's caller 
+    
+    Args:
+        token (dict): dict object with the following fields: access_token, token_type, expires_in, refresh_token, and scope. 
+    
+    Returns:
+        Boolean: True on successful insertion, False on unsuccessful insertion 
+    """
+    access_token, token_type, expires_in, refresh_token, scope = token['access_token'], token['token_type'], token['expires_in'], token['refresh_token'], token['scope']
+
+    # Give the expires_in time an extra 5 minutes as padding time and remove microseconds
+    expires_at_date = (datetime.datetime.now() + datetime.timedelta(seconds=(int(expires_in)-refresh_padding_time))).replace(microsecond=0)
+
     insert_statement = "INSERT INTO {} (`access_token`, `token_type`,`expires_at`, `refresh_token`, `scope`) VALUES ('{}', '{}', '{}', '{}','{}');".format(
             db_auth_token_table, access_token, token_type, expires_at_date, refresh_token, scope)
-    select_statement = "SELECT * FROM {} order by token_id desc".format(db_auth_token_table)
-    eprint(select_statement)
 
-    success = False 
-    conn = connectToDB() 
-    if conn is not None:
-        try:
-            cursor = conn.cursor()
-            numRows = cursor.execute(insert_statement)
-            if numRows != 1:
-                print("Error in inserting token.")
-            else:
-                success=True
-                conn.commit()
-            print("Inserted access token with statement: ", insert_statement)
-        except: # TODO check for exact error that would be thrown, maybe change how errors are handled
-            print("Failed to insert token.")
-        finally:
-            conn.close()
-    return success
-
-
-def refreshTokenIfNeeded():
-    conn = connectToDB()
-    cursor = conn.cursor()
-
-    select_st = "SELECT * FROM {} order by token_id desc".format(db_auth_token_table)
-    eprint(select_st)
-    # TODO wrap in try block
-    cursor.execute(select_st)
-
-    row = cursor.fetchone() # Fetches the most recently inserted token
-    conn.close()
-    refresh_date = row[3] #TODO add constants here
-
-    needsRefreshing = True if refresh_date < datetime.datetime.now() else False
-
-    # update if necessary
-    if needsRefreshing:
-        print("Refreshing token...")
-        refresh_token = row[4] #TODO add constants here
-        oauth_session = OAuth2Session(client_id, client_secret, refresh_token=refresh_token)
-        body = "grant_type=refresh_token"
-        updated_token = oauth_session.refresh_token(refresh_url,
-                                                    refresh_token=refresh_token,
-                                                    body=body)
-        executeTokenInsert(updated_token)
-        return updated_token
+    numRows = executeSqlInsert(insert_statement)
+    if numRows == 1:
+        return True
     else:
-        # token does not need to be updated
-        return 1 
+        return False
+    
 
 
-def getToken():
-    # Retruns None on error
-    if refreshTokenIfNeeded() is None:
-        print("Error: Refresh Token returned None")
+def refreshAuthTokenIfNeeded():
+    """
+    Checks if auth_token needs refreshing, and refreshes if necessary
+    
+    Returns:
+        Boolean: True if successful, otherwise False 
+    """
+    select_st = "SELECT * FROM {} order by token_id desc".format(db_auth_token_table)
+    rows = executeSqlSelect(select_st) # TODO change how we handle the rows object here
+
+    success = False
+    if rows[0] is not None:
+        refresh_date = rows[0][3] #TODO add constants here
+        iprint("This is what a mySQL row looks like: ", rows[0])
+        if refresh_date < datetime.datetime.now():
+            success = refreshAuthToken(rows[0][4]) # Pass in the refresh_token from the most recent row
+        else: 
+            success = True
+    return success 
+
+
+def refreshAuthToken(refresh_token):
+    """
+    Makes an API call to get a new token and inserts it into the DB
+    
+    Args:
+        refresh_token (str): Refresh token 
+    
+    Returns:
+        Boolean: True if successful, False otherwise 
+    """
+    iprint("Refreshing authtoken...")
+    oauth_session = OAuth2Session(client_id, client_secret, refresh_token=refresh_token)
+    body = "grant_type=refresh_token"
+    updated_token = oauth_session.refresh_token(refresh_url,
+                                                refresh_token=refresh_token,
+                                                body=body)
+    return insertNewToken(updated_token)
+
+
+def getAuthToken():
+    """
+    Returns a valid authtoken to be used for API calls
+    
+    Returns:
+        Row: The Row object of a valid token 
+    """
+    if refreshAuthTokenIfNeeded() is False:
+        print("Could not successfully refresh auth token.")
         return None
 
-    conn = connectToDB()
-    cursor = conn.cursor()
-
-    try:
-        select_st = "SELECT * FROM {} order by token_id desc".format(db_auth_token_table)
-        num_rows = cursor.execute(select_st)
-        if num_rows == 0:
-            print("Error: An access token does not exist")
-        return cursor.fetchone() # The first toke will be the most recently inserted one 
+    select_st = "SELECT * FROM {} order by token_id desc".format(db_auth_token_table)
+    result = executeSqlSelect(select_st)
+    #TODO work on this
+    if num_rows == 0:
+        print("Error: An access token does not exist")
+    return cursor.fetchone() # The first toke will be the most recently inserted one 
     except:
         print("Failed to fetch access_token")
     finally:
@@ -190,7 +207,7 @@ def getToken():
 
 
 def getHeaders():
-    access_token = getToken()[1]
+    access_token = getAuthToken()[1]
     return {'host': 'api.sandbox.trainingpeaks.com','content-type':
             'application/json', 'Authorization': 'Bearer ' + access_token}
 

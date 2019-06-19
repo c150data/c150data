@@ -71,7 +71,7 @@ def insertNewToken():
                                              authorization_response=authorization_response)
     print("Got a new token: ", token)
     print("Inserting token...")
-    helpers.executeTokenInsert(token)
+    helpers.insertNewToken(token)
     return render_template("index.html")
 
 
