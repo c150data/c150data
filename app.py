@@ -75,6 +75,12 @@ def insertNewToken():
     return render_template("index.html")
 
 
+@app.route("/insertAllAthletes")
+def insertAllAthletesApp():
+    helpers.insertAllAthletesIntoDB()
+    return render_template("hours.html") 
+
+
 @app.route("/getData")
 def getData():
     start_date = request.args.get('start_date')

@@ -83,7 +83,7 @@ def executeSqlInsert(insert_stmnt):
             conn.commit()
             return num_rows_effected
         except:
-            eprint("Failed to execute insert statement: ", insert_stmnt)
+            eprint("Failed to execute insert statement: " + insert_stmnt)
         finally:
             conn.close()
     return 0 
@@ -97,7 +97,7 @@ def executeSqlSelect(select_stmnt):
         select_stmnt (str): sql select statement 
     
     Returns:
-        List of Rows: cursor object that executed the select statement
+        Tuple of Rows (Tuples): cursor object that executed the select statement
         None: on error
     """
     conn = connectToDB()
@@ -105,11 +105,10 @@ def executeSqlSelect(select_stmnt):
         try:
             cursor = conn.cursor()
             response = cursor.execute(select_stmnt)
-            allRows = cursor.fetchall()
-            iprint("What a list of rows looks like: ", allRows)
-            return cursor.fetchall()
+            allRows = cursor.fetchall() # Looks like this line is the problem
+            return allRows 
         except:
-            eprint("Failed to execute insert statement: ", select_stmnt)
+            eprint("Failed to execute select statement: " + select_stmnt)
         finally:
             conn.close()
     return None 
@@ -154,9 +153,8 @@ def refreshAuthTokenIfNeeded():
     rows = executeSqlSelect(select_st) # TODO change how we handle the rows object here
 
     success = False
-    if rows[0] is not None:
+    if rows is not None:
         refresh_date = rows[0][3] #TODO add constants here
-        iprint("This is what a mySQL row looks like: ", rows[0])
         if refresh_date < datetime.datetime.now():
             success = refreshAuthToken(rows[0][4]) # Pass in the refresh_token from the most recent row
         else: 
@@ -183,12 +181,13 @@ def refreshAuthToken(refresh_token):
     return insertNewToken(updated_token)
 
 
-def getAuthToken():
+def getValidAuthToken():
     """
     Returns a valid authtoken to be used for API calls
     
     Returns:
         Row: The Row object of a valid token 
+        None: On error
     """
     if refreshAuthTokenIfNeeded() is False:
         print("Could not successfully refresh auth token.")
@@ -196,90 +195,122 @@ def getAuthToken():
 
     select_st = "SELECT * FROM {} order by token_id desc".format(db_auth_token_table)
     result = executeSqlSelect(select_st)
-    #TODO work on this
-    if num_rows == 0:
-        print("Error: An access token does not exist")
-    return cursor.fetchone() # The first toke will be the most recently inserted one 
-    except:
-        print("Failed to fetch access_token")
-    finally:
-        conn.close()
+    if result is not None:
+        return result[0]
+    else:
+        return None
 
 
-def getHeaders():
-    access_token = getAuthToken()[1]
-    return {'host': 'api.sandbox.trainingpeaks.com','content-type':
-            'application/json', 'Authorization': 'Bearer ' + access_token}
-
-
-
-def getAthleteId():
-    """
-    r = requests.get('https://api.sandbox.trainingpeaks.com/v1/athlete/profile',
-                     headers=getHeaders())
-    id = (r.json())["Id"]
-    return id
-    """
-    pass
-
-
-def getHoursForAthlete(id, start_date, end_date, headers):
-    print("Getting hours for athlete {}...".format(id))
-    api_url = api_base_url + '/v1/workouts/{}/{}/{}'.format(id, start_date, end_date)
-    response = requests.get(api_url, headers=headers)
-
-    json_response = response.json()
-    sum_hours = 0
-    for workout in json_response:
-        total_time = workout['TotalTime']
-        if type(total_time) is float:
-            sum_hours += float(total_time)
-    return sum_hours
+def getAPIRequestHeaders():
+    token_row = getValidAuthToken()
+    if token_row is not None:
+        return {'host': 'api.sandbox.trainingpeaks.com','content-type':
+                'application/json', 'Authorization': 'Bearer ' + token_row[1]}
+    return None
 
 
 
-def getAllAthletesHours(start_date, end_date):
-    headers = getHeaders()
-    r = requests.get('https://api.sandbox.trainingpeaks.com/v1/coach/athletes',
-                     headers=headers)
-    athletes = list()
-    req_json = r.json()
-    # convert inputted dates from MM/DD/YYYY to YYYY-MM-DD
-    dStart = datetime.datetime.strptime(start_date, '%m/%d/%Y')
-    dEnd = datetime.datetime.strptime(end_date, '%m/%d/%Y')
-    start_date_f = dStart.strftime('%Y-%m-%d')
-    end_date_f = dEnd.strftime('%Y-%m-%d')
-    # Create athlete object and add to list
-    count = 1 
-    for athlete in req_json:
-        eprint("Working on Athlete #", count)
-        # date formatted YYYY-MM-DD
-        hours = getHoursForAthlete(athlete['Id'],
-                                           start_date_f, end_date_f, headers)
-        rounded_hours = round(hours, 2)
-        athlete_info = {
-            "name": "{} {}".format(athlete["FirstName"], athlete["LastName"]),
-            "hours": hours,
-            "rounded_hours": rounded_hours
-        }
-        athletes.append(athlete_info)
-        count += 1
+# def getHoursForAthlete(id, start_date, end_date, headers):
+#     """
+#     TODO We will not need this once all the athletes and workouts are in the DB
+#     """
+#     print("Getting hours for athlete {}...".format(id))
+#     api_url = api_base_url + '/v1/workouts/{}/{}/{}'.format(id, start_date, end_date)
+#     response = requests.get(api_url, headers=headers)
 
-    # sort list of athletes based on number of hours
-    sorted_athletes = sorted(athletes, key=operator.itemgetter('hours'), reverse=True)
-    print(sorted_athletes)
+#     json_response = response.json()
+#     sum_hours = 0
+#     for workout in json_response:
+#         total_time = workout['TotalTime']
+#         if type(total_time) is float:
+#             sum_hours += float(total_time)
+#     return sum_hours
 
-    return (len(athletes), sorted_athletes)
+
+
+# def getAllAthletesHours(start_date, end_date):
+#     """
+#     TODO We will not need this once all the workouts and athletes are in the DB
+    
+#     Args:
+#         start_date ([type]): [description]
+#         end_date ([type]): [description]
+    
+#     Returns:
+#         [type]: [description]
+#     """
+#     headers = getAPIRequestHeaders()
+#     r = requests.get('https://api.sandbox.trainingpeaks.com/v1/coach/athletes',
+#                      headers=headers)
+#     athletes = list()
+#     req_json = r.json()
+#     # convert inputted dates from MM/DD/YYYY to YYYY-MM-DD
+#     dStart = datetime.datetime.strptime(start_date, '%m/%d/%Y')
+#     dEnd = datetime.datetime.strptime(end_date, '%m/%d/%Y')
+#     start_date_f = dStart.strftime('%Y-%m-%d')
+#     end_date_f = dEnd.strftime('%Y-%m-%d')
+#     # Create athlete object and add to list
+#     count = 1 
+#     for athlete in req_json:
+#         eprint("Working on Athlete #", count)
+#         # date formatted YYYY-MM-DD
+#         hours = getHoursForAthlete(athlete['Id'],
+#                                            start_date_f, end_date_f, headers)
+#         rounded_hours = round(hours, 2)
+#         athlete_info = {
+#             "name": "{} {}".format(athlete["FirstName"], athlete["LastName"]),
+#             "hours": hours,
+#             "rounded_hours": rounded_hours
+#         }
+#         athletes.append(athlete_info)
+#         count += 1
+
+#     # sort list of athletes based on number of hours
+#     sorted_athletes = sorted(athletes, key=operator.itemgetter('hours'), reverse=True)
+#     print(sorted_athletes)
+
+#     return (len(athletes), sorted_athletes)
 
 
 def insertAllAthletesIntoDB():
+    """
+    Inserts all athletes into an empty athletes table in the database
+    """
     sql_insert = str()
-    sql_insert = """
-                    INSERT INTO athletes('id', 'name', 'email', 'dob', 'coach_id', 'weight', 'last_updated_workouts')
+    sql_insert =list("""
+                    INSERT INTO athletes (id, name, email, date_last_updated_workouts)
                         VALUES
-                    """
+                """)
     athletes = getAllAthletes()
+    if athletes is None:
+        return None
     for athlete in athletes:
-        sql_insert.append("({}, {}, {}, {}, {}, {}, {}),")
-    sql_insert[sql_insert.len()-1] = ";" # Replace the last char in the insert statement (,) with a ;
-    execute_sql(sql_insert)
+        sql_insert += list("({}, '{}', '{}', {}),".format(
+            athlete["id"], 
+            athlete["name"],
+            athlete["email"],
+            "NULL"
+        ))
+    sql_insert[len(sql_insert)-1] = ";" # Replace the last char in the insert statement (,) with a ;
+    sql_insert_str = ''.join(sql_insert)
+    executeSqlInsert(sql_insert_str)
+
+
+def getAllAthletes():
+    # Make the API call
+    headers = getAPIRequestHeaders()
+    if headers is None:
+        return None
+    response = requests.get('{}/v1/coach/athletes'.format(api_base_url),
+                headers=getAPIRequestHeaders())
+    if response is None:
+        return None
+    athletes_to_return = list()
+    for athlete in response.json():
+        athletes_to_return.append({
+            "id": athlete['Id'],
+            "name": "{} {}".format(athlete['FirstName'], athlete['LastName']),
+            "email": athlete['Email'],
+            "coachedBy": athlete['CoachedBy']
+        })
+    return athletes_to_return
