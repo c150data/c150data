@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+    <div class="container text-center">
+            <h1>Welcome to C150Data.com!</h1>
+            <p class="lead">A website designed to meaningfully display the Columbia Lightweight Rowing team's training data.</p>
+    </div>
+{% endblock content %}
