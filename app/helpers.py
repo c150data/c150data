@@ -2,10 +2,12 @@
 Helper methods for the c150.data data retrieval process
 """
 
+from app import logger as log
 import pymysql
 import datetime
 import requests
 import operator
+
 from authlib.client import OAuth2Session
 
 
@@ -55,7 +57,7 @@ def connectToDB():
             return pymysql.connect(host=db_local_host, user=db_local_user, password=db_local_passwd,
                 db=db_schema_name)
     except:
-        eprint("ERROR: Connection to database failed.")
+        log.eprint("ERROR: Connection to database failed.")
         return None
 
 
@@ -77,7 +79,7 @@ def executeSqlInsert(insert_stmnt):
             conn.commit()
             return num_rows_effected
         except:
-            eprint("Failed to execute insert statement: " + insert_stmnt)
+            log.eprint("Failed to execute insert statement: " + insert_stmnt)
         finally:
             conn.close()
     return 0 
@@ -102,7 +104,7 @@ def executeSqlSelect(select_stmnt):
             allRows = cursor.fetchall() # Looks like this line is the problem
             return allRows 
         except:
-            eprint("Failed to execute select statement: " + select_stmnt)
+            log.eprint("Failed to execute select statement: " + select_stmnt)
         finally:
             conn.close()
     return None 
@@ -166,7 +168,7 @@ def refreshAuthToken(refresh_token):
     Returns:
         Boolean: True if successful, False otherwise 
     """
-    iprint("Refreshing authtoken...")
+    log.iprint("Refreshing authtoken...")
     oauth_session = OAuth2Session(client_id, client_secret, refresh_token=refresh_token)
     body = "grant_type=refresh_token"
     updated_token = oauth_session.refresh_token(refresh_url,
@@ -246,7 +248,7 @@ def getAPIRequestHeaders():
 #     # Create athlete object and add to list
 #     count = 1 
 #     for athlete in req_json:
-#         eprint("Working on Athlete #", count)
+#         log.eprint("Working on Athlete #", count)
 #         # date formatted YYYY-MM-DD
 #         hours = getHoursForAthlete(athlete['Id'],
 #                                            start_date_f, end_date_f, headers)
@@ -324,6 +326,10 @@ def insertWorkoutsIntoDb(start_date, end_date):
     for athlete in athletes:
         all_workouts += getWorkoutsForAthlete(athlete['id'], start_date, end_date) # Concat all_workouts with workouts for specific athlete
     executeSqlInsert(buildSqlInsertForWorkouts(all_workouts))
+
+
+def getWorkoutsForAthlete(athlete_id):
+    pass
 
 
 def buildSqlInsertForWorkouts(workouts):

@@ -1,0 +1,1 @@
+// All common javascript commands go here, they will be imported to every html file

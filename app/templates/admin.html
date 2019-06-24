@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block content %}
+<script type="text/javascript" src="js/admin.js"></script>
+
+<div class="container">
+    <div class="row admin-button">
+        <a class="" href="/authorize">
+            <button class="btn btn-outline-primary">Begin authorization</button>
+        </a>
+    </div>
+    <div class="row admin-button">
+        <a class="" href="/insertNewToken">
+            <button class="btn btn-outline-primary">Insert a new token!</button>
+        </a>
+    </div>
+    <div class="row admin-button">
+        <a class="" href="/insertAllAthletes">
+            <button class="btn btn-outline-primary">Insert all athletes!</button>
+        </a>
+    </div>
+</div>
+{% endblock content %}
