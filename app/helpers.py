@@ -2,7 +2,7 @@
 Helper methods for the c150.data data retrieval process
 """
 
-from app import logger as log
+from app import log
 import pymysql
 import datetime
 import requests
@@ -57,7 +57,7 @@ def connectToDB():
             return pymysql.connect(host=db_local_host, user=db_local_user, password=db_local_passwd,
                 db=db_schema_name)
     except:
-        log.eprint("ERROR: Connection to database failed.")
+        log.error("ERROR: Connection to database failed.")
         return None
 
 
@@ -79,7 +79,7 @@ def executeSqlInsert(insert_stmnt):
             conn.commit()
             return num_rows_effected
         except:
-            log.eprint("Failed to execute insert statement: " + insert_stmnt)
+            log.error("Failed to execute insert statement: " + insert_stmnt)
         finally:
             conn.close()
     return 0 
@@ -104,7 +104,7 @@ def executeSqlSelect(select_stmnt):
             allRows = cursor.fetchall() # Looks like this line is the problem
             return allRows 
         except:
-            log.eprint("Failed to execute select statement: " + select_stmnt)
+            log.error("Failed to execute select statement: " + select_stmnt)
         finally:
             conn.close()
     return None 
@@ -168,7 +168,7 @@ def refreshAuthToken(refresh_token):
     Returns:
         Boolean: True if successful, False otherwise 
     """
-    log.iprint("Refreshing authtoken...")
+    log.info("Refreshing authtoken...")
     oauth_session = OAuth2Session(client_id, client_secret, refresh_token=refresh_token)
     body = "grant_type=refresh_token"
     updated_token = oauth_session.refresh_token(refresh_url,
@@ -248,7 +248,7 @@ def getAPIRequestHeaders():
 #     # Create athlete object and add to list
 #     count = 1 
 #     for athlete in req_json:
-#         log.eprint("Working on Athlete #", count)
+#         log.error("Working on Athlete #", count)
 #         # date formatted YYYY-MM-DD
 #         hours = getHoursForAthlete(athlete['Id'],
 #                                            start_date_f, end_date_f, headers)

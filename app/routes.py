@@ -23,7 +23,6 @@ def index():
 
 @app.route("/about", methods=['GET', 'POST'])
 def about():
-    log.info("got the about page...")
     return render_template("about.html")
 
 
@@ -50,7 +49,7 @@ def contact():
 @app.route("/insertAllAthletes")
 def insertAllAthletesApp():
     numAthletesInserted = helpers.insertAllAthletesIntoDB()
-    log.info("Successfully inserted {} athletes.", numAthletesInserted) 
+    log.info("Successfully inserted {} athletes.".format(numAthletesInserted))
     return render_template("admin.html") 
 
 
@@ -59,7 +58,7 @@ def insertAllWorkoutsApp():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
     numWorkoutsInserted = helpers.insertWorkoutsIntoDb(start_date, end_date)
-    log.info("Successfully inserted {} workouts.", numWorkoutsInserted) 
+    log.info("Successfully inserted {} workouts.".format(numWorkoutsInserted))
     return render_template("admin.html") 
 
 
