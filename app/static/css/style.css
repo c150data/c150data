@@ -14,9 +14,12 @@ section {
     padding-bottom: 60px;
 }
 
+#main-content {
+    height: 100%;
+}
+
 #about-page {
     padding: 40% 0%;
-    height: 100%;
 }
 
 #auth-buttons {

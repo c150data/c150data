@@ -1,7 +1,7 @@
 from flask import request, render_template, redirect, url_for, flash
 from flask_login import login_user, current_user, logout_user, login_required
 from authlib.client import OAuth2Session
-from app import app, logger as log, db, bcrypt, helpers
+from app import app, db, bcrypt, helpers, log
 from app.models import User
 from app.forms import RegistrationForm, LoginForm
 
@@ -14,7 +14,6 @@ authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authoriz
 token_base_url = 'https://oauth.sandbox.trainingpeaks.com/oauth/token'
 
 
-
 # PAGES
 
 @app.route("/", methods=['GET'])
@@ -24,6 +23,7 @@ def index():
 
 @app.route("/about", methods=['GET', 'POST'])
 def about():
+    log.info("got the about page...")
     return render_template("about.html")
 
 
@@ -50,7 +50,7 @@ def contact():
 @app.route("/insertAllAthletes")
 def insertAllAthletesApp():
     numAthletesInserted = helpers.insertAllAthletesIntoDB()
-    log.iprint("Successfully inserted {} athletes.", numAthletesInserted) 
+    log.info("Successfully inserted {} athletes.", numAthletesInserted) 
     return render_template("admin.html") 
 
 
@@ -59,7 +59,7 @@ def insertAllWorkoutsApp():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
     numWorkoutsInserted = helpers.insertWorkoutsIntoDb(start_date, end_date)
-    log.iprint("Successfully inserted {} workouts.", numWorkoutsInserted) 
+    log.info("Successfully inserted {} workouts.", numWorkoutsInserted) 
     return render_template("admin.html") 
 
 
@@ -91,7 +91,7 @@ def login():
     return render_template('login.html', title='Login', form=form)
 
 
-@app.route("/register")
+@app.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated: # Logged in user will be forwarded to about page
         return redirect(url_for('about'))

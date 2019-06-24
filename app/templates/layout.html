@@ -39,7 +39,7 @@
 		href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
 
 	<!-- Common JS -->
-	<script type="text/javascript" src="js/common.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename="js/common.js") }}"></script>
 
 	{% if title %}
 	<title>C150data - {{ title }}</title>
@@ -61,6 +61,7 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
 				<ul class="navbar-nav ml-auto">
+					{% if current_user.is_authenticated %}
 					<li class="nav-item">
 						<a class="nav-link" href="{{ url_for('about') }}">About</a>
 					</li>
@@ -70,21 +71,25 @@
 					<li class="nav-item">
 						<a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
 					</li>
-
-					<li class="navbar-nav">
-						{% if current_user.is_authenticated %}
+					<li class="nav-item">
 						<a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
-						{% else %}
-						<a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
-						<a class="nav-itemk nav-link" href="{{ url_for('login') }}">Login</a>
-						{% endif %}
 					</li>
-
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-itemk nav-link" href="{{ url_for('login') }}">Login</a>
+					</li>
+					{% endif %}
 				</ul>
 			</div>
 		</div>
 	</nav>
-	<section class="bg-primary text-white" id="about-page">
+
+	<!-- Content -->
+	<div class="bg-light" id="main-content">
+		<!-- Handles any alerts -->
 		{% with messages = get_flashed_messages(with_categories=true) %}
 		{% if messages %}
 		{% for category, message in messages %}
@@ -94,9 +99,9 @@
 		{% endfor %}
 		{% endif %}
 		{% endwith %}
+		<!-- Main content -->
 		{% block content %}{% endblock %}
-	</section>
+	</div>
 
 </body>
-
 </html>
