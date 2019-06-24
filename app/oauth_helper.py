@@ -1,12 +1,18 @@
 from authlib.client import OAuth2Session
 
-client_id = 'columbiac150'
+remote = False
+
 # TODO move this somewhere else out of version control
+client_id = 'columbiac150'
 client_secret = 'kzSN7CYgZYUMzb8DfhEqRnqrHAqiAEUHOgSAJo8'
 coach_scope = ["coach:athletes", "workouts:read"]
-redirect_uri = "https://localhost:5000"
+grant_type = "refresh_token"
+
+api_base_url = 'https://api.sandbox.trainingpeaks.com'
+refresh_url = "https://oauth.sandbox.trainingpeaks.com/oauth/token"
 authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authorize'
 token_base_url = 'https://oauth.sandbox.trainingpeaks.com/oauth/token'
+redirect_uri = "www.c150data.com" if remote else "localhost:5000"
 
 
 def getNewAccessToken():
@@ -21,7 +27,15 @@ def getNewAccessToken():
         "Authorization response from the redirect url after going through authorization: "))
     token = session.fetch_access_token(
         token_base_url, authorization_response=authorization_response)
-    return token 
+    return token
+
+
+def getRefreshedToken(refresh_token):
+    session = getOAuthSessionForRefresh()
+    body = "grant_type=refresh_token"
+    return oauth_session.refresh_token(refresh_url,
+                                       refresh_token=refresh_token,
+                                       body=body)
 
 
 def getAuthorizationUrl():
@@ -33,3 +47,7 @@ def getAuthorizationUrl():
 def getOAuthSessionForAuthorization():
     return OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri,
                          scope=coach_scope)
+
+
+def getOAuthSessionForRefresh():
+    return OAuth2Session(client_id, client_secret, refresh_token=refresh_token)

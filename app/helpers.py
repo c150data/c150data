@@ -2,7 +2,7 @@
 Helper methods for the c150.data data retrieval process
 """
 
-from app import db, log
+from app import db, log, oauth_helper
 import pymysql
 import datetime
 import requests
@@ -32,16 +32,7 @@ db_remote_passwd = "Columbia150"
 db_auth_token_table = "auth_token"
 db_athletes_table = "athletes"
 
-# TP API constants
-grant_type = "refresh_token"
-client_id = 'columbiac150'
-client_secret = 'kzSN7CYgZYUMzb8DfhEqRnqrHAqiAEUHOgSAJo8'
-# Will change when we get production access
-api_base_url = 'https://api.sandbox.trainingpeaks.com'
-refresh_url = "https://oauth.sandbox.trainingpeaks.com/oauth/token"
 refresh_padding_time = 300
-redirect_uri = "www.c150data.com" if remote else "localhost:5000"
-
 
 def connectToDB():
     """
@@ -139,20 +130,17 @@ def refreshAuthTokenIfNeeded():
     Returns:
         Boolean: True if successful, otherwise False 
     """
-    select_st = "SELECT * FROM {} order by token_id desc".format(
-        db_auth_token_table)
-    # TODO change how we handle the rows object here
-    rows = executeSqlSelect(select_st)
-
-    success = False
-    if rows is not None:
-        refresh_date = rows[0][3]  # TODO add constants here
+    most_recent_token = db.session.query(AuthToken).order_by(AuthToken.id.desc())[0]
+    log.info(most_recent_token)
+    if most_recent_token is not None:
+        refresh_date = most_recent_token.expires_at 
         if refresh_date < datetime.datetime.now():
             # Pass in the refresh_token from the most recent row
-            success = refreshAuthToken(rows[0][4])
-        else:
-            success = True
-    return success
+            return refreshAuthToken(most_recent_token.refresh_token)
+        return True # Returns True if token does not have to be refreshed
+
+    log.info("Select returned None")
+    return False 
 
 
 def refreshAuthToken(refresh_token):
@@ -165,14 +153,7 @@ def refreshAuthToken(refresh_token):
     Returns:
         Boolean: True if successful, False otherwise 
     """
-    log.info("Refreshing authtoken...")
-    oauth_session = OAuth2Session(
-        client_id, client_secret, refresh_token=refresh_token)
-    body = "grant_type=refresh_token"
-    updated_token = oauth_session.refresh_token(refresh_url,
-                                                refresh_token=refresh_token,
-                                                body=body)
-    return insertNewToken(updated_token)
+    return insertNewToken(oauth_helper.getRefreshedToken(refresh_token))
 
 
 def getValidAuthToken():
@@ -184,16 +165,13 @@ def getValidAuthToken():
         None: On error
     """
     if refreshAuthTokenIfNeeded() is False:
-        print("Could not successfully refresh auth token.")
+        log.error("Did not successfully refresh authentication token.")
         return None
 
     select_st = "SELECT * FROM {} order by token_id desc".format(
         db_auth_token_table)
     result = executeSqlSelect(select_st)
-    if result is not None:
-        return result[0]
-    else:
-        return None
+    return AuthToken.query.order_by(AuthToken.id.desc()).first()
 
 
 def getAPIRequestHeaders():
@@ -270,7 +248,7 @@ def insertAllAthletesIntoDB():
     Inserts all athletes into an empty athletes table in the database
     """
     # return (buildSqlInsertForAthletes(getAllAthletes()))
-    pass
+    getValidAuthToken()
 
 
 def buildSqlInsertForAthletes(athletes):
