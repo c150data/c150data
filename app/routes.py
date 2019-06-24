@@ -1,16 +1,10 @@
+from app.models import User
+from flask import request, render_template, redirect, url_for, flash
+from app import app, db, bcrypt, helpers
 from authlib.client import OAuth2Session
+from app.forms import RegistrationForm, LoginForm
+from flask_login import login_user, current_user, logout_user, login_required
 
-from flask import Flask, request, render_template, redirect, url_for
-from operator import itemgetter
-import os
-import requests
-import helpers
-import pymysql
-import logger as log
-
-app = Flask(__name__)
-
-app.secret_key = os.urandom(24)
 client_id = 'columbiac150'
 client_secret = 'kzSN7CYgZYUMzb8DfhEqRnqrHAqiAEUHOgSAJo8'
 coach_scope = ["coach:athletes", "workouts:read"]
@@ -35,8 +29,37 @@ def about():
     else:
         return render_template("index.html")
 
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+            return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Your account has been created! You are now able to log in', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+            return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data): #check if password matches
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('index'))
+        else:
+            flash('Login Unsuccessful. Please check email and password', 'danger')
+    return render_template('login.html',title='Login',form=form)
 
 @app.route("/hours", methods=['GET', 'POST'])
+@login_required
 def hours():
     if request.method == 'POST':
         #TODO
@@ -60,6 +83,7 @@ def admin():
 
 
 @app.route("/authorize")
+@login_required
 def user_authorization():
     oauth_session = OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri,
                                   scope=coach_scope)
@@ -69,6 +93,7 @@ def user_authorization():
 
 
 @app.route("/insertNewToken")
+@login_required
 def insertNewToken():
     oauth_session = OAuth2Session(client_id, client_secret,
                                   redirect_uri=redirect_uri, scope=coach_scope)
@@ -98,12 +123,23 @@ def insertAllWorkoutsApp():
 
 
 @app.route("/getData")
+@login_required
 def getData():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
     len, athletes = helpers.getAllAthletesHours(start_date, end_date)
     return render_template("data.html", len=len, athletes=athletes)
 
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
-if __name__ == "__main__":
-    app.run(host="localhost", ssl_context='adhoc', debug=True)
+#possible account page for user
+#@login_required
+#@app.route("/account")
+#def account():
+
+
+
+
