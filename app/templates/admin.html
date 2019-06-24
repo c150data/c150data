@@ -1,20 +1,21 @@
 {% extends 'layout.html' %}
 {% block content %}
 <script type="text/javascript" src="js/admin.js"></script>
+<link rel="stylesheet" href="/static/css/admin.css">
 
 <div class="container">
     <div class="row admin-button">
-        <a class="" href="/authorize">
+        <a href="/authorize">
             <button class="btn btn-outline-primary">Begin authorization</button>
         </a>
     </div>
     <div class="row admin-button">
-        <a class="" href="/insertNewToken">
+        <a href="/insertNewToken">
             <button class="btn btn-outline-primary">Insert a new token!</button>
         </a>
     </div>
     <div class="row admin-button">
-        <a class="" href="/insertAllAthletes">
+        <a href="/insertAllAthletes">
             <button class="btn btn-outline-primary">Insert all athletes!</button>
         </a>
     </div>

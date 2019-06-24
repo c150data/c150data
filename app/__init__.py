@@ -11,6 +11,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '772f2253fd3a4c2524a93c70aefeac2e'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' #creates local database in the same directory as app.py
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # Set up logger for the application. Import log from app to access.
@@ -27,4 +28,8 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login' # route that login_required redirects to
 
-from app import routes #position important to avoid circular importation
+from app import routes  # position important to avoid circular importation
+# Have to uncomment and create_all when adding new tables
+# from app.models import User, AuthToken
+# db.create_all()
+# db.session.commit()

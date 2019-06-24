@@ -1,17 +1,9 @@
 from flask import request, render_template, redirect, url_for, flash
 from flask_login import login_user, current_user, logout_user, login_required
 from authlib.client import OAuth2Session
-from app import app, db, bcrypt, helpers, log
+from app import app, db, bcrypt, helpers, oauth_helper, log
 from app.models import User
 from app.forms import RegistrationForm, LoginForm
-
-# TODO Constants that should be moved elsewhere 
-client_id = 'columbiac150'
-client_secret = 'kzSN7CYgZYUMzb8DfhEqRnqrHAqiAEUHOgSAJo8' # TODO move this somewhere else out of version control 
-coach_scope = ["coach:athletes", "workouts:read"]
-redirect_uri = "https://localhost:5000"
-authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authorize'
-token_base_url = 'https://oauth.sandbox.trainingpeaks.com/oauth/token'
 
 
 # PAGES
@@ -111,7 +103,6 @@ def logout():
     return redirect(url_for('index'))
 
 
-
 # ADMIN
 
 @app.route("/admin")
@@ -123,23 +114,16 @@ def admin():
 @app.route("/authorize")
 @login_required
 def user_authorization():
-    oauth_session = OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri,
-                                  scope=coach_scope)
-    authorization_url, state = oauth_session.create_authorization_url(authorization_base_url)
-    print(authorization_url)
-    return redirect(authorization_url)
+    return redirect(oauth_helper.getAuthorizationUrl())
 
 
 @app.route("/insertNewToken")
 @login_required
 def insertNewToken():
-    oauth_session = OAuth2Session(client_id, client_secret,
-                                  redirect_uri=redirect_uri, scope=coach_scope)
-    authorization_response = input(str("authorization_response: "))
-    token = oauth_session.fetch_access_token(token_base_url,
-                                             authorization_response=authorization_response)
-    print("Got a new token: ", token)
-    print("Inserting token...")
-    helpers.insertNewToken(token)
+    success = helpers.insertNewToken(oauth_helper.getNewAccessToken())
+    if success:
+        flash("A new access token was successfuly inserted into the database.", 'success')
+    else:
+        flash("An error occurred while inserting a new acccess token into the database.", 'error')
     return render_template("admin.html")
 

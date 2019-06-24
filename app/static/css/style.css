@@ -14,10 +14,6 @@ section {
     padding-bottom: 60px;
 }
 
-#main-content {
-    height: 100%;
-}
-
 #about-page {
     padding: 40% 0%;
 }
@@ -28,6 +24,8 @@ section {
 
 #main-content {
     height: 100%;
+    /* Avoids collisions with the nav bar */
+    padding-top: 75px;
 }
 
 #hours-table-div {

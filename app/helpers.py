@@ -2,16 +2,18 @@
 Helper methods for the c150.data data retrieval process
 """
 
-from app import log
+from app import db, log
 import pymysql
 import datetime
 import requests
 import operator
+from app.models import AuthToken
+
 
 from authlib.client import OAuth2Session
 
 
-remote = False # CHANGE FOR DB CONNECTION
+remote = False  # CHANGE FOR DB CONNECTION
 
 # DB schema
 db_schema_name = "c150data"
@@ -21,24 +23,24 @@ db_local_user = "root"
 db_local_passwd = ""
 db_local_port = 3306
 # Remote config
-db_remote_socket = "/var/run/mysqld/mysqld.sock" # In order to make connection on ssh it needs to use a socket instead of host
-db_remote_port = 3306 
+# In order to make connection on ssh it needs to use a socket instead of host
+db_remote_socket = "/var/run/mysqld/mysqld.sock"
+db_remote_port = 3306
 db_remote_user = "mamsterdam"
 db_remote_passwd = "Columbia150"
 # DB tables
 db_auth_token_table = "auth_token"
 db_athletes_table = "athletes"
 
-# TP API constants 
+# TP API constants
 grant_type = "refresh_token"
 client_id = 'columbiac150'
 client_secret = 'kzSN7CYgZYUMzb8DfhEqRnqrHAqiAEUHOgSAJo8'
-api_base_url = 'https://api.sandbox.trainingpeaks.com' # Will change when we get production access
+# Will change when we get production access
+api_base_url = 'https://api.sandbox.trainingpeaks.com'
 refresh_url = "https://oauth.sandbox.trainingpeaks.com/oauth/token"
 refresh_padding_time = 300
 redirect_uri = "www.c150data.com" if remote else "localhost:5000"
-
-
 
 
 def connectToDB():
@@ -52,37 +54,34 @@ def connectToDB():
     try:
         if remote:
             return pymysql.connect(unix_socket=db_remote_socket, user=db_remote_user,
-                password=db_remote_passwd, db=db_schema_name)
-        else: 
+                                   password=db_remote_passwd, db=db_schema_name)
+        else:
             return pymysql.connect(host=db_local_host, user=db_local_user, password=db_local_passwd,
-                db=db_schema_name)
+                                   db=db_schema_name)
     except:
         log.error("ERROR: Connection to database failed.")
         return None
 
 
-def executeSqlInsert(insert_stmnt):
+def dbInsert(items):
     """
-    Creates a connection, executes, and commits insert_stmnt
+    Inserts items into the database 
     
     Args:
-        insert_stmnt (str): sql insert statement
+        items: A single model object or a list of objects 
     
     Returns:
-        int: number of rows effected. 0 on error.
+        Boolean: True on success, False on error 
     """
-    conn = connectToDB()
-    if conn is not None:
-        try:
-            cursor = conn.cursor()
-            num_rows_effected = cursor.execute(insert_stmnt)
-            conn.commit()
-            return num_rows_effected
-        except:
-            log.error("Failed to execute insert statement: " + insert_stmnt)
-        finally:
-            conn.close()
-    return 0 
+    try:
+        db.session.add(items)
+        db.session.commit()
+    except Exception as e:
+        log.error("Error inserting [%s] into the database: %s", items, e)
+        db.session.rollback()
+        db.session.flush()
+        return False
+    return True
 
 
 def executeSqlSelect(select_stmnt):
@@ -101,14 +100,13 @@ def executeSqlSelect(select_stmnt):
         try:
             cursor = conn.cursor()
             response = cursor.execute(select_stmnt)
-            allRows = cursor.fetchall() # Looks like this line is the problem
-            return allRows 
+            allRows = cursor.fetchall()  # Looks like this line is the problem
+            return allRows
         except:
             log.error("Failed to execute select statement: " + select_stmnt)
         finally:
             conn.close()
-    return None 
-
+    return None
 
 
 def insertNewToken(token):
@@ -122,20 +120,16 @@ def insertNewToken(token):
     Returns:
         Boolean: True on successful insertion, False on unsuccessful insertion 
     """
-    access_token, token_type, expires_in, refresh_token, scope = token['access_token'], token['token_type'], token['expires_in'], token['refresh_token'], token['scope']
+    access_token, token_type, expires_in, refresh_token, scope = token['access_token'], token[
+        'token_type'], token['expires_in'], token['refresh_token'], token['scope']
 
     # Give the expires_in time an extra 5 minutes as padding time and remove microseconds
-    expires_at_date = (datetime.datetime.now() + datetime.timedelta(seconds=(int(expires_in)-refresh_padding_time))).replace(microsecond=0)
+    expires_at_date = (datetime.datetime.now() + datetime.timedelta(
+        seconds=(int(expires_in)-refresh_padding_time))).replace(microsecond=0)
 
-    insert_statement = "INSERT INTO {} (`access_token`, `token_type`,`expires_at`, `refresh_token`, `scope`) VALUES ('{}', '{}', '{}', '{}','{}');".format(
-            db_auth_token_table, access_token, token_type, expires_at_date, refresh_token, scope)
-
-    numRows = executeSqlInsert(insert_statement)
-    if numRows == 1:
-        return True
-    else:
-        return False
-    
+    token = AuthToken(access_token=access_token, token_type=token_type,
+                      expires_at=expires_at_date, refresh_token=refresh_token, scope=scope)
+    return dbInsert(token)
 
 
 def refreshAuthTokenIfNeeded():
@@ -145,17 +139,20 @@ def refreshAuthTokenIfNeeded():
     Returns:
         Boolean: True if successful, otherwise False 
     """
-    select_st = "SELECT * FROM {} order by token_id desc".format(db_auth_token_table)
-    rows = executeSqlSelect(select_st) # TODO change how we handle the rows object here
+    select_st = "SELECT * FROM {} order by token_id desc".format(
+        db_auth_token_table)
+    # TODO change how we handle the rows object here
+    rows = executeSqlSelect(select_st)
 
     success = False
     if rows is not None:
-        refresh_date = rows[0][3] #TODO add constants here
+        refresh_date = rows[0][3]  # TODO add constants here
         if refresh_date < datetime.datetime.now():
-            success = refreshAuthToken(rows[0][4]) # Pass in the refresh_token from the most recent row
-        else: 
+            # Pass in the refresh_token from the most recent row
+            success = refreshAuthToken(rows[0][4])
+        else:
             success = True
-    return success 
+    return success
 
 
 def refreshAuthToken(refresh_token):
@@ -169,7 +166,8 @@ def refreshAuthToken(refresh_token):
         Boolean: True if successful, False otherwise 
     """
     log.info("Refreshing authtoken...")
-    oauth_session = OAuth2Session(client_id, client_secret, refresh_token=refresh_token)
+    oauth_session = OAuth2Session(
+        client_id, client_secret, refresh_token=refresh_token)
     body = "grant_type=refresh_token"
     updated_token = oauth_session.refresh_token(refresh_url,
                                                 refresh_token=refresh_token,
@@ -189,7 +187,8 @@ def getValidAuthToken():
         print("Could not successfully refresh auth token.")
         return None
 
-    select_st = "SELECT * FROM {} order by token_id desc".format(db_auth_token_table)
+    select_st = "SELECT * FROM {} order by token_id desc".format(
+        db_auth_token_table)
     result = executeSqlSelect(select_st)
     if result is not None:
         return result[0]
@@ -200,10 +199,9 @@ def getValidAuthToken():
 def getAPIRequestHeaders():
     token_row = getValidAuthToken()
     if token_row is not None:
-        return {'host': 'api.sandbox.trainingpeaks.com','content-type':
+        return {'host': 'api.sandbox.trainingpeaks.com', 'content-type':
                 'application/json', 'Authorization': 'Bearer ' + token_row[1]}
     return None
-
 
 
 # def getHoursForAthlete(id, start_date, end_date, headers):
@@ -223,15 +221,14 @@ def getAPIRequestHeaders():
 #     return sum_hours
 
 
-
 # def getAllAthletesHours(start_date, end_date):
 #     """
 #     TODO We will not need this once all the workouts and athletes are in the DB
-    
+
 #     Args:
 #         start_date ([type]): [description]
 #         end_date ([type]): [description]
-    
+
 #     Returns:
 #         [type]: [description]
 #     """
@@ -246,7 +243,7 @@ def getAPIRequestHeaders():
 #     start_date_f = dStart.strftime('%Y-%m-%d')
 #     end_date_f = dEnd.strftime('%Y-%m-%d')
 #     # Create athlete object and add to list
-#     count = 1 
+#     count = 1
 #     for athlete in req_json:
 #         log.error("Working on Athlete #", count)
 #         # date formatted YYYY-MM-DD
@@ -272,12 +269,13 @@ def insertAllAthletesIntoDB():
     """
     Inserts all athletes into an empty athletes table in the database
     """
-    return executeSqlInsert(buildSqlInsertForAthletes(getAllAthletes()))
+    # return (buildSqlInsertForAthletes(getAllAthletes()))
+    pass
 
 
 def buildSqlInsertForAthletes(athletes):
     # sql_insert is a list of characters so it can be changed
-    sql_insert =list("""
+    sql_insert = list("""
                     INSERT INTO athletes (id, name, email, date_last_updated_workouts)
                         VALUES
                 """)
@@ -285,12 +283,13 @@ def buildSqlInsertForAthletes(athletes):
         return None
     for athlete in athletes:
         sql_insert += list("({}, '{}', '{}', {}),".format(
-            athlete["id"], 
+            athlete["id"],
             athlete["name"],
             athlete["email"],
             "NULL"
         ))
-    sql_insert[len(sql_insert)-1] = ";" # Replace the last char in the insert statement (,) with a ;
+    # Replace the last char in the insert statement (,) with a ;
+    sql_insert[len(sql_insert)-1] = ";"
     return ''.join(sql_insert)
 
 
@@ -306,7 +305,7 @@ def getAllAthletes():
     if headers is None:
         return None
     response = requests.get('{}/v1/coach/athletes'.format(api_base_url),
-                headers=getAPIRequestHeaders())
+                            headers=getAPIRequestHeaders())
     if response is None:
         return None
     athletes_to_return = list()
@@ -324,8 +323,11 @@ def insertWorkoutsIntoDb(start_date, end_date):
     athletes = getAllAthletes()
     all_workouts = list()
     for athlete in athletes:
-        all_workouts += getWorkoutsForAthlete(athlete['id'], start_date, end_date) # Concat all_workouts with workouts for specific athlete
-    executeSqlInsert(buildSqlInsertForWorkouts(all_workouts))
+        # Concat all_workouts with workouts for specific athlete
+        all_workouts += getWorkoutsForAthlete(
+            athlete['id'], start_date, end_date)
+    # executeSqlInsert(buildSqlInsertForWorkouts(all_workouts))
+    pass
 
 
 def getWorkoutsForAthlete(athlete_id):
@@ -333,7 +335,7 @@ def getWorkoutsForAthlete(athlete_id):
 
 
 def buildSqlInsertForWorkouts(workouts):
-    sql_insert =list("""
+    sql_insert = list("""
                     INSERT INTO workouts (<WORKOUT FIELDS>)
                         VALUES
                 """)
@@ -341,22 +343,11 @@ def buildSqlInsertForWorkouts(workouts):
         return None
     for workout in workouts:
         sql_insert += list("({}, '{}', '{}', {}),".format(
-            workout["id"], 
+            workout["id"],
             workout["name"],
             workout["email"]
             #etc.....
         ))
-    sql_insert[len(sql_insert)-1] = ";" # Replace the last char in the insert statement (,) with a ;
+    # Replace the last char in the insert statement (,) with a ;
+    sql_insert[len(sql_insert)-1] = ";"
     return ''.join(sql_insert)
-
-
-    
-
-
-
-
-
-
-
-
-
