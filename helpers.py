@@ -37,12 +37,6 @@ refresh_padding_time = 300
 redirect_uri = "www.c150data.com" if remote else "localhost:5000"
 
 
-def eprint(description):
-    print("ERROR: ", description)
-
-
-def iprint(description):
-    print("INFO: ", description)
 
 
 def connectToDB():
@@ -276,12 +270,15 @@ def insertAllAthletesIntoDB():
     """
     Inserts all athletes into an empty athletes table in the database
     """
-    sql_insert = str()
+    return executeSqlInsert(buildSqlInsertForAthletes(getAllAthletes()))
+
+
+def buildSqlInsertForAthletes(athletes):
+    # sql_insert is a list of characters so it can be changed
     sql_insert =list("""
                     INSERT INTO athletes (id, name, email, date_last_updated_workouts)
                         VALUES
                 """)
-    athletes = getAllAthletes()
     if athletes is None:
         return None
     for athlete in athletes:
@@ -292,11 +289,16 @@ def insertAllAthletesIntoDB():
             "NULL"
         ))
     sql_insert[len(sql_insert)-1] = ";" # Replace the last char in the insert statement (,) with a ;
-    sql_insert_str = ''.join(sql_insert)
-    executeSqlInsert(sql_insert_str)
+    return ''.join(sql_insert)
 
 
 def getAllAthletes():
+    """
+    Makes an API call to get every athlete under the current coach
+    
+    Returns:
+        List of JSON object Athletes: Every JSON object has the fields: 'id', 'name', 'email', 'coachedBy' 
+    """
     # Make the API call
     headers = getAPIRequestHeaders()
     if headers is None:
@@ -314,3 +316,41 @@ def getAllAthletes():
             "coachedBy": athlete['CoachedBy']
         })
     return athletes_to_return
+
+
+def insertWorkoutsIntoDb(start_date, end_date):
+    athletes = getAllAthletes()
+    all_workouts = list()
+    for athlete in athletes:
+        all_workouts += getWorkoutsForAthlete(athlete['id'], start_date, end_date) # Concat all_workouts with workouts for specific athlete
+    executeSqlInsert(buildSqlInsertForWorkouts(all_workouts))
+
+
+def buildSqlInsertForWorkouts(workouts):
+    sql_insert =list("""
+                    INSERT INTO workouts (<WORKOUT FIELDS>)
+                        VALUES
+                """)
+    if workouts is None:
+        return None
+    for workout in workouts:
+        sql_insert += list("({}, '{}', '{}', {}),".format(
+            workout["id"], 
+            workout["name"],
+            workout["email"]
+            #etc.....
+        ))
+    sql_insert[len(sql_insert)-1] = ";" # Replace the last char in the insert statement (,) with a ;
+    return ''.join(sql_insert)
+
+
+    
+
+
+
+
+
+
+
+
+

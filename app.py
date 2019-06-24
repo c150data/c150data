@@ -6,6 +6,7 @@ import os
 import requests
 import helpers
 import pymysql
+import logger as log
 
 app = Flask(__name__)
 
@@ -53,6 +54,11 @@ def contact():
         return render_template("contact.html")
 
 
+@app.route("/admin")
+def admin():
+    return render_template("admin.html")
+
+
 @app.route("/authorize")
 def user_authorization():
     oauth_session = OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri,
@@ -72,13 +78,23 @@ def insertNewToken():
     print("Got a new token: ", token)
     print("Inserting token...")
     helpers.insertNewToken(token)
-    return render_template("index.html")
+    return render_template("admin.html")
 
 
 @app.route("/insertAllAthletes")
 def insertAllAthletesApp():
-    helpers.insertAllAthletesIntoDB()
-    return render_template("hours.html") 
+    numAthletesInserted = helpers.insertAllAthletesIntoDB()
+    log.iprint("Successfully inserted {} athletes.", numAthletesInserted) 
+    return render_template("admin.html") 
+
+
+@app.route("/insertAllWorkouts")
+def insertAllWorkoutsApp():
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    numWorkoutsInserted = helpers.insertWorkoutsIntoDb(start_date, end_date)
+    log.iprint("Successfully inserted {} workouts.", numWorkoutsInserted) 
+    return render_template("admin.html") 
 
 
 @app.route("/getData")
@@ -91,4 +107,3 @@ def getData():
 
 if __name__ == "__main__":
     app.run(host="localhost", ssl_context='adhoc', debug=True)
-
