@@ -139,7 +139,6 @@ def refreshAuthTokenIfNeeded():
             return refreshAuthToken(most_recent_token.refresh_token)
         return True # Returns True if token does not have to be refreshed
 
-    log.info("Select returned None")
     return False 
 
 
@@ -168,17 +167,14 @@ def getValidAuthToken():
         log.error("Did not successfully refresh authentication token.")
         return None
 
-    select_st = "SELECT * FROM {} order by token_id desc".format(
-        db_auth_token_table)
-    result = executeSqlSelect(select_st)
     return AuthToken.query.order_by(AuthToken.id.desc()).first()
 
 
 def getAPIRequestHeaders():
-    token_row = getValidAuthToken()
-    if token_row is not None:
+    valid_token = getValidAuthToken()
+    if valid_token is not None:
         return {'host': 'api.sandbox.trainingpeaks.com', 'content-type':
-                'application/json', 'Authorization': 'Bearer ' + token_row[1]}
+                'application/json', 'Authorization': 'Bearer ' + valid_token.access_token}
     return None
 
 
@@ -246,9 +242,13 @@ def getAPIRequestHeaders():
 def insertAllAthletesIntoDB():
     """
     Inserts all athletes into an empty athletes table in the database
+
+    Returns:
+        int: Number of athletes successfully inserted
+        None: On error
     """
-    # return (buildSqlInsertForAthletes(getAllAthletes()))
-    getValidAuthToken()
+    pass 
+
 
 
 def buildSqlInsertForAthletes(athletes):
