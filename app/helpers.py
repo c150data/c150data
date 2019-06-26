@@ -2,18 +2,15 @@
 Helper methods for the c150.data data retrieval process
 """
 
-from app import db, log, oauth_helper
+from app import db, log, oauth_helper, constants
 import pymysql
 import datetime
 import requests
-import operator
 from app.models import AuthToken
 
 
-from authlib.client import OAuth2Session
-
-
 remote = False  # CHANGE FOR DB CONNECTION
+
 
 # DB schema
 db_schema_name = "c150data"
@@ -34,12 +31,13 @@ db_athletes_table = "athletes"
 
 refresh_padding_time = 300
 
+
 def connectToDB():
     """
     Gets a Connection object
-    
+
     Returns:
-        Connection: On success 
+        Connection: On success
         None: on error
     """
     try:
@@ -56,13 +54,13 @@ def connectToDB():
 
 def dbInsert(items):
     """
-    Inserts items into the database 
-    
+    Inserts items into the database
+
     Args:
-        items: A single model object or a list of objects 
-    
+        items: A single model object or a list of objects
+
     Returns:
-        Boolean: True on success, False on error 
+        Boolean: True on success, False on error
     """
     try:
         db.session.add(items)
@@ -78,10 +76,10 @@ def dbInsert(items):
 def executeSqlSelect(select_stmnt):
     """
     Executes select and returns the rows themselves
-    
+
     Args:
-        select_stmnt (str): sql select statement 
-    
+        select_stmnt (str): sql select statement
+
     Returns:
         Tuple of Rows (Tuples): cursor object that executed the select statement
         None: on error
@@ -102,14 +100,14 @@ def executeSqlSelect(select_stmnt):
 
 def insertNewToken(token):
     """
-    Inserts token into database. This method does NOT do expiration date checking, 
-    that is to be done by the method's caller 
-    
+    Inserts token into database. This method does NOT do expiration date checking,
+    that is to be done by the method's caller
+
     Args:
-        token (dict): dict object with the following fields: access_token, token_type, expires_in, refresh_token, and scope. 
-    
+        token (dict): dict object with the following fields: access_token, token_type, expires_in, refresh_token, and scope.
+
     Returns:
-        Boolean: True on successful insertion, False on unsuccessful insertion 
+        Boolean: True on successful insertion, False on unsuccessful insertion
     """
     access_token, token_type, expires_in, refresh_token, scope = token['access_token'], token[
         'token_type'], token['expires_in'], token['refresh_token'], token['scope']
@@ -126,31 +124,32 @@ def insertNewToken(token):
 def refreshAuthTokenIfNeeded():
     """
     Checks if auth_token needs refreshing, and refreshes if necessary
-    
+
     Returns:
-        Boolean: True if successful, otherwise False 
+        Boolean: True if successful, otherwise False
     """
-    most_recent_token = db.session.query(AuthToken).order_by(AuthToken.id.desc())[0]
+    most_recent_token = db.session.query(
+        AuthToken).order_by(AuthToken.id.desc())[0]
     log.info(most_recent_token)
     if most_recent_token is not None:
-        refresh_date = most_recent_token.expires_at 
+        refresh_date = most_recent_token.expires_at
         if refresh_date < datetime.datetime.now():
             # Pass in the refresh_token from the most recent row
             return refreshAuthToken(most_recent_token.refresh_token)
-        return True # Returns True if token does not have to be refreshed
+        return True  # Returns True if token does not have to be refreshed
 
-    return False 
+    return False
 
 
 def refreshAuthToken(refresh_token):
     """
     Makes an API call to get a new token and inserts it into the DB
-    
+
     Args:
-        refresh_token (str): Refresh token 
-    
+        refresh_token (str): Refresh token
+
     Returns:
-        Boolean: True if successful, False otherwise 
+        Boolean: True if successful, False otherwise
     """
     return insertNewToken(oauth_helper.getRefreshedToken(refresh_token))
 
@@ -158,9 +157,9 @@ def refreshAuthToken(refresh_token):
 def getValidAuthToken():
     """
     Returns a valid authtoken to be used for API calls
-    
+
     Returns:
-        Row: The Row object of a valid token 
+        Row: The Row object of a valid token
         None: On error
     """
     if refreshAuthTokenIfNeeded() is False:
@@ -247,8 +246,12 @@ def insertAllAthletesIntoDB():
         int: Number of athletes successfully inserted
         None: On error
     """
-    pass 
-
+    athletesList = getAllAthletes()
+    success = dbInsert(athletesList)
+    if success:
+        return len(athletesList)
+    else:
+        return None
 
 
 def buildSqlInsertForAthletes(athletes):
@@ -274,26 +277,28 @@ def buildSqlInsertForAthletes(athletes):
 def getAllAthletes():
     """
     Makes an API call to get every athlete under the current coach
-    
+
     Returns:
-        List of JSON object Athletes: Every JSON object has the fields: 'id', 'name', 'email', 'coachedBy' 
+        List of JSON object Athletes: Every JSON object has the fields: 'id', 'name', 'email', 'coachedBy'
     """
     # Make the API call
-    headers = getAPIRequestHeaders()
-    if headers is None:
-        return None
-    response = requests.get('{}/v1/coach/athletes'.format(api_base_url),
-                            headers=getAPIRequestHeaders())
-    if response is None:
-        return None
+    response = api_helper.makeCall(constants.COACH_ATHLETES_URL)
+
+    # headers = getAPIRequestHeaders()
+    # if headers is None:
+    #     return None
+    # response = requests.get('{}/v1/coach/athletes'.format(api_base_url),
+    #                         headers=getAPIRequestHeaders())
+    # if response is None:
+    #     return None
     athletes_to_return = list()
     for athlete in response.json():
-        athletes_to_return.append({
-            "id": athlete['Id'],
-            "name": "{} {}".format(athlete['FirstName'], athlete['LastName']),
-            "email": athlete['Email'],
-            "coachedBy": athlete['CoachedBy']
-        })
+        athlete = Athlete(
+            id=athlete['Id'],
+            name="{} {}".format(athlete['FirstName'], athlete['LastName']),
+            email=athlete['Email'],
+            dob=athlete[],  # TODO
+            last_updated_workouts=None)
     return athletes_to_return
 
 
@@ -324,7 +329,7 @@ def buildSqlInsertForWorkouts(workouts):
             workout["id"],
             workout["name"],
             workout["email"]
-            #etc.....
+            # etc.....
         ))
     # Replace the last char in the insert statement (,) with a ;
     sql_insert[len(sql_insert)-1] = ";"
