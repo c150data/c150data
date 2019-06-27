@@ -2,11 +2,11 @@
 Helper methods for the c150.data data retrieval process
 """
 
-from app import db, log, oauth_helper, constants
+from app import db, log, oauth_helper, constants, api_helper
 import pymysql
-import datetime
+from datetime import datetime, timedelta
 import requests
-from app.models import AuthToken
+from app.models import AuthToken, Athlete, Workout
 
 
 remote = False  # CHANGE FOR DB CONNECTION
@@ -62,8 +62,15 @@ def dbInsert(items):
     Returns:
         Boolean: True on success, False on error
     """
+    if items is None:
+        return False
+
     try:
-        db.session.add(items)
+        if isinstance(items, list):
+            for item in items:
+                db.session.add(item)
+        else:
+            db.session.add(items)
         db.session.commit()
     except Exception as e:
         log.error("Error inserting [%s] into the database: %s", items, e)
@@ -71,31 +78,6 @@ def dbInsert(items):
         db.session.flush()
         return False
     return True
-
-
-def executeSqlSelect(select_stmnt):
-    """
-    Executes select and returns the rows themselves
-
-    Args:
-        select_stmnt (str): sql select statement
-
-    Returns:
-        Tuple of Rows (Tuples): cursor object that executed the select statement
-        None: on error
-    """
-    conn = connectToDB()
-    if conn is not None:
-        try:
-            cursor = conn.cursor()
-            response = cursor.execute(select_stmnt)
-            allRows = cursor.fetchall()  # Looks like this line is the problem
-            return allRows
-        except:
-            log.error("Failed to execute select statement: " + select_stmnt)
-        finally:
-            conn.close()
-    return None
 
 
 def insertNewToken(token):
@@ -254,83 +236,73 @@ def insertAllAthletesIntoDB():
         return None
 
 
-def buildSqlInsertForAthletes(athletes):
-    # sql_insert is a list of characters so it can be changed
-    sql_insert = list("""
-                    INSERT INTO athletes (id, name, email, date_last_updated_workouts)
-                        VALUES
-                """)
-    if athletes is None:
-        return None
-    for athlete in athletes:
-        sql_insert += list("({}, '{}', '{}', {}),".format(
-            athlete["id"],
-            athlete["name"],
-            athlete["email"],
-            "NULL"
-        ))
-    # Replace the last char in the insert statement (,) with a ;
-    sql_insert[len(sql_insert)-1] = ";"
-    return ''.join(sql_insert)
-
-
 def getAllAthletes():
     """
     Makes an API call to get every athlete under the current coach
 
     Returns:
-        List of JSON object Athletes: Every JSON object has the fields: 'id', 'name', 'email', 'coachedBy'
+        List of Athlete db.Model objects.
+        None on error.
     """
-    # Make the API call
-    response = api_helper.makeCall(constants.COACH_ATHLETES_URL)
+    # Make API call
+    athletes_response = api_helper.getAthletes(getValidAuthToken())
 
-    # headers = getAPIRequestHeaders()
-    # if headers is None:
-    #     return None
-    # response = requests.get('{}/v1/coach/athletes'.format(api_base_url),
-    #                         headers=getAPIRequestHeaders())
-    # if response is None:
-    #     return None
+    # Error check
+    if athletes_response is None:
+        return None
+
+    # Parse reponse into Athlete db objects
     athletes_to_return = list()
-    for athlete in response.json():
-        athlete = Athlete(
+    for athlete in athletes_response.json():
+        athletes_to_return.append(Athlete(
             id=athlete['Id'],
             name="{} {}".format(athlete['FirstName'], athlete['LastName']),
             email=athlete['Email'],
-            dob=athlete[],  # TODO
-            last_updated_workouts=None)
+            is_active=True,  # Default isActive to True, can manually deactivate later
+            last_updated_workouts=None))
+
     return athletes_to_return
 
 
 def insertWorkoutsIntoDb(start_date, end_date):
-    athletes = getAllAthletes()
-    all_workouts = list()
+    id_list = get_ids(getAllAthletes())
+    datesList = getListOfStartEndDates(start_date, end_date)
+    log.info("Dates List: %s", datesList)
+
+
+def get_ids(athletes){
+    MAX_DAYS = 45  # From TP API
+    ids = list()
     for athlete in athletes:
-        # Concat all_workouts with workouts for specific athlete
-        all_workouts += getWorkoutsForAthlete(
-            athlete['id'], start_date, end_date)
-    # executeSqlInsert(buildSqlInsertForWorkouts(all_workouts))
-    pass
+        ids.append(athlete.id)
+    return ids
+}
 
 
-def getWorkoutsForAthlete(athlete_id):
-    pass
+def getListOfStartEndDates(start_date, end_date){
+    dStart = datetime.datetime.strptime(start_date, '%m/%d/%Y')
+    dEnd = datetime.datetime.strptime(end_date, '%m/%d/%Y')
+    diff = dStart - dEnd
+    total_days = diff.total_days()
+    num_api_calls = math.ceil(total_days/MAX_DAYS)
+    listStartEndTuples = list()
+    currStart = dStart
+    for i in range(num_api_calls):
+        start = currStart
+        end = currStart + timedelta(days=MAX_DAYS)
 
+        # Checks the last set of dates for overflow. If the currStart + 45 days is > overall end_date, then set end to end_date
+        if end > end_date:
+            end = end_date
 
-def buildSqlInsertForWorkouts(workouts):
-    sql_insert = list("""
-                    INSERT INTO workouts (<WORKOUT FIELDS>)
-                        VALUES
-                """)
-    if workouts is None:
-        return None
-    for workout in workouts:
-        sql_insert += list("({}, '{}', '{}', {}),".format(
-            workout["id"],
-            workout["name"],
-            workout["email"]
-            # etc.....
-        ))
-    # Replace the last char in the insert statement (,) with a ;
-    sql_insert[len(sql_insert)-1] = ";"
-    return ''.join(sql_insert)
+        start_formatted_for_api = start.strftime('%Y-%m-%d')
+        end_formatted_for_api = end.strftime('%Y-%m-%d')
+
+        listStartEndTuples.append(
+            start_formatted_for_api, end_formatted_for_api)
+
+        # Sets the start date for next loop
+        currStart = end + timedelta(days=1)
+
+    return listStartEndTuples
+}

@@ -1,4 +1,5 @@
 from authlib.client import OAuth2Session
+from app import log
 
 remote = False
 
@@ -12,7 +13,7 @@ api_base_url = 'https://api.sandbox.trainingpeaks.com'
 refresh_url = "https://oauth.sandbox.trainingpeaks.com/oauth/token"
 authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authorize'
 token_base_url = 'https://oauth.sandbox.trainingpeaks.com/oauth/token'
-redirect_uri = "www.c150data.com" if remote else "localhost:5000"
+redirect_uri = "https://www.c150data.com/" if remote else "https://localhost:5000/"
 
 
 def getNewAccessToken():
@@ -31,11 +32,12 @@ def getNewAccessToken():
 
 
 def getRefreshedToken(refresh_token):
-    session = getOAuthSessionForRefresh()
+    log.info("Refreshing token with: {}".format(refresh_token))
+    session = getOAuthSessionForRefresh(refresh_token)
     body = "grant_type=refresh_token"
-    return oauth_session.refresh_token(refresh_url,
-                                       refresh_token=refresh_token,
-                                       body=body)
+    return session.refresh_token(refresh_url,
+                                 refresh_token=refresh_token,
+                                 body=body)
 
 
 def getAuthorizationUrl():
@@ -45,9 +47,10 @@ def getAuthorizationUrl():
 
 
 def getOAuthSessionForAuthorization():
+    log.info("redirect uri: {}".format(redirect_uri))
     return OAuth2Session(client_id, client_secret, redirect_uri=redirect_uri,
                          scope=coach_scope)
 
 
-def getOAuthSessionForRefresh():
+def getOAuthSessionForRefresh(refresh_token):
     return OAuth2Session(client_id, client_secret, refresh_token=refresh_token)

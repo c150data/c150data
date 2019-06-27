@@ -1,5 +1,7 @@
 from app import db, login_manager
 from flask_login import UserMixin
+from sqlalchemy import Column, Float, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 
 
 @login_manager.user_loader
@@ -10,10 +12,10 @@ def load_user(user_id):
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(60), nullable=False)  # will hash later
+    id = Column(Integer, primary_key=True)
+    username = Column(String(20), unique=True, nullable=False)
+    email = Column(String(120), unique=True, nullable=False)
+    password = Column(String(60), nullable=False)  # will hash later
 
     def __repr__(self):
         return "User('{}','{}')".format(self.username, self.email)
@@ -22,12 +24,12 @@ class User(db.Model, UserMixin):
 class AuthToken(db.Model):
     __tablename__ = 'authtoken'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    access_token = db.Column(db.String(1000), nullable=False)
-    token_type = db.Column(db.String(100), nullable=False)
-    expires_at = db.Column(db.DateTime, nullable=False)
-    refresh_token = db.Column(db.String(1000), nullable=False)
-    scope = db.Column(db.String(500), nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    access_token = Column(String(1000), nullable=False)
+    token_type = Column(String(100), nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    refresh_token = Column(String(1000), nullable=False)
+    scope = Column(String(500), nullable=False)
 
     def __repr__(self):
         return "AuthToken('{}', '{}', '{}', '{}', '{}', '{}')".format(
@@ -43,19 +45,21 @@ class AuthToken(db.Model):
 class Athlete(db.Model):
     __tablename__ = 'athletes'
 
-    id = db.Column(db.Integer, primary_key=True,
-                   autoincrement=True, unique=True)
-    name = db.Column(db.String(200), nullable=False)
-    email = db.Column(db.String(200), nullable=False, unique=True)
-    dob = db.Column(db.DateTime, nullable=False)
-    last_updated_workouts = db.Column(db.DateTime, nullable=True)
+    id = Column(Integer, primary_key=True,
+                autoincrement=True, unique=True)
+    name = Column(String(200), nullable=False)
+    email = Column(String(200), nullable=True)
+    is_active = Column(Boolean, nullable=False)
+    workouts = relationship("Workout", backref="athletes")
+    last_updated_workouts = Column(DateTime, nullable=True)
 
     def __repr__(self):
-        return "Athlete('{}', '{}', '{}', '{}', '{}')".format(
+        return "Athlete('{}', '{}', '{}', '{}', '{}', '{}')".format(
             self.id,
             self.name,
             self.email,
-            self.dob,
+            self.is_active,
+            self.workouts,
             self.last_updated_workouts
         )
 
@@ -63,58 +67,58 @@ class Athlete(db.Model):
 class Workout(db.Model):
     __tablename__ = 'workouts'
 
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    athleteId = db.Column(db.Integer, foreign_key=True)
-    completed = db.Column(db.Boolean, nullable=False)
-    description = db.Column(db.String(10000), nullable=True)
-    distance = db.Column(db.Float, nullable=True)
-    distancePlanned = db.Column(db.Float, nullable=True)
-    lastModifiedDate = db.Column(db.DateTime, nullable=True)
-    preActivityComment = db.Column(db.String(10000), nullable=True)
-    startTime = db.Column(db.DateTime, nullable=True)
-    startTimePlanned = db.Column(db.DateTime, nullable=True)
-    structure = db.Column(db.String(20000), nullable=True)
-    title = db.Column(db.String(500), nullable=True)
-    totalTime = db.Column(db.Float, nullable=True)
-    totalTimePlanned = db.Column(db.Float, nullable=True)
-    workoutDay = db.Column(db.DateTime, nullable=True)
-    workoutFileFormats = db.Column(db.String(500), nullable=True)
-    workoutType = db.Column(db.String(100), nullable=True)
-    cadenceAverage = db.Column(db.Integer, nullable=True)
-    cadenceMaximum = db.Column(db.Integer, nullable=True)
-    calories = db.Column(db.Integer, nullable=True)
-    caloriesPlanned = db.Column(db.Integer, nullable=True)
-    elevationAverage = db.Column(db.Float, nullable=True)
-    elevationGain = db.Column(db.Float, nullable=True)
-    elevationGainPlanned = db.Column(db.Float, nullable=True)
-    elevationLoss = db.Column(db.Float, nullable=True)
-    elevationMaximum = db.Column(db.Float, nullable=True)
-    elevationMinimum = db.Column(db.Float, nullable=True)
-    energy = db.Column(db.Float, nullable=True)
-    energyPlanned = db.Column(db.Float, nullable=True)
-    feeling = db.Column(db.Integer, nullable=True)
-    heartRateAverage = db.Column(db.Integer, nullable=True)
-    heartRateMaximum = db.Column(db.Integer, nullable=True)
-    heartRateMinimum = db.Column(db.Integer, nullable=True)
-    iF = db.Column(db.Float, nullable=True)
-    iFPlanned = db.Column(db.Float, nullable=True)
-    normalizedPower = db.Column(db.Float, nullable=True)
-    normalizedSpeed = db.Column(db.Float, nullable=True)
-    powerAverage = db.Column(db.Integer, nullable=True)
-    powerMaximum = db.Column(db.Integer, nullable=True)
-    rpe = db.Column(db.Integer, nullable=True)
-    tags = db.Column(db.String(1000), nullable=True)
-    tempAvg = db.Column(db.Float, nullable=True)
-    tempMax = db.Column(db.Float, nullable=True)
-    tempMin = db.Column(db.Float, nullable=True)
-    torqueAverage = db.Column(db.Float, nullable=True)
-    torqueMaixumum = db.Column(db.Float, nullable=True)
-    tssActual = db.Column(db.Float, nullable=True)
-    tssCalculationMethod = db.Column(db.String(100), nullable=True)
-    tssPlanned = db.Column(db.Float, nullable=True)
-    velocityAverage = db.Column(db.Float, nullable=True)
-    velocityMaximum = db.Column(db.Float, nullable=True)
-    velocityPlanned = db.Column(db.Float, nullable=True)
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    athleteId = Column(Integer, ForeignKey('athletes.id'), nullable=False)
+    completed = Column(Boolean, nullable=False)
+    description = Column(String(10000), nullable=True)
+    distance = Column(Float, nullable=True)
+    distancePlanned = Column(Float, nullable=True)
+    lastModifiedDate = Column(DateTime, nullable=True)
+    preActivityComment = Column(String(10000), nullable=True)
+    startTime = Column(DateTime, nullable=True)
+    startTimePlanned = Column(DateTime, nullable=True)
+    structure = Column(String(20000), nullable=True)
+    title = Column(String(500), nullable=True)
+    totalTime = Column(Float, nullable=True)
+    totalTimePlanned = Column(Float, nullable=True)
+    workoutDay = Column(DateTime, nullable=True)
+    workoutFileFormats = Column(String(500), nullable=True)
+    workoutType = Column(String(100), nullable=True)
+    cadenceAverage = Column(Integer, nullable=True)
+    cadenceMaximum = Column(Integer, nullable=True)
+    calories = Column(Integer, nullable=True)
+    caloriesPlanned = Column(Integer, nullable=True)
+    elevationAverage = Column(Float, nullable=True)
+    elevationGain = Column(Float, nullable=True)
+    elevationGainPlanned = Column(Float, nullable=True)
+    elevationLoss = Column(Float, nullable=True)
+    elevationMaximum = Column(Float, nullable=True)
+    elevationMinimum = Column(Float, nullable=True)
+    energy = Column(Float, nullable=True)
+    energyPlanned = Column(Float, nullable=True)
+    feeling = Column(Integer, nullable=True)
+    heartRateAverage = Column(Integer, nullable=True)
+    heartRateMaximum = Column(Integer, nullable=True)
+    heartRateMinimum = Column(Integer, nullable=True)
+    iF = Column(Float, nullable=True)
+    iFPlanned = Column(Float, nullable=True)
+    normalizedPower = Column(Float, nullable=True)
+    normalizedSpeed = Column(Float, nullable=True)
+    powerAverage = Column(Integer, nullable=True)
+    powerMaximum = Column(Integer, nullable=True)
+    rpe = Column(Integer, nullable=True)
+    tags = Column(String(1000), nullable=True)
+    tempAvg = Column(Float, nullable=True)
+    tempMax = Column(Float, nullable=True)
+    tempMin = Column(Float, nullable=True)
+    torqueAverage = Column(Float, nullable=True)
+    torqueMaixumum = Column(Float, nullable=True)
+    tssActual = Column(Float, nullable=True)
+    tssCalculationMethod = Column(String(100), nullable=True)
+    tssPlanned = Column(Float, nullable=True)
+    velocityAverage = Column(Float, nullable=True)
+    velocityMaximum = Column(Float, nullable=True)
+    velocityPlanned = Column(Float, nullable=True)
 
     def __repr__(self):
         return """Workout('{}', '{}', '{}', '{}', '{}',

@@ -30,38 +30,17 @@ def contact():
     return render_template("contact.html")
 
 
-#possible account page for user
-#@login_required
-#@app.route("/account")
-#def account():
-
+# TODO Account/Profile page to change password, manage contact info, etc.
 
 # REQUESTS
 
-@app.route("/insertAllAthletes")
-def insertAllAthletesApp():
-    numAthletesInserted = helpers.insertAllAthletesIntoDB()
-    log.info("Successfully inserted {} athletes.".format(numAthletesInserted))
-    return render_template("admin.html") 
-
-
-@app.route("/insertAllWorkouts")
-def insertAllWorkoutsApp():
-    start_date = request.args.get('start_date')
-    end_date = request.args.get('end_date')
-    numWorkoutsInserted = helpers.insertWorkoutsIntoDb(start_date, end_date)
-    log.info("Successfully inserted {} workouts.".format(numWorkoutsInserted))
-    return render_template("admin.html") 
-
-
-@app.route("/getData")
+@app.route("/hours/getData")
 @login_required
 def getData():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
     len, athletes = helpers.getAllAthletesHours(start_date, end_date)
     return render_template("data.html", len=len, athletes=athletes)
-
 
 
 # LOGIN
@@ -73,7 +52,8 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data): # check if password matches
+        # check if password matches
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('about'))
@@ -84,20 +64,23 @@ def login():
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated: # Logged in user will be forwarded to about page
+    if current_user.is_authenticated:  # Logged in user will be forwarded to about page
         return redirect(url_for('about'))
     form = RegistrationForm()
-    if form.validate_on_submit(): # Enters this section when registration form has been submitted
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+    if form.validate_on_submit():  # Enters this section when registration form has been submitted
+        hashed_password = bcrypt.generate_password_hash(
+            form.password.data).decode('utf-8')
+        user = User(username=form.username.data,
+                    email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created! You are now able to log in.', 'success')
         return redirect(url_for('login'))
-    return render_template('register.html', title='Register', form=form) 
+    return render_template('register.html', title='Register', form=form)
 
 
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
@@ -106,18 +89,18 @@ def logout():
 # ADMIN
 
 @app.route("/admin")
-@login_required # Ideally, this is where we can put something like admin_required
+@login_required  # Ideally, this is where we can put something like admin_required
 def admin():
     return render_template("admin.html")
 
 
-@app.route("/authorize")
+@app.route("/admin/authorize")
 @login_required
 def user_authorization():
     return redirect(oauth_helper.getAuthorizationUrl())
 
 
-@app.route("/insertNewToken")
+@app.route("/admin/insertNewToken")
 @login_required
 def insertNewToken():
     success = helpers.insertNewToken(oauth_helper.getNewAccessToken())
@@ -127,3 +110,24 @@ def insertNewToken():
         flash("An error occurred while inserting a new acccess token into the database.", 'error')
     return render_template("admin.html")
 
+
+@app.route("/admin/insertAllAthletes")
+@login_required
+def insertAllAthletesApp():
+    numAthletesInserted = helpers.insertAllAthletesIntoDB()
+    if numAthletesInserted is None:
+        flash("Error while inserting athletes into database.", 'danger')
+    else:
+        flash("Successfully inserted {} athletes into the database.".format(
+            numAthletesInserted), 'success')
+    return render_template("admin.html")
+
+
+@app.route("/admin/insertAllWorkouts")
+@login_required
+def insertAllWorkoutsApp():
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    numWorkoutsInserted = helpers.insertWorkoutsIntoDb(start_date, end_date)
+    log.info("Successfully inserted {} workouts.".format(numWorkoutsInserted))
+    return render_template("admin.html")

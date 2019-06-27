@@ -29,7 +29,6 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login' # route that login_required redirects to
 
 from app import routes  # position important to avoid circular importation
-# Have to uncomment and create_all when adding new tables
-# from app.models import User, AuthToken
-# db.create_all()
-# db.session.commit()
+from app.models import User, AuthToken, Athlete, Workout
+db.create_all()  # Only creates tables when they do not already exist
+db.session.commit()

@@ -13,7 +13,7 @@ $(document).on({
 $("#dataSubmitButton").click(function (e) {
     e.preventDefault();
     $.ajax({
-        url: "/getData",
+        url: "/admin/getData",
         type: "get",
         data: {
             'start_date': $("#startDateInput").val(),
@@ -23,7 +23,7 @@ $("#dataSubmitButton").click(function (e) {
             $("#hours-table-div").html(response);
         },
         error: function (xhr) {
-            //handle error	
+            //handle error
         }
     });
 });
