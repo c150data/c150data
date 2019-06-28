@@ -73,6 +73,7 @@ class Workout(db.Model):
     description = Column(String(10000), nullable=True)
     distance = Column(Float, nullable=True)
     distancePlanned = Column(Float, nullable=True)
+    distanceCustomized = Column(Float, nullable=True)
     lastModifiedDate = Column(DateTime, nullable=True)
     preActivityComment = Column(String(10000), nullable=True)
     startTime = Column(DateTime, nullable=True)
@@ -112,7 +113,7 @@ class Workout(db.Model):
     tempMax = Column(Float, nullable=True)
     tempMin = Column(Float, nullable=True)
     torqueAverage = Column(Float, nullable=True)
-    torqueMaixumum = Column(Float, nullable=True)
+    torqueMaximum = Column(Float, nullable=True)
     tssActual = Column(Float, nullable=True)
     tssCalculationMethod = Column(String(100), nullable=True)
     tssPlanned = Column(Float, nullable=True)
@@ -131,13 +132,14 @@ class Workout(db.Model):
                         '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}',
-                        '{}', '{}')""".format(
+                        '{}', '{}', '{}')""".format(
             self.id,
             self.athleteId,
             self.completed,
             self.description,
             self.distance,
             self.distancePlanned,
+            self.distanceCustomized,
             self.lastModifiedDate,
             self.preActivityComment,
             self.startTime,
@@ -177,7 +179,7 @@ class Workout(db.Model):
             self.tempMax,
             self.tempMin,
             self.torqueAverage,
-            self.torqueMaixumum,
+            self.torqueMaximum,
             self.tssActual,
             self.tssCalculationMethod,
             self.tssPlanned,

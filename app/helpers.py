@@ -2,11 +2,13 @@
 Helper methods for the c150.data data retrieval process
 """
 
-from app import db, log, oauth_helper, constants, api_helper
+from __future__ import division
+from app import db, log, oauth_helper, constants, api_helper, db_helper
 import pymysql
 from datetime import datetime, timedelta
 import requests
 from app.models import AuthToken, Athlete, Workout
+import math
 
 
 remote = False  # CHANGE FOR DB CONNECTION
@@ -60,7 +62,7 @@ def dbInsert(items):
         items: A single model object or a list of objects
 
     Returns:
-        Boolean: True on success, False on error
+       Integer: Number of rows inserted
     """
     if items is None:
         return False
@@ -70,14 +72,14 @@ def dbInsert(items):
             for item in items:
                 db.session.add(item)
         else:
-            db.session.add(items)
+            result = db.session.add(items)
         db.session.commit()
+        return True
     except Exception as e:
         log.error("Error inserting [%s] into the database: %s", items, e)
         db.session.rollback()
         db.session.flush()
         return False
-    return True
 
 
 def insertNewToken(token):
@@ -95,6 +97,8 @@ def insertNewToken(token):
         'token_type'], token['expires_in'], token['refresh_token'], token['scope']
 
     # Give the expires_in time an extra 5 minutes as padding time and remove microseconds
+    expires_at_date = datetime.now(
+    ) + timedelta(seconds=(int(expires_in)-refresh_padding_time))
 
     token = AuthToken(access_token=access_token, token_type=token_type,
                       expires_at=expires_at_date, refresh_token=refresh_token, scope=scope)
@@ -110,7 +114,6 @@ def refreshAuthTokenIfNeeded():
     """
     most_recent_token = db.session.query(
         AuthToken).order_by(AuthToken.id.desc())[0]
-    log.info(most_recent_token)
     if most_recent_token is not None:
         refresh_date = most_recent_token.expires_at
         if refresh_date < datetime.now():
@@ -123,7 +126,7 @@ def refreshAuthTokenIfNeeded():
 
 def refreshAuthToken(refresh_token):
     """
-    Makes an API call to get a new token and inserts it into the 
+    Makes an API call to get a new token and inserts it into the
     Args:
         refresh_token (str): Refresh token
 
@@ -251,12 +254,8 @@ def getAllAthletes():
     # Parse reponse into Athlete db objects
     athletes_to_return = list()
     for athlete in athletes_response.json():
-        athletes_to_return.append(Athlete(
-            id=athlete['Id'],
-            name="{} {}".format(athlete['FirstName'], athlete['LastName']),
-            email=athlete['Email'],
-            is_active=True,  # Default isActive to True, can manually deactivate later
-            last_updated_workouts=None))
+        athletes_to_return.append(
+            db_helper.getAthleteObjectFromJSON(athlete))
 
     return athletes_to_return
 
@@ -266,13 +265,23 @@ def insertWorkoutsIntoDb(start_date, end_date):
         id_list = get_ids(getAllAthletes())
         datesList = getListOfStartEndDates(start_date, end_date)
         log.info("Dates List: %s", datesList)
-        return 0
-    except:
+        workoutsList = list()
+
+        for id in id_list:
+            for date_period in datesList:
+                workoutsList += getListOfWorkoutsForAthletes(id, date_period)
+
+        result = dbInsert(workoutsList)
+        if result:
+            return len(workoutsList)
+        else:
+            return None
+    except Exception as e:
+        raise Exception("Error while inserting workouts into database: %s", e)
         return None
 
 
-def get_ids(athletes): 
-    MAX_DAYS = 45  # From TP API
+def get_ids(athletes):
     ids = list()
     for athlete in athletes:
         ids.append(athlete.id)
@@ -280,32 +289,44 @@ def get_ids(athletes):
 
 
 def getListOfStartEndDates(start_date, end_date):
+    MAX_DAYS = 45  # From TP API
     if not start_date or not end_date:
-        raise Exception("Dates cannot be empty.");
+        raise Exception("Dates cannot be empty.")
 
     dStart = datetime.strptime(start_date, '%m/%d/%Y')
     dEnd = datetime.strptime(end_date, '%m/%d/%Y')
-    diff = dStart - dEnd
-    total_days = diff.total_days()
+    diff = dEnd - dStart
+    total_days = diff.days
     num_api_calls = math.ceil(total_days/MAX_DAYS)
     listStartEndTuples = list()
     currStart = dStart
     for i in range(num_api_calls):
         start = currStart
-        end = currStart + timedelta(days=MAX_DAYS)
+        # Have to do minus 1 since the range from start to end is inclusive for both
+        end = currStart + timedelta(days=MAX_DAYS-1)
 
         # Checks the last set of dates for overflow. If the currStart + 45 days is > overall end_date, then set end to end_date
-        if end > end_date:
-            end = end_date
+        if end > dEnd:
+            end = dEnd
 
         start_formatted_for_api = start.strftime('%Y-%m-%d')
         end_formatted_for_api = end.strftime('%Y-%m-%d')
 
         listStartEndTuples.append(
-            start_formatted_for_api, end_formatted_for_api)
+            (start_formatted_for_api, end_formatted_for_api)
+        )
 
-        # Sets the start date for next loop
         currStart = end + timedelta(days=1)
 
     return listStartEndTuples
 
+
+def getListOfWorkoutsForAthletes(athlete_id, date_period_tuple):
+    start_date, end_date = date_period_tuple
+    workouts_json = api_helper.getWorkoutsForAthlete(
+        getValidAuthToken(), athlete_id, start_date, end_date).json()
+    dbWorkoutsList = list()
+    for workout_j in workouts_json:
+        dbWorkoutsList.append(db_helper.getWorkoutObjectFromJSON(workout_j))
+    log.info("{} workouts found for athlete {} from {} to {}".format(len(dbWorkoutsList), athlete_id, start_date, end_date))
+    return dbWorkoutsList

@@ -21,6 +21,7 @@ $(document).ready(function () {
                 'end_date': $("#endDateInput").val()
             },
             success: function (response) {
+                $("#alert-div").html(response)
             },
             error: function (xhr) {
             }

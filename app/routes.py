@@ -130,8 +130,9 @@ def insertAllWorkoutsApp():
     end_date = request.args.get('end_date')
     numWorkoutsInserted = helpers.insertWorkoutsIntoDb(start_date, end_date)
     if numWorkoutsInserted is None:
-        flash("Error while inserting workouts into database.", "danger")
+        result = "danger"
+        message = "Error while inserting workouts."
     else:
-        flash("Successfully inserted {} workouts into the database".format(numWorkoutsInserted),
-              "success")
-    return render_template("admin.html")
+        result = "success"
+        message = "Successfully inserted {} workouts into the database.".format(numWorkoutsInserted)
+    return render_template("alert.html", alert_type=result, alert_message=message)
