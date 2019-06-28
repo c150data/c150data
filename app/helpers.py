@@ -95,8 +95,6 @@ def insertNewToken(token):
         'token_type'], token['expires_in'], token['refresh_token'], token['scope']
 
     # Give the expires_in time an extra 5 minutes as padding time and remove microseconds
-    expires_at_date = (datetime.datetime.now() + datetime.timedelta(
-        seconds=(int(expires_in)-refresh_padding_time))).replace(microsecond=0)
 
     token = AuthToken(access_token=access_token, token_type=token_type,
                       expires_at=expires_at_date, refresh_token=refresh_token, scope=scope)
@@ -115,7 +113,7 @@ def refreshAuthTokenIfNeeded():
     log.info(most_recent_token)
     if most_recent_token is not None:
         refresh_date = most_recent_token.expires_at
-        if refresh_date < datetime.datetime.now():
+        if refresh_date < datetime.now():
             # Pass in the refresh_token from the most recent row
             return refreshAuthToken(most_recent_token.refresh_token)
         return True  # Returns True if token does not have to be refreshed
@@ -125,8 +123,7 @@ def refreshAuthTokenIfNeeded():
 
 def refreshAuthToken(refresh_token):
     """
-    Makes an API call to get a new token and inserts it into the DB
-
+    Makes an API call to get a new token and inserts it into the 
     Args:
         refresh_token (str): Refresh token
 
@@ -193,8 +190,8 @@ def getAPIRequestHeaders():
 #     athletes = list()
 #     req_json = r.json()
 #     # convert inputted dates from MM/DD/YYYY to YYYY-MM-DD
-#     dStart = datetime.datetime.strptime(start_date, '%m/%d/%Y')
-#     dEnd = datetime.datetime.strptime(end_date, '%m/%d/%Y')
+#     dStart = datetime.strptime(start_date, '%m/%d/%Y')
+#     dEnd = datetime.strptime(end_date, '%m/%d/%Y')
 #     start_date_f = dStart.strftime('%Y-%m-%d')
 #     end_date_f = dEnd.strftime('%Y-%m-%d')
 #     # Create athlete object and add to list
@@ -265,23 +262,29 @@ def getAllAthletes():
 
 
 def insertWorkoutsIntoDb(start_date, end_date):
-    id_list = get_ids(getAllAthletes())
-    datesList = getListOfStartEndDates(start_date, end_date)
-    log.info("Dates List: %s", datesList)
+    try:
+        id_list = get_ids(getAllAthletes())
+        datesList = getListOfStartEndDates(start_date, end_date)
+        log.info("Dates List: %s", datesList)
+        return 0
+    except:
+        return None
 
 
-def get_ids(athletes){
+def get_ids(athletes): 
     MAX_DAYS = 45  # From TP API
     ids = list()
     for athlete in athletes:
         ids.append(athlete.id)
     return ids
-}
 
 
-def getListOfStartEndDates(start_date, end_date){
-    dStart = datetime.datetime.strptime(start_date, '%m/%d/%Y')
-    dEnd = datetime.datetime.strptime(end_date, '%m/%d/%Y')
+def getListOfStartEndDates(start_date, end_date):
+    if not start_date or not end_date:
+        raise Exception("Dates cannot be empty.");
+
+    dStart = datetime.strptime(start_date, '%m/%d/%Y')
+    dEnd = datetime.strptime(end_date, '%m/%d/%Y')
     diff = dStart - dEnd
     total_days = diff.total_days()
     num_api_calls = math.ceil(total_days/MAX_DAYS)
@@ -305,4 +308,4 @@ def getListOfStartEndDates(start_date, end_date){
         currStart = end + timedelta(days=1)
 
     return listStartEndTuples
-}
+
