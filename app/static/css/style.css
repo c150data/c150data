@@ -11,11 +11,7 @@ body {
 
 section {
     padding-top: 100px;
-    padding-bottom: 60px;
-}
-
-#about-page {
-    padding: 40% 0%;
+    padding-bottom: 50px;
 }
 
 #auth-buttons {
@@ -25,7 +21,7 @@ section {
 #main-content {
     height: 100%;
     /* Avoids collisions with the nav bar */
-    padding-top: 75px;
+    padding-top: 56px;
 }
 
 #hours-table-div {

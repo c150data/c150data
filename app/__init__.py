@@ -8,6 +8,7 @@ import sys
 
 app = Flask(__name__)
 
+
 app.config['SECRET_KEY'] = '772f2253fd3a4c2524a93c70aefeac2e'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' #creates local database in the same directory as app.py

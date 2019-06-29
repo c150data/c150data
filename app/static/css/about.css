@@ -1,0 +1,10 @@
+#about-page {
+    display: table;
+    height: 100%;
+    overflow: hidden;
+}
+
+#about-text {
+    display: table-cell;
+    vertical-align: middle;
+}

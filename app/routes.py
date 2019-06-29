@@ -64,6 +64,7 @@ def login():
 
 
 @app.route("/register", methods=['GET', 'POST'])
+@login_required
 def register():
     if current_user.is_authenticated:  # Logged in user will be forwarded to about page
         return redirect(url_for('about'))
