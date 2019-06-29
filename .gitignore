@@ -1,4 +1,7 @@
 *.un~
 *.pyc
 *.vscode
-
+site.db
+config.py
+*.sql
+*.code-workspace
