@@ -7,14 +7,11 @@ import logging
 import sys
 
 app = Flask(__name__)
+app.config.from_object('config')
 
-
-app.config['SECRET_KEY'] = '772f2253fd3a4c2524a93c70aefeac2e'
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' #creates local database in the same directory as app.py
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+app.jinja_env.globals.update(config=app.config)
 # Set up logger for the application. Import log from app to access.
 formatter = logging.Formatter(
     "%(asctime)s %(levelname)8s - %(message)s (%(filename)s:%(lineno)d)", "%H:%M:%S")
@@ -23,7 +20,7 @@ streamHandler.setFormatter(formatter)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.DEBUG)
 log.addHandler(streamHandler)
-
+log.info(app.config)
 bcrypt = Bcrypt(app)
 
 login_manager = LoginManager(app)

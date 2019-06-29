@@ -93,6 +93,8 @@ def logout():
 @app.route("/admin")
 @login_required  # Ideally, this is where we can put something like admin_required
 def admin():
+    if app.config['ENV'] == 'production':
+        return redirect(url_for('about'))
     return render_template("admin.html")
 
 

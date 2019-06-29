@@ -46,7 +46,7 @@
 	{% else %}
 	<title>C150data</title>
 	{% endif %}
-
+	
 </head>
 
 <body>
@@ -71,9 +71,11 @@
 					<li class="nav-item">
 						<a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
-					</li>
+					{% if config['ENV'] == 'development' %}
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
+						</li>
+					{% endif %}
 					<li class="nav-item">
 						<a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
 					</li>

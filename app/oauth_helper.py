@@ -1,14 +1,13 @@
 from authlib.client import OAuth2Session
-from app import log, db_helper
+from app import log, db_helper, app
 from datetime import datetime, timedelta
 from app.models import AuthToken
 
 
 remote = False
 
-# TODO move this somewhere else out of version control
-client_id = 'columbiac150'
-client_secret = 'kzSN7CYgZYUMzb8DfhEqRnqrHAqiAEUHOgSAJo8'
+client_id = app.config['CLIENT_ID']
+client_secret = app.config['CLIENT_SECRET']
 coach_scope = ["coach:athletes", "workouts:read"]
 grant_type = "refresh_token"
 
