@@ -14,7 +14,7 @@ $(document).ready(function () {
     $("#dataSubmitButton").click(function (e) {
         e.preventDefault();
         $.ajax({
-            url: "/admin/getData",
+            url: "/hours/getData",
             type: "get",
             data: {
                 'start_date': $("#startDateInput").val(),

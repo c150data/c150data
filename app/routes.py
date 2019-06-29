@@ -39,7 +39,8 @@ def contact():
 def getData():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
-    len, athletes = helpers.getAllAthletesHours(start_date, end_date)
+    len, athletes = helpers.getHoursForAllAthletes(start_date, end_date)
+    log.info("Hours length: %s, athletes list: %s", len, athletes)
     return render_template("data.html", len=len, athletes=athletes)
 
 
@@ -98,6 +99,13 @@ def admin():
 @login_required
 def user_authorization():
     return redirect(oauth_helper.getAuthorizationUrl())
+
+
+@app.route("/admin/test")
+@login_required
+def testMethod():
+    log.info("All active athletes: %s", helpers.getAllActiveAthletes())
+    return render_template("admin.html")
 
 
 @app.route("/admin/insertNewToken")

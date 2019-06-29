@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 import requests
 from app.models import AuthToken, Athlete, Workout
 import math
+import operator
 
 
 remote = False  # CHANGE FOR DB CONNECTION
@@ -32,26 +33,6 @@ db_auth_token_table = "auth_token"
 db_athletes_table = "athletes"
 
 refresh_padding_time = 300
-
-
-def connectToDB():
-    """
-    Gets a Connection object
-
-    Returns:
-        Connection: On success
-        None: on error
-    """
-    try:
-        if remote:
-            return pymysql.connect(unix_socket=db_remote_socket, user=db_remote_user,
-                                   password=db_remote_passwd, db=db_schema_name)
-        else:
-            return pymysql.connect(host=db_local_host, user=db_local_user, password=db_local_passwd,
-                                   db=db_schema_name)
-    except:
-        log.error("ERROR: Connection to database failed.")
-        return None
 
 
 def dbInsert(items):
@@ -81,6 +62,8 @@ def dbInsert(items):
         db.session.flush()
         return False
 
+
+# OAuth Token with database
 
 def insertNewToken(token):
     """
@@ -112,8 +95,7 @@ def refreshAuthTokenIfNeeded():
     Returns:
         Boolean: True if successful, otherwise False
     """
-    most_recent_token = db.session.query(
-        AuthToken).order_by(AuthToken.id.desc())[0]
+    most_recent_token = AuthToken.query.order_by(AuthToken.id.desc())[0]
     if most_recent_token is not None:
         refresh_date = most_recent_token.expires_at
         if refresh_date < datetime.now():
@@ -151,74 +133,7 @@ def getValidAuthToken():
     return AuthToken.query.order_by(AuthToken.id.desc()).first()
 
 
-def getAPIRequestHeaders():
-    valid_token = getValidAuthToken()
-    if valid_token is not None:
-        return {'host': 'api.sandbox.trainingpeaks.com', 'content-type':
-                'application/json', 'Authorization': 'Bearer ' + valid_token.access_token}
-    return None
-
-
-# def getHoursForAthlete(id, start_date, end_date, headers):
-#     """
-#     TODO We will not need this once all the athletes and workouts are in the DB
-#     """
-#     print("Getting hours for athlete {}...".format(id))
-#     api_url = api_base_url + '/v1/workouts/{}/{}/{}'.format(id, start_date, end_date)
-#     response = requests.get(api_url, headers=headers)
-
-#     json_response = response.json()
-#     sum_hours = 0
-#     for workout in json_response:
-#         total_time = workout['TotalTime']
-#         if type(total_time) is float:
-#             sum_hours += float(total_time)
-#     return sum_hours
-
-
-# def getAllAthletesHours(start_date, end_date):
-#     """
-#     TODO We will not need this once all the workouts and athletes are in the DB
-
-#     Args:
-#         start_date ([type]): [description]
-#         end_date ([type]): [description]
-
-#     Returns:
-#         [type]: [description]
-#     """
-#     headers = getAPIRequestHeaders()
-#     r = requests.get('https://api.sandbox.trainingpeaks.com/v1/coach/athletes',
-#                      headers=headers)
-#     athletes = list()
-#     req_json = r.json()
-#     # convert inputted dates from MM/DD/YYYY to YYYY-MM-DD
-#     dStart = datetime.strptime(start_date, '%m/%d/%Y')
-#     dEnd = datetime.strptime(end_date, '%m/%d/%Y')
-#     start_date_f = dStart.strftime('%Y-%m-%d')
-#     end_date_f = dEnd.strftime('%Y-%m-%d')
-#     # Create athlete object and add to list
-#     count = 1
-#     for athlete in req_json:
-#         log.error("Working on Athlete #", count)
-#         # date formatted YYYY-MM-DD
-#         hours = getHoursForAthlete(athlete['Id'],
-#                                            start_date_f, end_date_f, headers)
-#         rounded_hours = round(hours, 2)
-#         athlete_info = {
-#             "name": "{} {}".format(athlete["FirstName"], athlete["LastName"]),
-#             "hours": hours,
-#             "rounded_hours": rounded_hours
-#         }
-#         athletes.append(athlete_info)
-#         count += 1
-
-#     # sort list of athletes based on number of hours
-#     sorted_athletes = sorted(athletes, key=operator.itemgetter('hours'), reverse=True)
-#     print(sorted_athletes)
-
-#     return (len(athletes), sorted_athletes)
-
+# Inserting athletes into database
 
 def insertAllAthletesIntoDB():
     """
@@ -228,7 +143,7 @@ def insertAllAthletesIntoDB():
         int: Number of athletes successfully inserted
         None: On error
     """
-    athletesList = getAllAthletes()
+    athletesList = getAllAthletesUsingAPI()
     success = dbInsert(athletesList)
     if success:
         return len(athletesList)
@@ -236,7 +151,7 @@ def insertAllAthletesIntoDB():
         return None
 
 
-def getAllAthletes():
+def getAllAthletesUsingAPI():
     """
     Makes an API call to get every athlete under the current coach
 
@@ -260,9 +175,11 @@ def getAllAthletes():
     return athletes_to_return
 
 
+# Inserting Workouts into Database
+
 def insertWorkoutsIntoDb(start_date, end_date):
     try:
-        id_list = get_ids(getAllAthletes())
+        id_list = get_ids(getAllActiveAthletes())
         datesList = getListOfStartEndDates(start_date, end_date)
         log.info("Dates List: %s", datesList)
         workoutsList = list()
@@ -328,5 +245,34 @@ def getListOfWorkoutsForAthletes(athlete_id, date_period_tuple):
     dbWorkoutsList = list()
     for workout_j in workouts_json:
         dbWorkoutsList.append(db_helper.getWorkoutObjectFromJSON(workout_j))
-    log.info("{} workouts found for athlete {} from {} to {}".format(len(dbWorkoutsList), athlete_id, start_date, end_date))
+    log.info("{} workouts found for athlete {} from {} to {}".format(
+        len(dbWorkoutsList), athlete_id, start_date, end_date))
     return dbWorkoutsList
+
+
+def getAllActiveAthletes():
+    return Athlete.query.filter_by(is_active=True).all()
+
+
+# Data retrieval methods
+
+def getHoursForAllAthletes(start_date, end_date):
+    result = db.session.execute(getAllHoursSQL(start_date, end_date))
+    athleteHourList = list()
+    for row in result:
+        athlete_info = {
+            "name": row['name'],
+            "hours": row['hours'],
+            "rounded_hours": round(row['hours'], 2)
+        }
+        athleteHourList.append(athlete_info)
+    sortedAthleteHourList = sorted(athleteHourList, key=operator.itemgetter('hours'), reverse=True)
+    return len(sortedAthleteHourList), sortedAthleteHourList
+
+
+def getAllHoursSQL(start_date, end_date):
+    start_date_f = datetime.strptime(start_date, "%m/%d/%Y").strftime("%Y-%m-%d")
+    end_date_f = datetime.strptime(end_date, "%m/%d/%Y").strftime("%Y-%m-%d")
+    statement = "SELECT athletes.name, SUM(CASE WHEN workouts.startTime >= '{}' AND workouts.startTime <= '{}' then workouts.totalTime else 0 END) as hours FROM athletes INNER JOIN workouts ON athletes.id = workouts.athleteId GROUP BY athletes.id;".format(start_date_f, end_date_f)
+    log.info(statement)
+    return statement
