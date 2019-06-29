@@ -1,36 +1,22 @@
-
 header {
     padding: 156px 0 100px;
 }
 
-html, body {
-    height: 100%;
-    width: 100%;
-    overflow: auto;
+html,
+body {
+    height:100%;
+    margin: 0;
+    overflow:auto;
 }
-  
+
 section {
     padding-top: 100px;
-}
-
-#about-page {
-    padding: 300px 0;
-    height:100%;
+    padding-bottom: 50px;
 }
 
 
-#auth-buttons {
-    display: none;
-}
-
-#main-content{
-    height:100%;
-} 
-
-#hours-table-div {
-    padding-top: 50px;
-}
-
-footer{
-    position: absolute
+#main-content {
+    height: 100%;
+    /* Avoids collisions with the nav bar */
+    padding-top: 56px;
 }
