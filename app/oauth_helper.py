@@ -1,5 +1,8 @@
 from authlib.client import OAuth2Session
-from app import log
+from app import log, db_helper
+from datetime import datetime, timedelta
+from app.models import AuthToken
+
 
 remote = False
 
@@ -14,6 +17,76 @@ refresh_url = "https://oauth.sandbox.trainingpeaks.com/oauth/token"
 authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authorize'
 token_base_url = 'https://oauth.sandbox.trainingpeaks.com/oauth/token'
 redirect_uri = "https://www.c150data.com/" if remote else "https://localhost:5000/"
+
+refresh_padding_time = 300
+
+
+def insertNewToken(token):
+    """
+    Inserts token into database. This method does NOT do expiration date checking,
+    that is to be done by the method's caller
+
+    Args:
+        token (dict): dict object with the following fields: access_token, token_type, expires_in, refresh_token, and scope.
+
+    Returns:
+        Boolean: True on successful insertion, False on unsuccessful insertion
+    """
+    access_token, token_type, expires_in, refresh_token, scope = token['access_token'], token[
+        'token_type'], token['expires_in'], token['refresh_token'], token['scope']
+
+    # Give the expires_in time an extra 5 minutes as padding time and remove microseconds
+    expires_at_date = datetime.now(
+    ) + timedelta(seconds=(int(expires_in)-refresh_padding_time))
+
+    token = AuthToken(access_token=access_token, token_type=token_type,
+                      expires_at=expires_at_date, refresh_token=refresh_token, scope=scope)
+    return db_helper.dbInsert(token)
+
+
+def refreshAuthTokenIfNeeded():
+    """
+    Checks if auth_token needs refreshing, and refreshes if necessary
+
+    Returns:
+        Boolean: True if successful, otherwise False
+    """
+    most_recent_token = AuthToken.query.order_by(AuthToken.id.desc())[0]
+    if most_recent_token is not None:
+        refresh_date = most_recent_token.expires_at
+        if refresh_date < datetime.now():
+            # Pass in the refresh_token from the most recent row
+            return refreshAuthToken(most_recent_token.refresh_token)
+        return True  # Returns True if token does not have to be refreshed
+
+    return False
+
+
+def refreshAuthToken(refresh_token):
+    """
+    Makes an API call to get a new token and inserts it into the
+    Args:
+        refresh_token (str): Refresh token
+
+    Returns:
+        Boolean: True if successful, False otherwise
+    """
+    return insertNewToken(getRefreshedToken(refresh_token))
+
+
+def getValidAuthToken():
+    """
+    Returns a valid authtoken to be used for API calls
+
+    Returns:
+        Row: The Row object of a valid token
+        None: On error
+    """
+    if refreshAuthTokenIfNeeded() is False:
+        log.error("Did not successfully refresh authentication token.")
+        return None
+
+    return AuthToken.query.order_by(AuthToken.id.desc()).first()
 
 
 def getNewAccessToken():

@@ -1,6 +1,35 @@
+from app import db, log
 from app.models import Workout, Athlete
 from dateutil import parser
 import json
+
+
+def dbInsert(items):
+    """
+    Inserts items into the database
+
+    Args:
+        items: A single model object or a list of objects
+
+    Returns:
+       Integer: Number of rows inserted
+    """
+    if items is None:
+        return False
+
+    try:
+        if isinstance(items, list):
+            for item in items:
+                db.session.add(item)
+        else:
+            result = db.session.add(items)
+        db.session.commit()
+        return True
+    except Exception as e:
+        log.error("Error inserting [%s] into the database: %s", items, e)
+        db.session.rollback()
+        db.session.flush()
+        return False
 
 
 def getAthleteObjectFromJSON(athlete_json):

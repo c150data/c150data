@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
+<link rel="stylesheet" href="/static/css/login.css" />
 <div class="container text-center">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
@@ -35,17 +36,21 @@
                 {{ form.remember(class="form-check-input") }}
                 {{ form.remember.label(class="form-check-label") }}
             </div>
-            <div class="form-group">
+            <div class="form-group submit">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
-            <small class="text-muted ml-2">
-                <a href="#">Forgot Password</a>
-            </small>
     </form>
-</div>
-<div class="border-top pt-2">
-    <small class="text-muted">
-        Need An Account? <a class="ml-2" href="{{ url_for('register') }}">Sign Up Now</a>
-    </small>
+    <div class="row">
+        <div class="col-md-6 border-top pt-2">
+            <small class="text-muted">
+                <a class="ml-2" href="#">Forgot Password</a>
+            </small>
+        </div>
+        <div class="col-md-6 border-top pt-2">
+            <small class="text-muted">
+                Need An Account? <a class="ml-2" href="#">Contact an Administrator</a>
+            </small>
+        </div>
+    </div>
 </div>
 {% endblock content %}

@@ -1,7 +1,7 @@
 from flask import request, render_template, redirect, url_for, flash
 from flask_login import login_user, current_user, logout_user, login_required
 from authlib.client import OAuth2Session
-from app import app, db, bcrypt, helpers, oauth_helper, log
+from app import app, db, bcrypt, log, hours_helper, oauth_helper, db_filler
 from app.models import User
 from app.forms import RegistrationForm, LoginForm
 
@@ -32,15 +32,14 @@ def contact():
 
 # TODO Account/Profile page to change password, manage contact info, etc.
 
-# REQUESTS
+# DATA 
 
 @app.route("/hours/getData")
 @login_required
 def getData():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
-    len, athletes = helpers.getHoursForAllAthletes(start_date, end_date)
-    log.info("Hours length: %s, athletes list: %s", len, athletes)
+    len, athletes = hours_helper.getHoursForAllAthletes(start_date, end_date)
     return render_template("data.html", len=len, athletes=athletes)
 
 
@@ -66,8 +65,9 @@ def login():
 @app.route("/register", methods=['GET', 'POST'])
 @login_required
 def register():
-    if current_user.is_authenticated:  # Logged in user will be forwarded to about page
-        return redirect(url_for('about'))
+    # Commenting this out since our new flow will be only admins can register new users. 
+    # if current_user.is_authenticated:  # Logged in user will be forwarded to about page
+    #     return redirect(url_for('about'))
     form = RegistrationForm()
     if form.validate_on_submit():  # Enters this section when registration form has been submitted
         hashed_password = bcrypt.generate_password_hash(
@@ -76,7 +76,7 @@ def register():
                     email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        flash('Your account has been created! You are now able to log in.', 'success')
+        flash('A new account has been created with the username: {}. You are now able to log in.'.format(form.username.data), 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -102,17 +102,10 @@ def user_authorization():
     return redirect(oauth_helper.getAuthorizationUrl())
 
 
-@app.route("/admin/test")
-@login_required
-def testMethod():
-    log.info("All active athletes: %s", helpers.getAllActiveAthletes())
-    return render_template("admin.html")
-
-
 @app.route("/admin/insertNewToken")
 @login_required
 def insertNewToken():
-    success = helpers.insertNewToken(oauth_helper.getNewAccessToken())
+    success = oauth_helper.insertNewToken(oauth_helper.getNewAccessToken())
     if success:
         flash("A new access token was successfuly inserted into the database.", 'success')
     else:
@@ -123,7 +116,7 @@ def insertNewToken():
 @app.route("/admin/insertAllAthletes")
 @login_required
 def insertAllAthletesApp():
-    numAthletesInserted = helpers.insertAllAthletesIntoDB()
+    numAthletesInserted = db_filler.insertAllAthletesIntoDB()
     if numAthletesInserted is None:
         flash("Error while inserting athletes into database.", 'danger')
     else:
@@ -137,7 +130,7 @@ def insertAllAthletesApp():
 def insertAllWorkoutsApp():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
-    numWorkoutsInserted = helpers.insertWorkoutsIntoDb(start_date, end_date)
+    numWorkoutsInserted = db_filler.insertWorkoutsIntoDb(start_date, end_date)
     if numWorkoutsInserted is None:
         result = "danger"
         message = "Error while inserting workouts."

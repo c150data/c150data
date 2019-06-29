@@ -14,9 +14,6 @@ section {
     padding-bottom: 50px;
 }
 
-#auth-buttons {
-    display: none;
-}
 
 #main-content {
     height: 100%;
@@ -24,7 +21,4 @@ section {
     padding-top: 56px;
 }
 
-#hours-table-div {
-    padding-top: 50px;
-}
 

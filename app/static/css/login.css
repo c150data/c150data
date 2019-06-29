@@ -1,0 +1,12 @@
+.container {
+    height:100%;
+}
+
+form {
+    padding: 10% 15% 15%;
+    height: 100%;
+}
+
+.submit {
+    padding-top: 10px;
+}

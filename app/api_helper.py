@@ -1,12 +1,12 @@
 import requests
-from app import constants, helpers
+from app import urls
 
 
 def getAthletes(valid_token):
     headers = getAPIRequestHeaders(valid_token)
     if headers is None:
         return None
-    return requests.get(constants.COACH_ATHLETES_URL, headers=headers)
+    return requests.get(urls.COACH_ATHLETES_URL, headers=headers)
 
 
 def getWorkoutsForAthlete(valid_token, id, start_date, end_date):
@@ -14,7 +14,7 @@ def getWorkoutsForAthlete(valid_token, id, start_date, end_date):
     if headers is None:
         return None
 
-    url = constants.WORKOUTS_FOR_ATHLETE_START_END(
+    url = urls.WORKOUTS_FOR_ATHLETE_START_END(
         id, start_date, end_date)
     return requests.get(url, headers=headers)
 
