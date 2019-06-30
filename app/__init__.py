@@ -6,6 +6,11 @@ from flask_login import LoginManager
 import logging
 import sys
 
+ACCESS = {
+	'user': '1',
+	'admin': '2'	
+}
+
 app = Flask(__name__)
 app.config.from_object('config')
 
@@ -26,9 +31,20 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login' # route that login_required redirects to
 
+# class MyAdminIndexView(AdminIndexView):
+#     def is_accessible(self):
+#         if current_user.is_authenticated:
+#             return current_user.is_admin()
+    
+#     def inaccessible_callback(self, name, **kwargs):
+#         return redirect(url_for('login'))
+
+from app import admin
+
 from app import routes  # position important to avoid circular importation
 from app.models import User, AuthToken, Athlete, Workout
-Workout.__table__.drop(db.engine) # Use if you want to drop the table and reset it
-Athlete.__table__.drop(db.engine) # Use if you want to drop the table and reset it
+#Workout.__table__.drop(db.engine) # Use if you want to drop the table and reset it
+#Athlete.__table__.drop(db.engine) # Use if you want to drop the table and reset it
 db.create_all()  # Only creates tables when they do not already exist
 db.session.commit()
+

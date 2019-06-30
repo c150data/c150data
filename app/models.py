@@ -1,7 +1,8 @@
-from app import db, login_manager
+from app import db, login_manager, ACCESS
 from flask_login import UserMixin
 from sqlalchemy import Column, Float, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+
 
 
 @login_manager.user_loader
@@ -16,11 +17,19 @@ class User(db.Model, UserMixin):
     username = Column(String(20), unique=True, nullable=False)
     email = Column(String(120), unique=True, nullable=False)
     password = Column(String(60), nullable=False)  # will hash later
+    access = Column(String(10), nullable=False, default=ACCESS['user'])
+
+    def is_admin(self):
+    	return self.access == ACCESS['admin']
+
+    def allowed(self, access_level):
+     	return self.access >= access_level
 
     def __repr__(self):
         return "User('{}','{}')".format(self.username, self.email)
 
 
+# Oauth Views 
 class AuthToken(db.Model):
     __tablename__ = 'authtoken'
 
@@ -187,3 +196,4 @@ class Workout(db.Model):
             self.velocityMaximum,
             self.velocityPlanned
         )
+        

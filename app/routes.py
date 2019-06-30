@@ -1,10 +1,27 @@
-from flask import request, render_template, redirect, url_for, flash
+from flask import request, render_template, redirect, url_for, flash, session
 from flask_login import login_user, current_user, logout_user, login_required
 from authlib.client import OAuth2Session
-from app import app, db, bcrypt, log, hours_helper, oauth_helper, db_filler
+from app import app, db, bcrypt, log, hours_helper, oauth_helper, db_filler, admin, ACCESS
 from app.models import User
 from app.forms import RegistrationForm, LoginForm
 
+#TODO: Create admin decorator here
+from functools import wraps
+
+def requires_access_level(access_level):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                flash('Please login to view this site', 'danger')
+                return redirect(url_for('login'))
+
+            elif not current_user.allowed(access_level):
+                flash('You do not have the right priviledges to access this page.', 'danger')
+                return redirect(url_for('about'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 # PAGES
 
@@ -19,23 +36,23 @@ def about():
 
 
 @app.route("/hours", methods=['GET', 'POST'])
-@login_required
+@requires_access_level(ACCESS['user'])
 def hours():
     return render_template("hours.html")
 
 
 @app.route("/contact", methods=['GET', 'POST'])
+@requires_access_level(ACCESS['user'])
 def contact():
     # TODO contact form submission should email lwtpoodles150@gmail.com
     return render_template("contact.html")
-
 
 # TODO Account/Profile page to change password, manage contact info, etc.
 
 # DATA 
 
 @app.route("/hours/getData")
-@login_required
+@requires_access_level(ACCESS['user'])
 def getData():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
@@ -63,7 +80,7 @@ def login():
 
 
 @app.route("/register", methods=['GET', 'POST'])
-@login_required
+@requires_access_level(ACCESS['admin'])
 def register():
     # Commenting this out since our new flow will be only admins can register new users. 
     # if current_user.is_authenticated:  # Logged in user will be forwarded to about page
@@ -82,7 +99,7 @@ def register():
 
 
 @app.route("/logout")
-@login_required
+@requires_access_level(ACCESS['user'])
 def logout():
     logout_user()
     return redirect(url_for('index'))
@@ -90,8 +107,9 @@ def logout():
 
 # ADMIN
 
+
 @app.route("/admin")
-@login_required  # Ideally, this is where we can put something like admin_required
+@requires_access_level(ACCESS['admin'])
 def admin():
     if app.config['ENV'] == 'production':
         return redirect(url_for('about'))
@@ -99,13 +117,13 @@ def admin():
 
 
 @app.route("/admin/authorize")
-@login_required
+@requires_access_level(ACCESS['admin'])
 def user_authorization():
     return redirect(oauth_helper.getAuthorizationUrl())
 
 
 @app.route("/admin/insertNewToken")
-@login_required
+@requires_access_level(ACCESS['admin'])
 def insertNewToken():
     success = oauth_helper.insertNewToken(oauth_helper.getNewAccessToken())
     if success:
@@ -116,7 +134,7 @@ def insertNewToken():
 
 
 @app.route("/admin/insertAllAthletes")
-@login_required
+@requires_access_level(ACCESS['admin'])
 def insertAllAthletesApp():
     numAthletesInserted = db_filler.insertAllAthletesIntoDB()
     if numAthletesInserted is None:
@@ -128,7 +146,7 @@ def insertAllAthletesApp():
 
 
 @app.route("/admin/insertAllWorkouts")
-@login_required
+@requires_access_level(ACCESS['admin'])
 def insertAllWorkoutsApp():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
