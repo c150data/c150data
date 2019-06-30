@@ -34,3 +34,16 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
 
     submit = SubmitField('Login')
+
+class ContactForm(FlaskForm):
+    firstname = StringField('First Name',
+        validators=[DataRequired(), Length(min=2, max=25)])
+    lastname = StringField('Last Name',
+        validators=[DataRequired(), Length(min=2, max=25)])
+    email = StringField('Email', 
+            validators=[DataRequired(), Email()])
+    subject = StringField('Subject of Message',
+        validators=[DataRequired(), Length(min=2, max=25)])
+    message = StringField('Feedback, Comments, Concerns?',
+        validators=[DataRequired()])
+    submit = SubmitField('Send')

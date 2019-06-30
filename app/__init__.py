@@ -5,14 +5,18 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 import logging
 import sys
+from flask_mail import Mail
 
 ACCESS = {
 	'user': '1',
 	'admin': '2'	
 }
 
+
 app = Flask(__name__)
 app.config.from_object('config')
+
+mail = Mail(app)
 
 db = SQLAlchemy(app)
 
@@ -30,14 +34,6 @@ bcrypt = Bcrypt(app)
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login' # route that login_required redirects to
-
-# class MyAdminIndexView(AdminIndexView):
-#     def is_accessible(self):
-#         if current_user.is_authenticated:
-#             return current_user.is_admin()
-    
-#     def inaccessible_callback(self, name, **kwargs):
-#         return redirect(url_for('login'))
 
 from app import admin
 

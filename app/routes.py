@@ -1,9 +1,11 @@
 from flask import request, render_template, redirect, url_for, flash, session
 from flask_login import login_user, current_user, logout_user, login_required
 from authlib.client import OAuth2Session
-from app import app, db, bcrypt, log, hours_helper, oauth_helper, db_filler, admin, ACCESS
+from app import app, db, bcrypt, log, hours_helper, oauth_helper, db_filler, admin, ACCESS, mail
+from flask_mail import Message
 from app.models import User
-from app.forms import RegistrationForm, LoginForm
+from app.forms import RegistrationForm, LoginForm, ContactForm
+
 
 #TODO: Create admin decorator here
 from functools import wraps
@@ -44,8 +46,21 @@ def hours():
 @app.route("/contact", methods=['GET', 'POST'])
 @requires_access_level(ACCESS['user'])
 def contact():
-    # TODO contact form submission should email lwtpoodles150@gmail.com
-    return render_template("contact.html")
+    form = ContactForm()
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('All fields are required', 'danger')
+            return render_template('contact.html', form=form)
+        else: 
+            msg = Message(form.subject.data, sender="lwtpoodles150@gmail.com", recipients=['lwtpoodles150@gmail.com']) 
+            msg.body="""
+            From: %s %s <%s>
+            %s
+            """%(form.firstname.data, form.lastname.data, form.email.data, form.message.data)
+            mail.send(msg)
+            return 'Form sent.'
+    elif request.method == 'GET':
+        return render_template("contact.html", form=form)
 
 # TODO Account/Profile page to change password, manage contact info, etc.
 
