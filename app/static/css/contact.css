@@ -19,6 +19,11 @@
     margin-top: -3%;
 }
 
+/*.contact-form .form-control-lg-1 {
+    width: 450px;
+    height: 350px;
+}*/
+
 .contact-form form {
     padding: 14%;
 }

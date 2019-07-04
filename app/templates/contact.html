@@ -5,7 +5,7 @@
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Conctact Form</legend>
+            <legend class="border-bottom mb-4">Contact Form</legend>
             <div class="form-group">
                 {{ form.firstname.label(class="form-control-label") }}
 
@@ -62,15 +62,17 @@
             </div>
             <div class="form-group">
                 {{ form.message.label(class="form-control-label") }}
-                {%if form.message.errors %}
-                {{ form.message(class="form-control form-control-lg is-invalid") }}
+                {% if form.message.errors %}
+                {{ form.message(class="form-control form-control-lg is-valid") }}
                 <div class="invalid-feedback">
                     {% for error in form.message.errors %}
                     <span> {{ error }}</span>
                     {% endfor %}
                 </div>
                 {% else %}
-                {{ form.message(class="form-control form-control-lg") }}
+                <div rows="3">
+                    {{ form.message(class="form-control form-control-lg", cols="20", rows="4") }}
+                </div>
                 {% endif %}
             </div>
         </fieldset>

@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.widgets import TextArea
 from app.models import User
 
 class RegistrationForm(FlaskForm):
@@ -44,6 +45,6 @@ class ContactForm(FlaskForm):
             validators=[DataRequired(), Email()])
     subject = StringField('Subject of Message',
         validators=[DataRequired(), Length(min=2, max=25)])
-    message = StringField('Feedback, Comments, Concerns?',
+    message = StringField('Feedback, Comments, Concerns?', widget=TextArea(),
         validators=[DataRequired()])
     submit = SubmitField('Send')
