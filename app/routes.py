@@ -128,7 +128,7 @@ def logout():
 def admin():
     if app.config['ENV'] == 'production':
         return redirect(url_for('about'))
-    return render_template("admin.html")
+    return render_template("admin/")
 
 
 @app.route("/admin/authorize")
@@ -145,7 +145,7 @@ def insertNewToken():
         flash("A new access token was successfuly inserted into the database.", 'success')
     else:
         flash("An error occurred while inserting a new acccess token into the database.", 'error')
-    return render_template("admin.html")
+    return render_template("admin/")
 
 
 @app.route("/admin/insertAllAthletes")
@@ -157,7 +157,7 @@ def insertAllAthletesApp():
     else:
         flash("Successfully inserted {} athletes into the database.".format(
             numAthletesInserted), 'success')
-    return render_template("admin.html")
+    return render_template("admin/")
 
 
 @app.route("/admin/insertAllWorkouts")

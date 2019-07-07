@@ -1,11 +1,12 @@
 {% extends "layout.html" %}
 {% block content %}
 <link rel="stylesheet" href="/static/css/contact.css">
-<div class="container contact-form">
+<div class="container-fluid">
+  <div class="col-sm-6 offset-sm-3 text-white">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Contact Form</legend>
+            <legend class="border-bottom mb-4 text-center">Contact Form</legend>
             <div class="form-group">
                 {{ form.firstname.label(class="form-control-label") }}
 
@@ -80,5 +81,6 @@
             {{ form.submit(class="btn btn-outline-info") }}
         </div>
     </form>
+  </div>
 </div>
 {% endblock content %}
