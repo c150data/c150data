@@ -1,5 +1,14 @@
-{% extends 'layout.html' %}
-{% block content %}
+{% extends 'admin/master.html' %}
+{% block menu_links %}
+	{{ super() }}
+	<ul class="nav navbar-nav navbar-right">
+		<li>
+    	<a class="" href="{{ url_for('about') }}">Back</a>    </li>  
+    </ul>
+ {% endblock %}
+{% block body %}
+{{ super() }}
+
 <script type="text/javascript" src="/static/js/admin.js"></script>
 <link rel="stylesheet" href="/static/css/admin.css">
 
@@ -56,4 +65,4 @@
 		</div>
 	</div>
 </div>
-{% endblock content %}
+{% endblock %}

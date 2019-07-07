@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
-<link rel="stylesheet" href="/static/css/login.css" />
-<div class="container text-center">
+<link rel="stylesheet" href="/static/css/login.css">
+<div class="container-fluid text-center">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Log In</legend>
+            <legend class="border-bottom"><h1>Log In</h1></legend>
             <div class="form-group">
                 {{ form.email.label(class="form-control-label") }}
                 {%if form.email.errors %}
@@ -48,7 +48,7 @@
         </div>
         <div class="col-md-6 border-top pt-2">
             <small class="text-muted">
-                Need An Account? <a class="ml-2" href="#">Contact an Administrator</a>
+                Need An Account? <a class="ml-1" href="#">Contact an Administrator</a>
             </small>
         </div>
     </div>

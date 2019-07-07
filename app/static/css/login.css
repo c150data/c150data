@@ -10,3 +10,8 @@ form {
 .submit {
     padding-top: 10px;
 }
+
+.form-control-label {
+	color: #eee;
+  	font-size: 24px;
+}

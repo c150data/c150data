@@ -1,0 +1,21 @@
+// main: style.scss
+/*--------------------------------------------------------------
+# Footer
+--------------------------------------------------------------*/
+#footer {
+  background: #343b40;;
+  padding: 30px 0;
+  color: #fff;
+  font-size: 14px;
+
+  .copyright {
+    text-align: center;
+  }
+
+  .credits {
+    padding-top: 10px;
+    text-align: center;
+    font-size: 13px;
+    color: #ccc;
+  }
+}

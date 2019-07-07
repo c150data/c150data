@@ -1,10 +1,29 @@
-from flask import request, render_template, redirect, url_for, flash
+from flask import request, render_template, redirect, url_for, flash, session
 from flask_login import login_user, current_user, logout_user, login_required
 from authlib.client import OAuth2Session
-from app import app, db, bcrypt, log, hours_helper, oauth_helper, db_filler
+from app import app, db, bcrypt, log, hours_helper, oauth_helper, db_filler, admin, ACCESS, mail
+from flask_mail import Message
 from app.models import User
-from app.forms import RegistrationForm, LoginForm
+from app.forms import RegistrationForm, LoginForm, ContactForm
 
+
+#TODO: Create admin decorator here
+from functools import wraps
+
+def requires_access_level(access_level):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                flash('Please login to view this site', 'danger')
+                return redirect(url_for('login'))
+
+            elif not current_user.allowed(access_level):
+                flash('You do not have the right priviledges to access this page.', 'danger')
+                return redirect(url_for('about'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 # PAGES
 
@@ -19,23 +38,36 @@ def about():
 
 
 @app.route("/hours", methods=['GET', 'POST'])
-@login_required
+@requires_access_level(ACCESS['user'])
 def hours():
     return render_template("hours.html")
 
 
 @app.route("/contact", methods=['GET', 'POST'])
+@requires_access_level(ACCESS['user'])
 def contact():
-    # TODO contact form submission should email lwtpoodles150@gmail.com
-    return render_template("contact.html")
-
+    form = ContactForm()
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('All fields are required', 'danger')
+            return render_template('contact.html', form=form)
+        else: 
+            msg = Message(form.subject.data, sender="lwtpoodles150@gmail.com", recipients=['lwtpoodles150@gmail.com']) 
+            msg.body="""
+            From: %s %s <%s>
+            %s
+            """%(form.firstname.data, form.lastname.data, form.email.data, form.message.data)
+            mail.send(msg)
+            return 'Form sent.'
+    elif request.method == 'GET':
+        return render_template("contact.html", form=form)
 
 # TODO Account/Profile page to change password, manage contact info, etc.
 
 # DATA 
 
 @app.route("/hours/getData")
-@login_required
+@requires_access_level(ACCESS['user'])
 def getData():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
@@ -63,7 +95,7 @@ def login():
 
 
 @app.route("/register", methods=['GET', 'POST'])
-@login_required
+@requires_access_level(ACCESS['admin'])
 def register():
     # Commenting this out since our new flow will be only admins can register new users. 
     # if current_user.is_authenticated:  # Logged in user will be forwarded to about page
@@ -82,7 +114,7 @@ def register():
 
 
 @app.route("/logout")
-@login_required
+@requires_access_level(ACCESS['user'])
 def logout():
     logout_user()
     return redirect(url_for('index'))
@@ -90,33 +122,34 @@ def logout():
 
 # ADMIN
 
+
 @app.route("/admin")
-@login_required  # Ideally, this is where we can put something like admin_required
+@requires_access_level(ACCESS['admin'])
 def admin():
     if app.config['ENV'] == 'production':
         return redirect(url_for('about'))
-    return render_template("admin.html")
+    return render_template("admin/")
 
 
 @app.route("/admin/authorize")
-@login_required
+@requires_access_level(ACCESS['admin'])
 def user_authorization():
     return redirect(oauth_helper.getAuthorizationUrl())
 
 
 @app.route("/admin/insertNewToken")
-@login_required
+@requires_access_level(ACCESS['admin'])
 def insertNewToken():
     success = oauth_helper.insertNewToken(oauth_helper.getNewAccessToken())
     if success:
         flash("A new access token was successfuly inserted into the database.", 'success')
     else:
         flash("An error occurred while inserting a new acccess token into the database.", 'error')
-    return render_template("admin.html")
+    return render_template("admin/")
 
 
 @app.route("/admin/insertAllAthletes")
-@login_required
+@requires_access_level(ACCESS['admin'])
 def insertAllAthletesApp():
     numAthletesInserted = db_filler.insertAllAthletesIntoDB()
     if numAthletesInserted is None:
@@ -124,11 +157,11 @@ def insertAllAthletesApp():
     else:
         flash("Successfully inserted {} athletes into the database.".format(
             numAthletesInserted), 'success')
-    return render_template("admin.html")
+    return render_template("admin/")
 
 
 @app.route("/admin/insertAllWorkouts")
-@login_required
+@requires_access_level(ACCESS['admin'])
 def insertAllWorkoutsApp():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')

@@ -1,10 +1,9 @@
-.contact-form {
-    background: #fff;
-    margin-top: 20%;
-    margin-bottom: 5%;
-    width: 70%;
-}
 
+.contact-form {
+    top: center;
+    position: relative;
+
+}
 .contact-form .form-control {
     border-radius: 1rem;
 }
@@ -19,6 +18,11 @@
     margin-top: -3%;
 }
 
+/*.contact-form .form-control-lg-1 {
+    width: 450px;
+    height: 350px;
+}*/
+
 .contact-form form {
     padding: 14%;
 }
@@ -31,7 +35,7 @@
     margin-bottom: 8%;
     margin-top: -10%;
     text-align: center;
-    color: #0062cc;
+    color: #b9d9eb;
 }
 
 .contact-form .btnContact {

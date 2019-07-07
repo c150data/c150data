@@ -1,35 +1,86 @@
 {% extends "layout.html" %}
 {% block content %}
 <link rel="stylesheet" href="/static/css/contact.css">
-<div class="container contact-form">
-    <div class="contact-image">
-        <img src="https://upload.wikimedia.org/wikipedia/en/5/5f/Columbia_Lions_logo.svg" />
-    </div>
-    <form method="POST">
-        <h3>Have Suggestions? Contact Us!</h3>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <input type="text" name="txtName" class="form-control" placeholder="Your Name *" value="" />
+<div class="container-fluid">
+  <div class="col-sm-6 offset-sm-3 text-white">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4 text-center">Contact Form</legend>
+            <div class="form-group">
+                {{ form.firstname.label(class="form-control-label") }}
+
+                {%if form.firstname.errors %}
+                {{ form.firsname(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.firstname.errors %}
+                    <span> {{ error }}</span>
+                    {% endfor %}
                 </div>
-                <div class="form-group">
-                    <input type="text" name="txtEmail" class="form-control" placeholder="Your Email *" value="" />
-                </div>
-                <div class="form-group">
-                    <input type="text" name="txtPhone" class="form-control" placeholder="Your Phone Number *"
-                        value="" />
-                </div>
-                <div class="form-group">
-                    <input type="submit" name="txtName" class="form-control" placeholder="Submit" value="Submit" />
-                </div>
+                {% else %}
+                {{ form.firstname(class="form-control form-control-lg") }}
+                {% endif %}
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <textarea name="txtMsg" class="form-control" placeholder="Your Message *"
-                        style="width: 100%; height: 150px;"></textarea>
+            <div class="form-group">
+                {{ form.lastname.label(class="form-control-label") }}
+
+                {%if form.lastname.errors %}
+                {{ form.lastname(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.lastname.errors %}
+                    <span> {{ error }}</span>
+                    {% endfor %}
                 </div>
+                {% else %}
+                {{ form.lastname(class="form-control form-control-lg") }}
+                {% endif %}
             </div>
+            <div class="form-group">
+                {{ form.email.label(class="form-control-label") }}
+                {%if form.email.errors %}
+                {{ form.email(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                    <span> {{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.email(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.subject.label(class="form-control-label") }}
+                {%if form.subject.errors %}
+                {{ form.subject(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.subject.errors %}
+                    <span> {{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.subject(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.message.label(class="form-control-label") }}
+                {% if form.message.errors %}
+                {{ form.message(class="form-control form-control-lg is-valid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.message.errors %}
+                    <span> {{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div rows="3">
+                    {{ form.message(class="form-control form-control-lg", cols="20", rows="4") }}
+                </div>
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
         </div>
     </form>
+  </div>
 </div>
 {% endblock content %}
