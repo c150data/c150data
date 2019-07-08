@@ -4,7 +4,6 @@ from sqlalchemy import Column, Float, Integer, String, Boolean, DateTime, Foreig
 from sqlalchemy.orm import relationship
 
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -20,16 +19,16 @@ class User(db.Model, UserMixin):
     access = Column(String(10), nullable=False, default=ACCESS['user'])
 
     def is_admin(self):
-    	return self.access == ACCESS['admin']
+        return self.access == ACCESS['admin']
 
     def allowed(self, access_level):
-     	return self.access >= access_level
+        return self.access >= access_level
 
     def __repr__(self):
         return "User('{}','{}')".format(self.username, self.email)
 
 
-# Oauth Views 
+# Oauth Views
 class AuthToken(db.Model):
     __tablename__ = 'authtoken'
 
@@ -196,4 +195,3 @@ class Workout(db.Model):
             self.velocityMaximum,
             self.velocityPlanned
         )
-        

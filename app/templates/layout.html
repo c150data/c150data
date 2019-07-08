@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
-  <title>Columbia Leightweight Rowing</title>
+  <title>Columbia Lightweight Rowing</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <meta content="" name="keywords">
   <meta content="" name="description">
@@ -25,14 +26,16 @@
   <script src="../static/lib/jquery/jquery.min.js"></script>
 
   <!-- Moment JS -->
-	<script src="https://momentjs.com/downloads/moment.js"></script>
+  <script src="https://momentjs.com/downloads/moment.js"></script>
 
-	<!-- Tempus Dominus JS + CSS -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css"> 
- 
-	<!-- Common JS -->
-	<script type="text/javascript" src="{{ url_for('static', filename='js/common.js') }}"></script>
+  <!-- Tempus Dominus JS + CSS -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css">
+
+  <!-- Common JS -->
+  <script type="text/javascript" src="{{ url_for('static', filename='js/common.js') }}"></script>
 
   <!-- Main Stylesheet File -->
   <link href="../static/css/style.css" rel="stylesheet">
@@ -58,19 +61,19 @@
         <ul class="nav-menu">
           <li class="menu-active"><a href="{{ url_for('about') }}">Home</a></li>
           {% if current_user.is_authenticated %}
-					<li><a class="nav-link" href="{{ url_for('hours') }}">Hours</a></li>
-					<li><a class="nav-link" href="{{ url_for('contact') }}">Contact</a></li>
-					<li><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+          <li><a class="nav-link" href="{{ url_for('hours') }}">Hours</a></li>
+          <li><a class="nav-link" href="{{ url_for('contact') }}">Contact</a></li>
+          <li><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
           {% if config['ENV'] == 'development' %}
-			<li class="nav-item">
-				<a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
-			</li>
-		{% endif %}
-		{% else %}
-		<li class="nav-item">
-			<a class="nav-itemk nav-link" href="{{ url_for('login') }}">Login</a>
-		</li>
-		{% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
+          </li>
+          {% endif %}
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-itemk nav-link" href="{{ url_for('login') }}">Login</a>
+          </li>
+          {% endif %}
         </ul>
       </nav><!-- #nav-menu-container -->
     </div>
@@ -78,22 +81,22 @@
 
   <!-- Content -->
   <section id="hero">
-	<div class="bg-light" id="main-content">
-		<!-- Handles any alerts -->
-		{% with messages = get_flashed_messages(with_categories=true) %}
-		{% if messages %}
-		{% for category, message in messages %}
-		<div class="alert alert-{{ category }}">
-			{{ message }}
-		</div>
-		{% endfor %}
-		{% endif %}
-		{% endwith %}
-		<div id="alert-div"></div>
-		<!-- Main content -->
-		{% block content %}{% endblock %}
-	</div>
-	</section>
+    <div class="bg-light" id="main-content">
+      <!-- Handles any alerts -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+      <div id="alert-div"></div>
+      <!-- Main content -->
+      {% block content %}{% endblock %}
+    </div>
+  </section>
 
   </main>
 
@@ -114,4 +117,5 @@
   <script src="../static/js/main.js"></script>
 
 </body>
+
 </html>
