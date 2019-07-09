@@ -8,8 +8,8 @@ import sys
 from flask_mail import Mail
 
 ACCESS = {
-	'user': '1',
-	'admin': '2'	
+    'user': '1',
+    'admin': '2'
 }
 
 
@@ -29,18 +29,15 @@ streamHandler.setFormatter(formatter)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.DEBUG)
 log.addHandler(streamHandler)
-log.info(app.config)
 bcrypt = Bcrypt(app)
 
 login_manager = LoginManager(app)
-login_manager.login_view = 'login' # route that login_required redirects to
+login_manager.login_view = 'login'  # route that login_required redirects to
 
-from app import admin
-
-from app import routes  # position important to avoid circular importation
 from app.models import User, AuthToken, Athlete, Workout
-Workout.__table__.drop(db.engine) # Use if you want to drop the table and reset it
-Athlete.__table__.drop(db.engine) # Use if you want to drop the table and reset it
+from app import routes  # position important to avoid circular importation
+from app import admin
+# Workout.__table__.drop(db.engine) # Use if you want to drop the table and reset it
+# Athlete.__table__.drop(db.engine) # Use if you want to drop the table and reset it
 db.create_all()  # Only creates tables when they do not already exist
 db.session.commit()
-
