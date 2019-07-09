@@ -34,9 +34,6 @@
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css">
 
-  <!-- Common JS -->
-  <script type="text/javascript" src="{{ url_for('static', filename='js/common.js') }}"></script>
-
   <!-- Main Stylesheet File -->
   <link href="../static/css/style.css" rel="stylesheet">
 
@@ -92,7 +89,6 @@
       {% endfor %}
       {% endif %}
       {% endwith %}
-      <div id="alert-div"></div>
       <!-- Main content -->
       {% block content %}{% endblock %}
     </div>
