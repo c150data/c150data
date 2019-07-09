@@ -5,3 +5,5 @@ site.db
 config.py
 *.sql
 *.code-workspace
+*.DS_Store
+venv

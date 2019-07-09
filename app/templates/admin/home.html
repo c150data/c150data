@@ -1,59 +1,56 @@
 {% extends 'admin/master.html' %}
 {% block menu_links %}
-	{{ super() }}
-	<ul class="nav navbar-nav navbar-right">
-		<li>
-    	<a class="" href="{{ url_for('about') }}">Back</a>    </li>  
-    </ul>
- {% endblock %}
+{{ super() }}
+<ul class="nav navbar-nav navbar-right">
+	<li>
+		<a class="" href="{{ url_for('about') }}">Back</a> </li>
+</ul>
+{% endblock %}
 {% block body %}
 {{ super() }}
+
+<!-- JQuery -->
+<script src="../../static/lib/jquery/jquery.min.js"></script>
 
 <script type="text/javascript" src="/static/js/admin.js"></script>
 <link rel="stylesheet" href="/static/css/admin.css">
 
 <div class="container">
-    <div class="row admin-button">
-        <a href="/register">
-            <button class="btn btn-outline-primary">Register a new user!</button>
-        </a>
+	<div class="row admin-button">
+		<a href="/register">
+			<button class="btn btn-outline-primary">Register a new user!</button>
+		</a>
 	</div>
 
-    <div class="row admin-button">
-        <a href="/admin/authorize">
-            <button class="btn btn-outline-primary">Begin authorization!</button>
-        </a>
-    </div>
-    <div class="row admin-button">
-        <a href="/admin/insertNewToken">
-            <button class="btn btn-outline-primary">Insert a new token!</button>
-        </a>
-    </div>
-    <div class="row admin-button">
-        <a href="/admin/insertAllAthletes">
-            <button class="btn btn-outline-primary">Insert all athletes!</button>
-        </a>
-    </div>
+	<div class="row admin-button">
+		<a href="/admin/authorize">
+			<button class="btn btn-outline-primary">Begin authorization!</button>
+		</a>
+	</div>
+	<div class="row admin-button">
+		<a href="/admin/insertNewToken">
+			<button class="btn btn-outline-primary">Insert a new token!</button>
+		</a>
+	</div>
+	<div class="row admin-button">
+		<a href="/admin/insertAllAthletes">
+			<button class="btn btn-outline-primary">Insert all athletes!</button>
+		</a>
+	</div>
 	<div class="row admin-button">
 		<div class='col-lg-5 align-self-center'>
 			<div class="form-group">
-				<div class="input-group date" id="datetimepickerStart" data-target-input="nearest">
-					<input type="text" placeholder="Start Date" id="startDateInput"
-						class="form-control datetimepicker-input" data-target="#datetimepickerStart" />
-					<div class="input-group-append" data-target="#datetimepickerStart" data-toggle="datetimepicker">
-						<div class="input-group-text"><i class="fa fa-calendar-alt"></i></div>
-					</div>
+				<div class="input-group date">
+					<label for="start_date">Start</label>
+					<input type="text" id="start_date" placeholder="Format: MM/DD/YYYY" class="form-control" />
 				</div>
 			</div>
 		</div>
 		<div class='col-lg-5 align-self-center'>
 			<div class="form-group">
-				<div class="input-group date" id="datetimepickerEnd" data-target-input="nearest">
-					<input type="text" placeholder="End Date" id="endDateInput"
-						class="form-control datetimepicker-input" data-target="#datetimepickerEnd" />
-					<div class="input-group-append" data-target="#datetimepickerEnd" data-toggle="datetimepicker">
-						<div class="input-group-text"><i class="fa fa-calendar-alt"></i></div>
-					</div>
+				<div class="input-group date">
+					<label for="end_date">End</label>
+					<input type="text" id="end_date" placeholder="Format: MM/DD/YYYY" class="form-control" />
 				</div>
 			</div>
 		</div>
@@ -63,6 +60,7 @@
 				<span id='submitLabel'>Insert All Workouts!</span>
 			</button>
 		</div>
+		<div id="alert-div"></div>
 	</div>
 </div>
 {% endblock %}
