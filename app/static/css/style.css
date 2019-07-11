@@ -128,7 +128,7 @@ h1, h2, h3, h4, h5, h6 {
 #header.header-fixed {
   background: rgba(52, 59, 64, 0.9);
   padding: 20px 0;
-  height: 72px;
+  height: 71px;
   transition: all 0.5s;
 }
 
@@ -912,7 +912,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   background: #333;
   color: #fff;
   line-height: 1;
-  padding: 8px 0;
+  padding: 10px 0;
   border-radius: 50%;
   text-align: center;
   width: 40px;

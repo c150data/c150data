@@ -7,7 +7,7 @@ from app.models import User
 from app.forms import RegistrationForm, LoginForm, ContactForm
 
 
-#TODO: Create admin decorator here
+# Admin decorator
 from functools import wraps
 
 def requires_access_level(access_level):
@@ -44,7 +44,7 @@ def hours():
 
 
 @app.route("/contact", methods=['GET', 'POST'])
-@requires_access_level(ACCESS['user'])
+# @requires_access_level(ACCESS['user'])
 def contact():
     form = ContactForm()
     if request.method == 'POST':
@@ -128,7 +128,7 @@ def logout():
 def admin():
     if app.config['ENV'] == 'production':
         return redirect(url_for('about'))
-    return render_template("admin/")
+    return render_template("/admin/home.html")
 
 
 @app.route("/admin/authorize")
@@ -145,7 +145,7 @@ def insertNewToken():
         flash("A new access token was successfuly inserted into the database.", 'success')
     else:
         flash("An error occurred while inserting a new acccess token into the database.", 'error')
-    return render_template("admin/")
+    return render_template("/admin/home.html")
 
 
 @app.route("/admin/insertAllAthletes")
@@ -157,7 +157,7 @@ def insertAllAthletesApp():
     else:
         flash("Successfully inserted {} athletes into the database.".format(
             numAthletesInserted), 'success')
-    return render_template("admin/")
+    return render_template("/admin/home.html")
 
 
 @app.route("/admin/insertAllWorkouts")
