@@ -7,8 +7,11 @@ from app.models import User
 from app.forms import RegistrationForm, LoginForm, ContactForm
 
 
+
 # Admin decorator
+
 from functools import wraps
+
 
 def requires_access_level(access_level):
     def decorator(f):
@@ -19,13 +22,15 @@ def requires_access_level(access_level):
                 return redirect(url_for('login'))
 
             elif not current_user.allowed(access_level):
-                flash('You do not have the right priviledges to access this page.', 'danger')
+                flash(
+                    'You do not have the right priviledges to access this page.', 'danger')
                 return redirect(url_for('about'))
             return f(*args, **kwargs)
         return decorated_function
     return decorator
 
 # PAGES
+
 
 @app.route("/", methods=['GET'])
 def index():
@@ -48,15 +53,16 @@ def hours():
 def contact():
     form = ContactForm()
     if request.method == 'POST':
-        if form.validate() == False:
+        if form.validate() is False:
             flash('All fields are required', 'danger')
             return render_template('contact.html', form=form)
-        else: 
-            msg = Message(form.subject.data, sender="lwtpoodles150@gmail.com", recipients=['lwtpoodles150@gmail.com']) 
-            msg.body="""
+        else:
+            msg = Message(form.subject.data, sender="lwtpoodles150@gmail.com", recipients=[
+                'lwtpoodles150@gmail.com'])
+            msg.body = """
             From: %s %s <%s>
             %s
-            """%(form.firstname.data, form.lastname.data, form.email.data, form.message.data)
+            """ % (form.firstname.data, form.lastname.data, form.email.data, form.message.data)
             mail.send(msg)
             return 'Form sent.'
     elif request.method == 'GET':
@@ -64,7 +70,8 @@ def contact():
 
 # TODO Account/Profile page to change password, manage contact info, etc.
 
-# DATA 
+# DATA
+
 
 @app.route("/hours/getData")
 @requires_access_level(ACCESS['user'])
@@ -95,9 +102,9 @@ def login():
 
 
 @app.route("/register", methods=['GET', 'POST'])
-@requires_access_level(ACCESS['admin'])
+# @requires_access_level(ACCESS['admin'])
 def register():
-    # Commenting this out since our new flow will be only admins can register new users. 
+    # Commenting this out since our new flow will be only admins can register new users.
     # if current_user.is_authenticated:  # Logged in user will be forwarded to about page
     #     return redirect(url_for('about'))
     form = RegistrationForm()
@@ -108,7 +115,8 @@ def register():
                     email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        flash('A new account has been created with the username: {}. You are now able to log in.'.format(form.username.data), 'success')
+        flash('A new account has been created with the username: {}. You are now able to log in.'.format(
+            form.username.data), 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -171,5 +179,6 @@ def insertAllWorkoutsApp():
         message = "Error while inserting workouts."
     else:
         result = "success"
-        message = "Successfully inserted {} workouts into the database.".format(numWorkoutsInserted)
+        message = "Successfully inserted {} workouts into the database.".format(
+            numWorkoutsInserted)
     return render_template("alert.html", alert_type=result, alert_message=message)
