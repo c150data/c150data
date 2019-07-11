@@ -31,6 +31,24 @@ def dbInsert(items):
         db.session.flush()
         return False
 
+def dbDelete(items):
+    if items is None:
+        return False
+
+    try:
+        if isinstance(items, list):
+            for item in items:
+                db.session.delete(item)
+        else:
+            db.session.delete(item)
+        db.session.commit()
+        return True
+    except Exception as e:
+        log.error("Error deleting [%s] into the database: %s", items, e)
+        db.session.rollback()
+        db.session.flush()
+        return False
+
 
 def getAthleteObjectFromJSON(athlete_json):
     return Athlete(

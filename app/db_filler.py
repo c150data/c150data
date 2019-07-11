@@ -1,9 +1,10 @@
 from app import db_helper, api_helper, oauth_helper, log
-from app.models import Athlete
+from app.models import Athlete, Workout
 from datetime import datetime, timedelta
 import math
 
 # Insert athletes in DB
+
 
 def insertAllAthletesIntoDB():
     """
@@ -30,7 +31,8 @@ def getAllAthletesUsingAPI():
         None on error.
     """
     # Make API call
-    athletes_response = api_helper.getAthletes(oauth_helper.getValidAuthToken())
+    athletes_response = api_helper.getAthletes(
+        oauth_helper.getValidAuthToken())
 
     # Error check
     if athletes_response is None:
@@ -56,7 +58,8 @@ def insertWorkoutsIntoDb(start_date, end_date):
 
         for id in id_list:
             for date_period in datesList:
-                workoutsList += getListOfWorkoutsForAthletesFromAPI(id, date_period)
+                workoutsList += getListOfWorkoutsForAthletesFromAPI(
+                    id, date_period)
 
         result = db_helper.dbInsert(workoutsList)
         if result:
@@ -118,6 +121,44 @@ def getListOfWorkoutsForAthletesFromAPI(athlete_id, date_period_tuple):
     log.info("{} workouts found for athlete {} from {} to {}".format(
         len(dbWorkoutsList), athlete_id, start_date, end_date))
     return dbWorkoutsList
+
+
+def processWorkoutUpdateJSON(workout_update_json):
+    try:
+        deleted_workouts = workout_update_json['Deleted']
+        if deleted_workouts is not None:
+            processDeletedWorkouts(deleted_workouts)
+        modified_workouts = workout_update_json['Modified']
+        if modified_workouts is not None:
+            processModifiedWorkotus()
+    except Exception as e:
+        log.error("Error occured while processing workout update: {}", e)
+
+
+def processDeletedWorkouts(deleted_workouts):
+    workoutsToDelete = list()
+    for workout_id in deleted_workouts:
+        workout = Workout.query.filter_by(id=workout_id)
+        workoutsToDelete.append(workout)
+    db_helper.dbDelete(workoutsToDelete)
+
+
+def processModifiedWorkotus(modified_workouts):
+    workoutsToInsert = list()
+    for modified_workout in modified_workouts:
+        workoutsToInsert.append(updateWorkout(modified_workout))
+    db_helper.dbInsert(workoutsToInsert)
+
+
+def updateWorkout(workout_json):
+    if Workout.query.filter_by(id=workout_json['Id']) is None:
+        # Workout does not exist in DB
+        return db_helper.getWorkoutObjectFromJSON(workout_json)
+    else:
+        # Workout already exists in db, need to first delete existing then return new one to insert
+        Workout.query.filter_by(id=workout_json['Id']).delete()
+        return db_helper.getWorkoutObjectFromJSON(workout_json)
+
 
 def getAllActiveAthletes():
     return Athlete.query.filter_by(is_active=True).all()
