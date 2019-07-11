@@ -34,21 +34,21 @@
             </div>
             <div class="form-check">
                 {{ form.remember(class="form-check-input") }}
-                {{ form.remember.label(class="form-check-label") }}
+                {{ form.remember.label(class="form-check-label text-white") }}
             </div>
             <div class="form-group submit">
-                {{ form.submit(class="btn btn-outline-info") }}
+                {{ form.submit(class="btn-lg btn-outline-info") }}
             </div>
     </form>
     <div class="row">
         <div class="col-md-6 border-top pt-2">
-            <small class="text-muted">
-                <a class="ml-2" href="#">Forgot Password</a>
+            <small class="text-white float-left">
+                <h5><a class="ml-2" href="#">Forgot Password</a></h5>
             </small>
         </div>
         <div class="col-md-6 border-top pt-2">
-            <small class="text-muted">
-                Need An Account? <a class="ml-1" href="#">Contact an Administrator</a>
+            <small class="text-white float-right">
+                <h5>Need An Account? <a class="ml-1 " href="{{ url_for('contact') }}">Contact an Administrator</a></h5>
             </small>
         </div>
     </div>
