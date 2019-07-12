@@ -32,10 +32,11 @@ def getHoursForAllAthletes(start_date, end_date):
 def updateWorkoutsIfNecessary():
     lastUpdatedTime = db_helper.dbSelect(sql.getOldestLastWorkoutTimeSQL())[0]['last_updated_workouts']
     if lastUpdatedTime is not None:
-        fLastUpdatedTime = datetime.strptime(lastUpdatedTime, "%Y-%m-%d %H:%M:%S.%f")
-    needToUpdate = hasExpired(fLastUpdatedTime)
+        # Format time
+        lastUpdatedTime = datetime.strptime(lastUpdatedTime, "%Y-%m-%d %H:%M:%S.%f")
+    needToUpdate = hasExpired(lastUpdatedTime)
     if needToUpdate:
-        updateWorkouts(fLastUpdatedTime)
+        updateWorkouts(lastUpdatedTime)
         updateAthletesWorkoutsTime()
 
 
