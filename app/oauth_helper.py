@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from app.models import AuthToken
 
 
-remote = True 
+remote = app.config['IS_REMOTE']
 
 client_id = app.config['CLIENT_ID']
 client_secret = app.config['CLIENT_SECRET']
