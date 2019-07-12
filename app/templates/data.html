@@ -1,20 +1,20 @@
+{% if athletes is not none %}
 <table class="table table-striped" style="height:100%;">
-    <thead>
-	<tr>
-	    <th scope="col">Rank</th>
-	    <th scope="col">Name</th>
-	    <th scope="col">Hours</th>
-	</tr>
-    </thead>
-    <tbody>
-	{% if len is defined %}
-	    {%for i in range(0, len)%}
+	<thead>
 		<tr>
-		    <th scope="row">{{i+1}}</th>
-		    <td>{{athletes[i].get("name")}}</td>
-		    <td>{{athletes[i].get("rounded_hours")}}</td>
+			<th scope="col">Rank</th>
+			<th scope="col">Name</th>
+			<th scope="col">Hours</th>
 		</tr>
-	    {%endfor%}
-	{% endif %}
-    </tbody>
+	</thead>
+	<tbody>
+		{% for athlete in athletes %}
+		<tr>
+			<th scope="row">{{loop.index}}</th>
+			<td>{{athlete.get("name")}}</td>
+			<td>{{athlete.get("rounded_hours")}}</td>
+		</tr>
+		{%endfor%}
+	</tbody>
 </table>
+{% endif %}

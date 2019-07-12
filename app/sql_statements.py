@@ -1,4 +1,4 @@
-import datetime from datetime
+from datetime import datetime
 
 
 def getOldestLastWorkoutTimeSQL():
@@ -12,5 +12,5 @@ def getAllHoursSQL(start_date, end_date):
     return statement
 
 
-def getAllActiveAthleteIdsSQL():
-    return "SELECT id FROM athletes where is_active = True"
+def getAllActiveAthletesSQL():
+    return "SELECT * FROM athletes where is_active = True;"

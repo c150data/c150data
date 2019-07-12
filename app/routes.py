@@ -6,8 +6,6 @@ from flask_mail import Message
 from app.models import User
 from app.forms import RegistrationForm, LoginForm, ContactForm
 
-
-
 # Admin decorator
 
 from functools import wraps
@@ -60,9 +58,9 @@ def contact():
             msg = Message(form.subject.data, sender="lwtpoodles150@gmail.com", recipients=[
                 'lwtpoodles150@gmail.com'])
             msg.body = """
-            From: %s %s <%s>
-            %s
-            """ % (form.firstname.data, form.lastname.data, form.email.data, form.message.data)
+                       From: %s %s <%s>
+                       %s
+                       """ % (form.firstname.data, form.lastname.data, form.email.data, form.message.data)
             mail.send(msg)
             return 'Form sent.'
     elif request.method == 'GET':
@@ -72,14 +70,18 @@ def contact():
 
 # DATA
 
-
 @app.route("/hours/getData")
 @requires_access_level(ACCESS['user'])
 def getData():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
-    len, athletes = hours_helper.getHoursForAllAthletes(start_date, end_date)
-    return render_template("data.html", len=len, athletes=athletes)
+    athletes = None
+    try:
+        athletes = hours_helper.getHoursForAllAthletes(start_date, end_date)
+    except Exception as e:
+        log.error("Was not able to get hours: {error}".format(error=e))
+        # TODO figure out if we can display error to UI
+    return render_template("data.html", athletes=athletes)
 
 
 # LOGIN
@@ -102,11 +104,8 @@ def login():
 
 
 @app.route("/register", methods=['GET', 'POST'])
-# @requires_access_level(ACCESS['admin'])
+@requires_access_level(ACCESS['admin'])
 def register():
-    # Commenting this out since our new flow will be only admins can register new users.
-    # if current_user.is_authenticated:  # Logged in user will be forwarded to about page
-    #     return redirect(url_for('about'))
     form = RegistrationForm()
     if form.validate_on_submit():  # Enters this section when registration form has been submitted
         hashed_password = bcrypt.generate_password_hash(

@@ -1,16 +1,21 @@
-from app import db, log, sql_statements as sql, db_helper
+from app import db, log, sql_statements as sql, db_helper, api_helper, db_filler
 from app.models import Athlete
 import operator
-from datetime import datetime
+from datetime import datetime, timedelta
 
 REFRESH_WORKOUT_MINUTES = 30
-DEFAULT_LAST_UPDATED_TIME = datetime.now() - timedelta(days = 7)
+DEFAULT_LAST_UPDATED_TIME = datetime.utcnow() - timedelta(days=14)
 
 
 def getHoursForAllAthletes(start_date, end_date):
-    # Try block for error checking
-    updateWorkoutsIfNecessary()
-    result = db.session.execute(sql.getAllHoursSQL(start_date, end_date))
+    try:
+        updateWorkoutsIfNecessary()
+        result = db_helper.dbSelect(sql.getAllHoursSQL(start_date, end_date))
+        if result is None:
+            raise Exception("Hours query returned None.")
+    except Exception as e:
+        raise Exception("Error occured while getting hours: {error}".format(error=e))
+
     athleteHourList = list()
     for row in result:
         athlete_info = {
@@ -21,43 +26,43 @@ def getHoursForAllAthletes(start_date, end_date):
         athleteHourList.append(athlete_info)
     sortedAthleteHourList = sorted(
         athleteHourList, key=operator.itemgetter('hours'), reverse=True)
-    return len(sortedAthleteHourList), sortedAthleteHourList
+    return sortedAthleteHourList
 
 
 def updateWorkoutsIfNecessary():
-    # Uses the lastUpdatedTime date from workoutsHaveExpired and passes that to updateWorkouts
-    # May have to refactor the line below
-    lastUpdatedTime = db.session.execute(sql.getOldestLastWorkoutTimeSQL())[
-        0]['last_updated_workouts']
-    # Format lastUpdatedTime??? if so, do it here and should match: 2017-10-01T00:00:00.00000Z
-    needToUpdate = hasExpired(lastUpdatedTime)
+    lastUpdatedTime = db_helper.dbSelect(sql.getOldestLastWorkoutTimeSQL())[0]['last_updated_workouts']
+    fLastUpdatedTime = datetime.strptime(lastUpdatedTime, "%Y-%m-%d %H:%M:%S.%f")
+    needToUpdate = hasExpired(fLastUpdatedTime)
     if needToUpdate:
-        updateWorkouts(lastUpdatedTime)
+        updateWorkouts(fLastUpdatedTime)
         updateAthletesWorkoutsTime()
 
 
 def hasExpired(lastUpdatedTime):
     if lastUpdatedTime is None:
-        # Update workouts if the last_updated_workouts has never been set (workouts have never been updated)
+        # Workouts have never been updated, so update them
         return True
-    return (datetime.now() > lastUpdatedTime + timedelta(minutes=REFRESH_WORKOUT_MINUTES))
+    # Update workouts if htey have not been updated in the past x minutes, where x = REFRESH_WORKOUT_MINUTES
+    return (datetime.utcnow() > lastUpdatedTime + timedelta(minutes=REFRESH_WORKOUT_MINUTES))
 
 
 def updateWorkouts(lastUpdatedTime):
-    # For every active athlete, make an api call to workouts/changed?date={date}
-    # Then, process every api response by updating the respective workouts
-    if lastUpdatedTime = None:
+    log.info("Updating workouts...")
+    if lastUpdatedTime is None:
         lastUpdatedTime = DEFAULT_LAST_UPDATED_TIME
-    athlete_ids = db.session.execute(sql.getAllActiveAthleteIdsSQL())
-    for athlete_id in athlete_ids:
-        api_response = api_helper.workoutsChangedSince(
-            athlete_id, lastUpdatedTime)
-        db_helper.processWorkoutUpdateJSON(api_response)
+    athletes = db_helper.dbSelect(sql.getAllActiveAthletesSQL())
+    num_deleted, num_modified = 0, 0
+    for athlete in athletes:
+        api_response = api_helper.getWorkoutsChangedSince(
+            athlete['id'], lastUpdatedTime)
+        curr_num_deleted, curr_num_modified = db_filler.processWorkoutUpdateJSON(api_response.json())
+        num_deleted += curr_num_deleted
+        num_modified += curr_num_modified
+    log.info("Deleted {num_deleted} workouts and modified {num_modified} workouts.".format(num_deleted=num_deleted, num_modified=num_modified))
 
 
 def updateAthletesWorkoutsTime():
-    # For every active athlete, update the last_updated_workouts field to datetime.now()
     active_athletes = Athlete.query.filter_by(is_active=True).all()
     for athlete in active_athletes:
-        athlete.last_updated_workouts = datetime.now()
+        athlete.last_updated_workouts = datetime.utcnow()
     db.session.commit()
