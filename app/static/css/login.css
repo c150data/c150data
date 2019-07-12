@@ -1,9 +1,9 @@
-.container {
-    height:100%;
-}
+/*
+  CSS file for login.html - the login page for C150data
+*/
 
 form {
-    padding: 10% 15% 15%;
+    padding: 0% 15% 15%;
     height: 100%;
 }
 

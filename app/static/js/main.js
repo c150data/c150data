@@ -1,3 +1,5 @@
+// Javascript file for navigation and smooth scrolling. Linked to layout.html
+
 jQuery(document).ready(function ($) {
 
   // Header fixed and Back to top button
@@ -5,9 +7,14 @@ jQuery(document).ready(function ($) {
     if ($(this).scrollTop() > 100) {
       $('.back-to-top').fadeIn('slow');
       $('#header').addClass('header-fixed');
+      $('#logoimage').fadeOut('fast');
+      $('#downarrow').fadeOut('fast');
+
     } else {
       $('.back-to-top').fadeOut('slow');
       $('#header').removeClass('header-fixed');
+      $('#logoimage').fadeIn('fast');
+      $('#downarrow').fadeIn('fast');
     }
   });
   $('.back-to-top').click(function () {
@@ -101,22 +108,6 @@ jQuery(document).ready(function ($) {
         return false;
       }
     }
-  });
-
-  // Porfolio filter
-  $("#portfolio-flters li").click(function () {
-    $("#portfolio-flters li").removeClass('filter-active');
-    $(this).addClass('filter-active');
-
-    var selectedFilter = $(this).data("filter");
-    $("#portfolio-wrapper").fadeTo(100, 0);
-
-    $(".portfolio-item").fadeOut().css('transform', 'scale(0)');
-
-    setTimeout(function () {
-      $(selectedFilter).fadeIn(100).css('transform', 'scale(1)');
-      $("#portfolio-wrapper").fadeTo(300, 1);
-    }, 300);
   });
 
   // jQuery counterUp

@@ -1,9 +1,7 @@
 /*
-  Theme Name: Regna
-  Theme URL: https://bootstrapmade.com/regna-bootstrap-onepage-template/
-  Author: BootstrapMade.com
-  License: https://bootstrapmade.com/license/
+  CSS file for layout.html - the template used for all pages on C150data
 */
+
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
@@ -128,7 +126,7 @@ h1, h2, h3, h4, h5, h6 {
 #header.header-fixed {
   background: rgba(52, 59, 64, 0.9);
   padding: 20px 0;
-  height: 72px;
+  height: 71px;
   transition: all 0.5s;
 }
 
@@ -150,14 +148,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #hero .alert {
-	position: fixed;
-	align-items: center;
-	text-align: center;
-	flex-direction: column;
 	width: 400px;
-	top: 200px;
+  margin-top: -75px;
 	z-index: 1;
-	display: inline-block;
 }
 
 #hero:before {
@@ -340,7 +333,7 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.3s ease-in-out 0s;
 }
 
-.nav-menu a:hover:before, .nav-menu li:hover > a:before, .nav-menu .menu-active > a:before {
+.nav-menu a:hover:before, .nav-menu li:hover > a:before, .nav-menu .active > a:before {
   visibility: visible;
   -webkit-transform: scaleX(1);
   transform: scaleX(1);
@@ -487,387 +480,7 @@ body.mobile-nav-active #mobile-nav {
 body.mobile-nav-active #mobile-nav-toggle {
   color: #fff;
 }
-
-/*--------------------------------------------------------------
-# Sections
---------------------------------------------------------------*/
-/* Sections Header
---------------------------------*/
-.section-header .section-title {
-  font-size: 32px;
-  color: #111;
-  text-transform: uppercase;
-  text-align: center;
-  font-weight: 700;
-  margin-bottom: 5px;
-}
-
-.section-header .section-description {
-  text-align: center;
-  padding-bottom: 40px;
-  color: #999;
-}
-
-/* About Us Section
---------------------------------*/
-#about {
-  background: #fff;
-  padding: 80px 0;
-}
-
-#about .about-container .background {
-  min-height: 300px;
-  background: url(../img/TeamPhotoEastern.jpg) center top no-repeat;
-  margin-bottom: 10px;
-}
-
-#about .about-container .content {
-  background: #fff;
-}
-
-#about .about-container .title {
-  color: #333;
-  font-weight: 700;
-  font-size: 32px;
-}
-
-@media (max-width: 768px) {
-  #about .about-container .title {
-    padding-top: 15px;
-  }
-}
-
-#about .about-container p {
-  line-height: 26px;
-}
-
-#about .about-container p:last-child {
-  margin-bottom: 0;
-}
-
-#about .about-container .icon-box {
-  background: #fff;
-  background-size: cover;
-  padding: 0 0 30px 0;
-}
-
-#about .about-container .icon-box .icon {
-  float: left;
-  background: #fff;
-  width: 64px;
-  height: 64px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
-  border-radius: 50%;
-  border: 2px solid #b9d9eb;
-}
-
-#about .about-container .icon-box .icon i {
-  color: #b9d9eb;
-  font-size: 24px;
-}
-
-#about .about-container .icon-box .title {
-  margin-left: 80px;
-  font-weight: 500;
-  margin-bottom: 5px;
-  font-size: 18px;
-  text-transform: uppercase;
-}
-
-#about .about-container .icon-box .title a {
-  color: #111;
-}
-
-#about .about-container .icon-box .description {
-  margin-left: 80px;
-  line-height: 24px;
-  font-size: 14px;
-}
-
-/* Facts Section
---------------------------------*/
-#facts {
-  background: #f7f7f7;
-  padding: 80px 0 60px 0;
-}
-
-#facts .counters span {
-  font-size: 48px;
-  display: block;
-  color: #b9d9eb;
-}
-
-#facts .counters p {
-  padding: 0;
-  margin: 0 0 20px 0;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 14px;
-}
-
-/* Services Section
---------------------------------*/
-#services {
-  background: #fff;
-  background-size: cover;
-  padding: 80px 0 60px 0;
-}
-
-#services .box {
-  padding: 50px 20px;
-  margin-bottom: 50px;
-  text-align: center;
-  border: 1px solid #e6e6e6;
-  height: 200px;
-  position: relative;
-  background: #fafafa;
-}
-
-#services .icon {
-  position: absolute;
-  top: -36px;
-  left: calc(50% - 36px);
-  transition: 0.2s;
-  border-radius: 50%;
-  border: 6px solid #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
-  width: 72px;
-  height: 72px;
-  background: #b9d9eb;
-}
-
-#services .icon a {
-  display: inline-block;
-}
-
-#services .icon i {
-  color: #fff;
-  font-size: 24px;
-}
-
-#services .box:hover .icon {
-  background: #fff;
-  border: 2px solid #b9d9eb;
-}
-
-#services .box:hover .icon i {
-  color: #b9d9eb;
-}
-
-#services .box:hover .icon a {
-  color: #b9d9eb;
-}
-
-#services .title {
-  font-weight: 700;
-  font-size: 18px;
-  margin-bottom: 15px;
-  text-transform: uppercase;
-}
-
-#services .title a {
-  color: #111;
-}
-
-#services .description {
-  font-size: 14px;
-  line-height: 24px;
-}
-
-/* Call To Action Section
---------------------------------*/
-#call-to-action {
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(../img/call-to-action-bg.jpg) fixed center center;
-  background-size: cover;
-  padding: 80px 0;
-}
-
-#call-to-action .cta-title {
-  color: #fff;
-  font-size: 28px;
-  font-weight: 700;
-}
-
-#call-to-action .cta-text {
-  color: #fff;
-}
-
-@media (min-width: 769px) {
-  #call-to-action .cta-btn-container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-}
-
-#call-to-action .cta-btn {
-  font-family: 'Open Sans', sans-serif;
-  text-transform: uppercase;
-  font-weight: 500;
-  font-size: 16px;
-  letter-spacing: 1px;
-  display: inline-block;
-  padding: 8px 30px;
-  border-radius: 50px;
-  transition: 0.5s;
-  margin: 10px;
-  border: 2px solid #fff;
-  color: #fff;
-}
-
-#call-to-action .cta-btn:hover {
-  background: #b9d9eb;
-  border: 2px solid #b9d9eb;
-}
-
-/* Portfolio Section
---------------------------------*/
-#portfolio {
-  background: #f7f7f7;
-  padding: 80px 0;
-}
-
-#portfolio #portfolio-wrapper {
-  padding-right: 15px;
-}
-
-#portfolio #portfolio-flters {
-  padding: 0;
-  margin: 0 0 45px 0;
-  list-style: none;
-  text-align: center;
-}
-
-#portfolio #portfolio-flters li {
-  cursor: pointer;
-  margin: 0 10px;
-  display: inline-block;
-  padding: 10px 22px;
-  font-size: 12px;
-  line-height: 20px;
-  color: #666666;
-  border-radius: 4px;
-  text-transform: uppercase;
-  background: #fff;
-  margin-bottom: 5px;
-  transition: all 0.3s ease-in-out;
-}
-
-#portfolio #portfolio-flters li:hover, #portfolio #portfolio-flters li.filter-active {
-  background: #b9d9eb;
-  color: #fff;
-}
-
-#portfolio .portfolio-item {
-  position: relative;
-  height: 200px;
-  overflow: hidden !important;
-  margin-bottom: 15px;
-  transition: all 350ms ease;
-  transform: scale(1);
-}
-
-#portfolio .portfolio-item a {
-  display: block;
-  margin-right: 15px;
-}
-
-#portfolio .portfolio-item img {
-  position: relative;
-  top: 0;
-  transition: all 600ms cubic-bezier(0.645, 0.045, 0.355, 1);
-}
-
-#portfolio .portfolio-item .details {
-  height: 50px;
-  background: #b9d9eb;
-  position: absolute;
-  width: 100%;
-  height: 50px;
-  bottom: -50px;
-  transition: all 300ms cubic-bezier(0.645, 0.045, 0.355, 1);
-}
-
-#portfolio .portfolio-item .details h4 {
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-  padding: 8px 0 2px 8px;
-  margin: 0;
-}
-
-#portfolio .portfolio-item .details span {
-  display: block;
-  color: #fff;
-  font-size: 13px;
-  padding-left: 8px;
-}
-
-#portfolio .portfolio-item:hover .details {
-  bottom: 0;
-}
-
-#portfolio .portfolio-item:hover img {
-  top: -30px;
-}
-
-/* Team Section
---------------------------------*/
-#team {
-  background: #fff;
-  padding: 80px 0 60px 0;
-}
-
-#team .member {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-#team .member .pic {
-  margin-bottom: 15px;
-  overflow: hidden;
-  height: 260px;
-}
-
-#team .member .pic img {
-  max-width: 100%;
-}
-
-#team .member h4 {
-  font-weight: 700;
-  margin-bottom: 2px;
-  font-size: 18px;
-}
-
-#team .member span {
-  font-style: italic;
-  display: block;
-  font-size: 13px;
-}
-
-#team .member .social {
-  margin-top: 15px;
-}
-
-#team .member .social a {
-  color: #b3b3b3;
-}
-
-#team .member .social a:hover {
-  color: #b9d9eb;
-}
-
-#team .member .social i {
-  font-size: 18px;
-  margin: 0 2px;
-}
+/**/
 
 /* Contact Section
 --------------------------------*/
@@ -912,7 +525,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   background: #333;
   color: #fff;
   line-height: 1;
-  padding: 8px 0;
+  padding: 10px 0;
   border-radius: 50%;
   text-align: center;
   width: 40px;

@@ -5,12 +5,12 @@
   <meta charset="utf-8">
   <title>Columbia Lightweight Rowing</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <meta content="" name="keywords">
-  <meta content="" name="description">
+  <meta content="Rowing, Data, Columbia, Statistics, Analytics, C150" name="keywords">
+  <meta content="A website designed to meaningfully display the Columbia Lightweight Rowing team's training data." name="description">
 
   <!-- Favicons -->
   <link href="../static/img/favicon.png" rel="icon">
-  <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="../static/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
   <!-- Bootstrap CSS File 4.0.0-->
   <link href="../static/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Libraries CSS Files -->
+  <!-- Libraries CSS Files for Animations and Fonts-->
   <link href="../static/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
   <link href="../static/lib/animate/animate.min.css" rel="stylesheet">
 
@@ -28,7 +28,7 @@
   <!-- Moment JS -->
   <script src="https://momentjs.com/downloads/moment.js"></script>
 
-  <!-- Tempus Dominus JS + CSS -->
+  <!-- Tempus Dominus JS + CSS for Datetimepicker-->
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
   <link rel="stylesheet"
@@ -36,8 +36,6 @@
 
   <!-- Main Stylesheet File -->
   <link href="../static/css/style.css" rel="stylesheet">
-
-
 </head>
 
 <body>
@@ -48,28 +46,25 @@
   <header id="header">
     <div class="container">
 
+      <!-- Header Logo -->
       <div id="logo" class="pull-left">
-        <!-- <a href="#hero"><img src="../static/img/logo.png" alt="" title="" /></img></a> -->
-        <!-- Uncomment below if you prefer to use a text logo -->
-        <h1><a href="/">Columbia150</a></h1>
+        <a href="/"><img src="../static/img/LightweightLion.png" alt="" id="logoimage"/></img></a>
+        <h3><a href="/">C150</a></h3>
       </div>
 
+      <!-- NavBar Menu -->
       <nav id="nav-menu-container">
         <ul class="nav-menu">
-          <li class="menu-active"><a href="{{ url_for('about') }}">Home</a></li>
+          <li class="{{ 'active' if active_page == 'about' else '' }}"><a href="{{ url_for('about') }}">Home</a></li>
           {% if current_user.is_authenticated %}
-          <li><a class="nav-link" href="{{ url_for('hours') }}">Hours</a></li>
-          <li><a class="nav-link" href="{{ url_for('contact') }}">Contact</a></li>
-          <li><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+          <li class="{{ 'active' if active_page == 'hours' else '' }}"><a class="nav-link" href="{{ url_for('hours') }}">Hours</a></li>
+          <li class="{{ 'active' if active_page == 'contact' else '' }}"><a class="nav-link" href="{{ url_for('contact') }}">Contact</a></li>
+          <li class="{{ 'active' if active_page == 'logout' else '' }}"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
           {% if config['ENV'] == 'development' %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
-          </li>
+          <li><a href="{{ url_for('admin') }}">Admin</a></li>
           {% endif %}
           {% else %}
-          <li class="nav-item">
-            <a class="nav-itemk nav-link" href="{{ url_for('login') }}">Login</a>
-          </li>
+          <li class="{{ 'active' if active_page == 'login' else '' }}"><a href="{{ url_for('login') }}">Login</a></li>
           {% endif %}
         </ul>
       </nav><!-- #nav-menu-container -->
@@ -83,21 +78,25 @@
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       {% for category, message in messages %}
-      <div class="alert alert-{{ category }}">
-        {{ message }}
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col"></div>
+          <div class="col">
+            <div class="alert alert-{{ category }}">
+              {{ message }}
+            </div>
+          </div>
+          <div class="col"></div>
+        </div>
+      </div>
       </div>
       {% endfor %}
       {% endif %}
       {% endwith %}
       <!-- Main content -->
       {% block content %}{% endblock %}
-    </div>
   </section>
 
-  </main>
-
-
-  <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
   <!-- JavaScript Libraries -->
   <script src="../static/lib/jquery/jquery-migrate.min.js"></script>
