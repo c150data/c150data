@@ -26,7 +26,40 @@ def dbInsert(items):
         db.session.commit()
         return True
     except Exception as e:
-        log.error("Error inserting [%s] into the database: %s", items, e)
+        log.error("Error inserting [{items}] into the database: {error}", items=items, error=e)
+        db.session.rollback()
+        db.session.flush()
+        return False
+
+
+def dbSelect(statement):
+    if statement is None:
+        return None
+
+    try:
+        result = db.session.execute(statement).fetchall()
+        if len(result) is 0:
+            return None
+        else:
+            return result  # TODO return result.rows??
+    except Exception as e:
+        raise Exception("Error executing query [{stmt}]: {error}".format(stmt=statement, error=e))
+
+
+def dbDelete(items):
+    if items is None:
+        return False
+
+    try:
+        if isinstance(items, list):
+            for item in items:
+                db.session.delete(item)
+        else:
+            db.session.delete(item)
+        db.session.commit()
+        return True
+    except Exception as e:
+        log.error("Error deleting [{items}] into the database: {error}".format(items=items, error=e))
         db.session.rollback()
         db.session.flush()
         return False
