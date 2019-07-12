@@ -6,12 +6,8 @@ from flask_mail import Message
 from app.models import User
 from app.forms import RegistrationForm, LoginForm, ContactForm
 
-
-
 # Admin decorator
-
 from functools import wraps
-
 
 def requires_access_level(access_level):
     def decorator(f):
@@ -28,6 +24,7 @@ def requires_access_level(access_level):
             return f(*args, **kwargs)
         return decorated_function
     return decorator
+
 
 # PAGES
 

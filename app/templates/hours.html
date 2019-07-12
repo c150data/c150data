@@ -1,48 +1,53 @@
+
+
 {% extends 'layout.html' %}
+{% set active_page = "hours" %}
 {% block content %}
 
 <script type="text/javascript" src="../static/js/hours.js"></script>
 <link rel="stylesheet" href="../static/css/hours.css"/>
-<div class="container-fluid " id="hours-content">
 
-	<div class="row">
-		<div class="col-lg-5 align-self-center">
-			<div class="form-group">
-				<div class="input-group date" id="datetimepickerStart" data-target-input="nearest">
-					<input type="text" placeholder="Start Date" id="startDateInput"
-						class="form-control datetimepicker-input" data-target="#datetimepickerStart" />
-					<div class="input-group-append" data-target="#datetimepickerStart" data-toggle="datetimepicker">
-						<div class="input-group-text"><i class="fa fa-calendar"></i></div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class='col-lg-5 align-self-center'>
-			<div class="form-group">
-				<div class="input-group date" id="datetimepickerEnd" data-target-input="nearest">
-					<input type="text" placeholder="End Date" id="endDateInput"
-						class="form-control datetimepicker-input" data-target="#datetimepickerEnd" />
-					<div class="input-group-append" data-target="#datetimepickerEnd" data-toggle="datetimepicker">
-						<div class="input-group-text"><i class="fa fa-calendar"></i></div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-2">
-			<button type="submit" id="dataSubmitButton" class="btn btn-primary">
-				<span id='spinner' class="spinner-border spinner-border-sm" role="status"></span>
-				<span id='submitLabel'>Get Hours</span>
-			</button>
-		</div>
+<div class="hours-content">
+  <div class="container-fluid">
+
+    <div class="text-center" id="main-text">
+      <h1>This is the Hours page.</h1>
+      <p>Simply select the time period of which you want to see the completed hours and press enter!</p>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-5 align-self-center">
+        <div class="form-group">
+          <div class="input-group date" id="datetimepickerStart" data-target-input="nearest">
+            <input type="text" placeholder="Start Date" id="startDateInput"
+           class="form-control datetimepicker-input" data-target="#datetimepickerStart" />
+            <div class="input-group-append" data-target="#datetimepickerStart" data-toggle="datetimepicker">
+              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='col-lg-5 align-self-center'>
+        <div class="form-group">
+          <div class="input-group date" id="datetimepickerEnd" data-target-input="nearest">
+            <input type="text" placeholder="End Date" id="endDateInput"
+           class="form-control datetimepicker-input" data-target="#datetimepickerEnd" />
+            <div class="input-group-append" data-target="#datetimepickerEnd" data-toggle="datetimepicker">
+              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+          </div>
+        </div>
+      <div class="col-lg-2">
+        <button type="submit" id="dataSubmitButton" class="btn btn-primary">
+          <span id='spinner' class="spinner-border spinner-border-sm" role="status"></span>
+          <span id='submitLabel'>Get Hours</span>
+        </button>
+      </div>
+    </div>
   </div>
-  </div>
-  <div class="table-wrapper-scroll-y">
-  <table class="table table-bordered table-striped mb-0">
-    <thead>
-	   <div class="row" id="hours-table-div"></div>
-   </thead>
- </table>
+  <div class="row" id="hours-table-div"></div>
 </div>
 
+<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
 {% endblock content %}
