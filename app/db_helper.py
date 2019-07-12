@@ -26,7 +26,7 @@ def dbInsert(items):
         db.session.commit()
         return True
     except Exception as e:
-        log.error("Error inserting [{items}] into the database: {error}", items=items, error=e)
+        log.error("Error inserting [{items}] into the database: {error}".format(items=items, error=e))
         db.session.rollback()
         db.session.flush()
         return False

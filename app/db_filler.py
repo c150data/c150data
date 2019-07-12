@@ -53,7 +53,7 @@ def insertWorkoutsIntoDb(start_date, end_date):
     try:
         id_list = get_ids(getAllActiveAthletes())
         datesList = getListOfStartEndDates(start_date, end_date)
-        log.info("Dates List: {dates}", dates=datesList)
+        log.info("Dates List: {dates}".format(dates=datesList))
         workoutsList = list()
 
         for id in id_list:
@@ -148,6 +148,9 @@ def processDeletedWorkouts(deleted_workouts):
 
 
 def processModifiedWorkouts(modified_workouts):
+    # TODO ask Ben about this. Does the modified workouts tab return the entire workout's fields or only the fields that changed??
+    # Right now, this is coded such that the modified workouts json returns all of the fields in the updated workout such that the
+    # old workout can be deleted and be entirely recreated from the json
     workoutsToInsert = list()
     for modified_workout in modified_workouts:
         workoutsToInsert.append(updateWorkout(modified_workout))
