@@ -1,7 +1,37 @@
+/*
+  CSS file for hours.html - the hours page for C150data. 
+*/
+
 #auth-buttons {
     display: none;
 }
-
-#hours-table-div {
-    color: white;
+.hours-content {
+	width: 100%;
+  	height: 300vh;
+ 	background: url(../img/LightweightLion.jpeg) top center;
+  	/*background-size: cover;*/
+  	/*position: relative;*/
+  	background-attachment: fixed;
 }
+
+#hero:before {
+  content: "";
+  height: 300vh;
+  background: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+p {
+	color: white;
+}
+
+.container-fluid{
+	display: inline-block;
+	z-index: 1;
+	margin-left: auto;
+}
+

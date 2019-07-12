@@ -1,3 +1,6 @@
+// Javascript file for admin page. Allows for calls to database
+// to put workouts in database. 
+
 $(document).ready(function () {
     $('#spinner').hide();
     $(document).on({
