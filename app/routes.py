@@ -1,10 +1,14 @@
 from flask import request, render_template, redirect, url_for, flash, session
 from flask_login import login_user, current_user, logout_user, login_required
 from authlib.client import OAuth2Session
-from app import app, db, bcrypt, log, hours_helper, oauth_helper, db_filler, admin, ACCESS, mail
+from app import app, db, bcrypt, log, ACCESS, mail
+from app.data import hours as athlete_hours
+from app.api import oauth
+from app.database import db_filler
+from app.admin import admin
 from flask_mail import Message
-from app.models import User
-from app.forms import RegistrationForm, LoginForm, ContactForm
+from app.db_models import User
+from app.forms.forms import RegistrationForm, LoginForm, ContactForm
 
 # Admin decorator
 from functools import wraps
@@ -46,7 +50,6 @@ def hours():
 
 
 @app.route("/contact", methods=['GET', 'POST'])
-# @requires_access_level(ACCESS['user'])
 def contact():
     form = ContactForm()
     if request.method == 'POST':
@@ -55,7 +58,7 @@ def contact():
             return render_template('contact.html', form=form)
         else:
             msg = Message(form.subject.data, sender="lwtpoodles150@gmail.com", recipients=[
-                'lwtpoodles150@gmail.com'])
+            'lwtpoodles150@gmail.com'])
             msg.body = """
                        From: %s %s <%s>
                        %s
@@ -76,7 +79,7 @@ def getData():
     end_date = request.args.get('end_date')
     athletes = None
     try:
-        athletes = hours_helper.getHoursForAllAthletes(start_date, end_date)
+        athletes = athlete_hours.getHoursForAllAthletes(start_date, end_date)
     except Exception as e:
         log.error("Was not able to get hours: {error}".format(error=e))
         # TODO figure out if we can display error to UI
@@ -140,13 +143,13 @@ def admin():
 @app.route("/admin/authorize")
 @requires_access_level(ACCESS['admin'])
 def user_authorization():
-    return redirect(oauth_helper.getAuthorizationUrl())
+    return redirect(oauth.getAuthorizationUrl())
 
 
 @app.route("/admin/insertNewToken")
 @requires_access_level(ACCESS['admin'])
 def insertNewToken():
-    success = oauth_helper.insertNewToken(oauth_helper.getNewAccessToken())
+    success = oauth.insertNewToken(oauth.getNewAccessToken())
     if success:
         flash("A new access token was successfuly inserted into the database.", 'success')
     else:

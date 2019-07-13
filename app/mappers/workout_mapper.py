@@ -1,92 +1,5 @@
-from app import db, log
-from app.models import Workout, Athlete
+from app.db_models import Workout
 from dateutil import parser
-import json
-
-
-def dbInsert(items):
-    """
-    Inserts items into the database
-
-    Args:
-        items: A single model object or a list of objects
-
-    Returns:
-       Integer: Number of rows inserted
-    """
-    if items is None:
-        return False
-
-    try:
-        if isinstance(items, list):
-            for item in items:
-                db.session.add(item)
-        else:
-            result = db.session.add(items)
-        db.session.commit()
-        return True
-    except Exception as e:
-        log.error("Error inserting [{items}] into the database: {error}".format(items=items, error=e))
-        db.session.rollback()
-        db.session.flush()
-        return False
-
-
-def dbSelect(statement):
-    if statement is None:
-        return None
-
-    try:
-        result = db.session.execute(statement).fetchall()
-        if len(result) is 0:
-            return None
-        else:
-            return result  # TODO return result.rows??
-    except Exception as e:
-        raise Exception("Error executing query [{stmt}]: {error}".format(stmt=statement, error=e))
-
-
-def dbDelete(items):
-    if items is None:
-        return False
-
-    try:
-        if isinstance(items, list):
-            for item in items:
-                db.session.delete(item)
-        else:
-            db.session.delete(item)
-        db.session.commit()
-        return True
-    except Exception as e:
-        log.error("Error deleting [{items}] into the database: {error}".format(items=items, error=e))
-        db.session.rollback()
-        db.session.flush()
-        return False
-
-
-def getAthleteObjectFromJSON(athlete_json):
-    return Athlete(
-        id=athlete_json['Id'],
-        name="{} {}".format(
-            athlete_json['FirstName'], athlete_json['LastName']),
-        email=athlete_json['Email'],
-        is_active=True,  # Default isActive to True, can manually deactivate later
-        last_updated_workouts=None)
-
-
-def tryParse(str_date):
-    try:
-        return parser.parse(str_date)
-    except:
-        return None
-
-
-def tryListConvert(list):
-    try:
-        return " ".join(list)
-    except:
-        return None
 
 
 def getWorkoutObjectFromJSON(workout_json):
@@ -146,3 +59,17 @@ def getWorkoutObjectFromJSON(workout_json):
         structure=workout_json.get('Structure', None),
         workoutFileFormats=workout_json.get('WorkoutFileFormats', None)
     )
+
+
+def tryParse(str_date):
+    try:
+        return parser.parse(str_date)
+    except:
+        return None
+
+
+def tryListConvert(list):
+    try:
+        return " ".join(list)
+    except:
+        return None
