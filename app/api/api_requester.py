@@ -1,18 +1,16 @@
 import requests
-from app import urls, oauth_helper
+from app.api import urls, oauth
 
 
-def getAthletes(valid_token):
+def getAthletes():
+    valid_token = oauth.getValidAuthToken()
     headers = getAPIRequestHeaders(valid_token)
-    if headers is None:
-        return None
     return requests.get(urls.COACH_ATHLETES_URL, headers=headers)
 
 
-def getWorkoutsForAthlete(valid_token, id, start_date, end_date):
+def getWorkoutsForAthlete(id, start_date, end_date):
+    valid_token = oauth.getValidAuthToken()
     headers = getAPIRequestHeaders(valid_token)
-    if headers is None:
-        return None
 
     params = dict()
     params['includeDescription'] = True
@@ -22,11 +20,8 @@ def getWorkoutsForAthlete(valid_token, id, start_date, end_date):
 
 
 def getWorkoutsChangedSince(athlete_id, sinceDate):
-    valid_token = oauth_helper.getValidAuthToken()
+    valid_token = oauth.getValidAuthToken()
     headers = getAPIRequestHeaders(valid_token)
-    if headers is None:
-        return None
-
     base_url = urls.WORKOUTS_CHANGED_SINCE(athlete_id, sinceDate)
     params = dict()
     params['includeDescription'] = True
@@ -37,8 +32,9 @@ def getWorkoutsChangedSince(athlete_id, sinceDate):
 
 
 def getAPIRequestHeaders(valid_token):
-    if valid_token is not None:
-        return {'host': 'api.sandbox.trainingpeaks.com', 'content-type':
-                'application/json', 'Authorization': 'Bearer ' + valid_token.access_token}
-    return None
+    if valid_token is None:
+        raise Exception("Authentication token is None.")
+
+    return {'host': 'api.sandbox.trainingpeaks.com', 'content-type':
+            'application/json', 'Authorization': 'Bearer ' + valid_token.access_token}
 

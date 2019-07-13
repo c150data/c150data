@@ -1,7 +1,8 @@
 from authlib.client import OAuth2Session
-from app import log, db_helper, app
+from app import log, app
+from app.database import db_functions
+from app.db_models import AuthToken
 from datetime import datetime, timedelta
-from app.models import AuthToken
 
 
 remote = app.config['IS_REMOTE']
@@ -40,7 +41,7 @@ def insertNewToken(token):
 
     token = AuthToken(access_token=access_token, token_type=token_type,
                       expires_at=expires_at_date, refresh_token=refresh_token, scope=scope)
-    return db_helper.dbInsert(token)
+    return db_functions.dbInsert(token)
 
 
 def refreshAuthTokenIfNeeded():
