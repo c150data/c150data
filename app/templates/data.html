@@ -1,5 +1,26 @@
+
+<!-- This html page is what ajax returns in the hours.js file. 
+It then passes this html page to route.py which renders this template.  -->
+
+<!-- Did not deem it necessary to make entirely new css file for data.html -->
+
+<style>
+  .my-table{
+    position: absolute;
+    height: auto; 
+    border-radius: 5px;
+    width: 85%; 
+    margin: 0px auto;
+    margin-top: 500px; 
+    background-color: white;
+    color: black;
+    float: none !important;
+  }
+</style>
+
+<div class="my-table">
 {% if athletes is not none %}
-<table class="table table-striped" style="height:100%;">
+<table class="table table-striped table-hover text-center" style="height:100%;">
 	<thead>
 		<tr>
 			<th scope="col">Rank</th>

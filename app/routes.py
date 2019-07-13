@@ -150,7 +150,7 @@ def insertNewToken():
     if success:
         flash("A new access token was successfuly inserted into the database.", 'success')
     else:
-        flash("An error occurred while inserting a new acccess token into the database.", 'error')
+        flash("An error occurred while inserting a new acccess token into the database.", 'danger')
     return render_template("/admin/home.html")
 
 
