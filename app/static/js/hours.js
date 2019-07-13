@@ -34,7 +34,7 @@ $(document).ready(function () {
     });
 
     // Ajax makes a call to go to hours/getData (a function in our routes.py)
-    // getData then calls getHoursForAllAthletes from  hours_helper with start data and end date
+    // getData then calls getHoursForAllAthletes from hours with start data and end date
     // This returns len of athletes and the athletes which getData renders into a template data.html
     // If it is a success ajax returns this data.html template. 
     $("#dataSubmitButton").click(function (e) {

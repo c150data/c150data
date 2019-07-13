@@ -1,6 +1,6 @@
 from flask_admin import Admin, AdminIndexView
 from app import app, db
-from app.models import User, Athlete, Workout, AuthToken
+from app.db_models import User, Athlete, Workout, AuthToken
 from flask import redirect, url_for, flash, request, render_template
 from flask_login import current_user
 from flask_admin.contrib.sqla import ModelView

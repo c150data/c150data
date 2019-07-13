@@ -1,16 +1,19 @@
-from app import db, log, sql_statements as sql, db_helper, api_helper, db_filler
-from app.models import Athlete
+from app import db, log
+from app.database import db_functions, db_filler, sql_statements as sql, db_updater
+from app.api import api_requester
+from app.db_models import Athlete
 import operator
 from datetime import datetime, timedelta
 
 REFRESH_WORKOUT_MINUTES = 30
+# Ask ben about this
 DEFAULT_LAST_UPDATED_TIME = datetime.utcnow() - timedelta(days=14)
 
 
 def getHoursForAllAthletes(start_date, end_date):
     try:
         updateWorkoutsIfNecessary()
-        result = db_helper.dbSelect(sql.getAllHoursSQL(start_date, end_date))
+        result = db_functions.dbSelect(sql.getAllHoursSQL(start_date, end_date))
         if result is None:
             raise Exception("Hours query returned None.")
     except Exception as e:
@@ -30,7 +33,7 @@ def getHoursForAllAthletes(start_date, end_date):
 
 
 def updateWorkoutsIfNecessary():
-    lastUpdatedTime = db_helper.dbSelect(sql.getOldestLastWorkoutTimeSQL())[0]['last_updated_workouts']
+    lastUpdatedTime = db_functions.dbSelect(sql.getOldestLastWorkoutTimeSQL())[0]['last_updated_workouts']
     if lastUpdatedTime is not None:
         # Format time
         lastUpdatedTime = datetime.strptime(lastUpdatedTime, "%Y-%m-%d %H:%M:%S.%f")
@@ -52,15 +55,16 @@ def updateWorkouts(lastUpdatedTime):
     log.info("Updating workouts...")
     if lastUpdatedTime is None:
         lastUpdatedTime = DEFAULT_LAST_UPDATED_TIME
-    athletes = db_helper.dbSelect(sql.getAllActiveAthletesSQL())
+    athletes = db_functions.dbSelect(sql.getAllActiveAthletesSQL())
     num_deleted, num_modified = 0, 0
     for athlete in athletes:
-        api_response = api_helper.getWorkoutsChangedSince(
+        api_response = api_requester.getWorkoutsChangedSince(
             athlete['id'], lastUpdatedTime)
-        curr_num_deleted, curr_num_modified = db_filler.processWorkoutUpdateJSON(api_response.json())
+        curr_num_deleted, curr_num_modified = db_updater.processWorkoutUpdateJSON(api_response.json())
         num_deleted += curr_num_deleted
         num_modified += curr_num_modified
-    log.info("Deleted {num_deleted} workouts and modified {num_modified} workouts.".format(num_deleted=num_deleted, num_modified=num_modified))
+    log.info("Deleted {num_deleted} workouts and modified {num_modified} workouts since {lastUpdatedTime}."
+        .format(num_deleted=num_deleted, num_modified=num_modified, lastUpdatedTime=lastUpdatedTime))
 
 
 def updateAthletesWorkoutsTime():
