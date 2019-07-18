@@ -1,5 +1,6 @@
 from app.database import db_functions
 from app.db_models import Workout
+from app.mappers import workout_mapper
 from app import log
 
 
@@ -41,8 +42,8 @@ def processModifiedWorkouts(modified_workouts):
 def updateWorkout(workout_json):
     if Workout.query.filter_by(id=workout_json['Id']) is None:
         # Workout does not exist in DB
-        return db_functions.getWorkoutObjectFromJSON(workout_json)
+        return workout_mapper.getWorkoutObjectFromJSON(workout_json)
     else:
         # Workout already exists in db, need to first delete existing then return new one to insert
         Workout.query.filter_by(id=workout_json['Id']).delete()
-        return db_functions.getWorkoutObjectFromJSON(workout_json)
+        return workout_mapper.getWorkoutObjectFromJSON(workout_json)
