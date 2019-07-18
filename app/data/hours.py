@@ -22,6 +22,7 @@ def getHoursForAllAthletes(start_date, end_date):
     athleteHourList = list()
     for row in result:
         athlete_info = {
+            "rank": 0,
             "name": row['name'],
             "hours": row['hours'],
             "rounded_hours": round(row['hours'], 2)
@@ -29,6 +30,11 @@ def getHoursForAllAthletes(start_date, end_date):
         athleteHourList.append(athlete_info)
     sortedAthleteHourList = sorted(
         athleteHourList, key=operator.itemgetter('hours'), reverse=True)
+    rank = 1
+    for athlete in sortedAthleteHourList:
+        log.info(athlete)
+        athlete["rank"] = rank
+        rank+=1
     return sortedAthleteHourList
 
 

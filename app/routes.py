@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, url_for, flash, session
+from flask import request, render_template, redirect, url_for, flash, session, jsonify
 from flask_login import login_user, current_user, logout_user, login_required
 from authlib.client import OAuth2Session
 from app import app, db, bcrypt, log, ACCESS, mail
@@ -72,6 +72,7 @@ def contact():
 
 # DATA
 
+
 @app.route("/hours/getData")
 @requires_access_level(ACCESS['user'])
 def getData():
@@ -83,7 +84,8 @@ def getData():
     except Exception as e:
         log.error("Was not able to get hours: {error}".format(error=e))
         # TODO figure out if we can display error to UI
-    return render_template("data.html", athletes=athletes)
+    log.info("Here is the json: "+str(athletes))
+    return jsonify(athletes)
 
 
 # LOGIN
