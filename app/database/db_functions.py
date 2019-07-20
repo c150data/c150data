@@ -1,3 +1,6 @@
+"""
+Handles basic SQL functions
+"""
 from app import db, log
 
 
@@ -12,7 +15,7 @@ def dbInsert(items):
        Boolean: True if successful, otherwise False
     """
     if items is None:
-        raise Exception("Cannot insert items of type None.")
+        raise TypeError("Cannot insert items of type None.")
 
     try:
         if isinstance(items, list):
@@ -25,21 +28,22 @@ def dbInsert(items):
     except Exception as e:
         db.session.rollback()
         db.session.flush()
-        raise Exception("Error inserting [{items}] into the database: {error}".format(items=items, error=e))
+        raise Exception("Error inserting [{items}] into the database: {error}".format(
+            items=items, error=e))
 
 
 def dbSelect(statement):
     """
     Executes a select statement
-    
+
     Args:
         statement (str): statement to execute
-    
+
     Raises:
         Exception: On database exception
-    
+
     Returns:
-        List of Rows: On success, returns list of rows that are returned by the execution of statement 
+        List of Rows: On success, returns list of rows that are returned by the execution of statement
         None: Returns None when the result returned 0 rows
     """
     if statement is None:
@@ -52,22 +56,23 @@ def dbSelect(statement):
         else:
             return result
     except Exception as e:
-        raise Exception("Error executing query [{stmt}]: {error}".format(stmt=statement, error=e))
+        raise Exception("Error executing query [{stmt}]: {error}".format(
+            stmt=statement, error=e))
 
 
 def dbDelete(items):
     """
     Deletes items in the databse
-    
+
     Args:
         items (List): List of database object items to delete
-    
+
     Raises:
-        TypeError: When items is None 
-        Exception: When the database throws an error 
-    
+        TypeError: When items is None
+        Exception: When the database throws an error
+
     Returns:
-       Boolean: True on success 
+       Boolean: True on success
     """
     if items is None:
         raise TypeError("Cannot insert items of type None.")
@@ -83,4 +88,5 @@ def dbDelete(items):
     except Exception as e:
         db.session.rollback()
         db.session.flush()
-        raise Exception("Error deleting [{items}] into the database: {error}".format(items=items, error=e))
+        raise Exception("Error deleting [{items}] into the database: {error}".format(
+            items=items, error=e))

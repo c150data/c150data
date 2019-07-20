@@ -17,11 +17,11 @@
 <link rel="stylesheet" href="../static/css/hours.css"/>
 
 <style>
-  .my-table {
+  #table {
       position: fixed;
       z-index: 1;
       margin-top: 480px;
-      width: 100%;
+      width: 95%;
       height: auto;
       background-color: grey;
       opacity: .9;
@@ -29,16 +29,32 @@
   }
 </style>
 
-<div class="hours-content">
-  <div class="container-fluid">
-
+<section id="hours">
+  <div class="hours-container">
+    <!-- Handles any alerts -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col"></div>
+        <div class="col">
+          <div class="text-center alert alert-{{ category }}">
+            {{ message }}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
     <div class="text-center" id="main-text">
       <h1>This is the Hours page.</h1>
-      <p>Simply select the time period of which you want to see the completed hours and press enter!</p>
+      <h2>Simply select the time period of which you want to see the completed hours and press enter!</h2>
     </div>
 
-    <div class="row text-center">
-      <div class="col-lg-5 align-self-center">
+    <div class="row text-center" style="z-index: 2;">
+      <div class="col-lg-6 align-self-center">
         <div class="form-group">
           <div class="input-group date" id="datetimepickerStart"  data-target-input="nearest">
             <input type="text" placeholder="Start Date" id="startDateInput"
@@ -49,7 +65,7 @@
           </div>
         </div>
       </div>
-      <div class='col-lg-5 align-self-center'>
+      <div class='col-lg-6 align-self-center'>
         <div class="form-group">
           <div class="input-group date" id="datetimepickerEnd" data-target-input="nearest">
             <input type="text" placeholder="End Date" id="endDateInput"
@@ -60,46 +76,42 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-2">
+      <div class="col-lg-2 align-self-center">
         <button id="button" type="submit" id="dataSubmitButton" class="btn btn-primary">
           <span id='spinner' class="spinner-border spinner-border-sm" role="status"></span>
           <span id='submitLabel'>Get Hours</span>
         </button>
       </div>
     </div>
+
+    <!-- <div class="my-table"> -->
+    <!-- <table
+      class="display table table-striped"
+      id="table"
+      data-search=true> 
+      data-only-info-pagination="true"-->
+      <table
+      id="table"
+      class="col-md table table-bordered table-hover table-striped"
+      data-toggle="table"
+      data-search="true"
+      data-show-search-button="true"
+      data-height="490"
+      data-ajax="ajaxRequest"
+      data-pagination="false"
+      data-row-attributes="rowAttributes">
+        <thead>
+            <tr>
+                <th data-field="rank">Rank</th>
+                <th data-field="name">Name</th>
+                <th data-field="rounded_hours">Hours</th>
+            </tr>
+        </thead>
+      </table>
+    <!-- </div> -->
+
   </div>
-
-<!--   <div class="container">
-    <div class="row" id="hours-table-div"></div>
-  </div> -->
-
-<div class="my-table">
-
-<!-- <table
-  class="display table table-striped"
-  id="table"
-  data-search=true> 
-  data-only-info-pagination="true"-->
-  <table
-  id="table"
-  class="table table-bordered table-hover table-striped"
-  data-toggle="table"
-  data-search="true"
-  data-show-search-button="true"
-  data-height="490"
-  data-ajax="ajaxRequest"
-  data-pagination="false"
-  data-row-attributes="rowAttributes">
-  <thead>
-      <tr>
-          <th data-field="rank">Rank</th>
-          <th data-field="name">Name</th>
-          <th data-field="rounded_hours">Hours</th>
-      </tr>
-  </thead>
-</table>
-</div>
-</div>
+</section>
 
 <script>
   var $button = $('#button')

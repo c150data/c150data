@@ -5,6 +5,24 @@
 
 <section id="hero">
   <div class="hero-container">
+      <!-- Handles any alerts -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col"></div>
+          <div class="col">
+            <div class="text-center alert alert-{{ category }}">
+              {{ message }}
+            </div>
+          </div>
+          <div class="col"></div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
     <h1>Welcome to C150 Data</h1>
     <h2>A website designed to meaningfully display the Columbia Lightweight Rowing team's training data.</h2>
     {% if not current_user.is_authenticated %}
