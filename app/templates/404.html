@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block title %}Page Not Found{% endblock %}
+
+{% block content %}
+<!-- Lukas, can you help clean this page up? Thanks ;) -->
+<section id="hero">
+  <div class="hero-container">
+    <h2>The Page You Requested Does Not Exist</h2>
+    <h3>Return to safety <a href="{{ url_for('about') }}">Here</a></h2>
+</section>
+
+{% endblock %}

@@ -50,7 +50,7 @@ $(document).ready(function () {
                 $("#hours-table-div").html(response);
             },
             error: function (xhr) {
-                //handle error
+                location.reload()
             }
         });
     });

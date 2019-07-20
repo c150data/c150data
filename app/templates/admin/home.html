@@ -3,6 +3,23 @@
 {% extends 'admin/master.html' %}
 {% block menu_links %}
 {{ super() }}
+<div class="bg-light" id="messages">
+	<!-- Handles any alerts -->
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	{% if messages %}
+	{% for category, message in messages %}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col"></div>
+			<div class="col">
+				<div class="alert alert-{{ category }}">
+					{{ message }}
+				</div>
+			</div>
+			<div class="col"></div>
+		</div>
+	</div>
+</div>
 <ul class="nav navbar-nav navbar-right">
 	<li>
 		<a class="" href="{{ url_for('about') }}">Back</a> </li>

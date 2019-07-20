@@ -5,6 +5,9 @@ from app.db_models import Athlete
 
 
 def getAthleteObjectFromJSON(athlete_json):
+    """
+    Converts a json object to a db.model Athlete object
+    """
     return Athlete(
         id=athlete_json['Id'],
         name="{} {}".format(

@@ -20,7 +20,7 @@ api_base_url = 'https://api.sandbox.trainingpeaks.com'
 refresh_url = "https://oauth.sandbox.trainingpeaks.com/oauth/token"
 authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authorize'
 token_base_url = 'https://oauth.sandbox.trainingpeaks.com/oauth/token'
-redirect_uri = "https://www.c150data.com/" if remote else "https://localhost:5000/"
+redirect_uri = "https://www.c150data.com/admin" if remote else "https://localhost:5000/admin"
 
 refresh_padding_time = 300
 
@@ -32,10 +32,7 @@ def getValidAuthToken():
     Returns:
         Row: The Row object of a valid token
     """
-    if refreshAuthTokenIfNeeded() is False:
-        log.error("Did not successfully refresh authentication token.")
-        return None
-
+    refreshAuthTokenIfNeeded()
     return AuthToken.query.order_by(AuthToken.id.desc()).first()
 
 
@@ -45,8 +42,8 @@ def refreshAuthTokenIfNeeded():
     """
     most_recent_token = AuthToken.query.order_by(AuthToken.id.desc())[0]
 
-    if most_recent_token is None:
-        raise Exception("The authtoken table is empty.")
+    if most_recent_token is None or most_recent_token.refresh_token is None:
+        raise Exception("Error while getting refresh token from database.")
 
     refresh_date = most_recent_token.expires_at
     if refresh_date < datetime.now():
@@ -84,8 +81,13 @@ def refreshAndInsertToken(refresh_token):
 
     Args:
         refresh_token (str): Refresh token
+    ""
     """
-    insertNewToken(getNewTokenWithRefreshToken(refresh_token))
+    newToken = getNewTokenWithRefreshToken(refresh_token)
+    if newToken is None:
+        raise Exception(
+            "Was not able to get a new token with the refresh token.")
+    insertNewToken(newToken)
 
 
 def getNewAccessToken():
@@ -118,10 +120,15 @@ def getNewTokenWithRefreshToken(refresh_token):
         dict -- New token with the following fields: access_token, token_type, expires_in, refresh_token, and scope
     """
     session = getOAuthSessionForRefresh(refresh_token)
+    if session is None:
+        raise Exception("Was not able to get a session for refresing token.")
     body = "grant_type=refresh_token"
-    return session.refresh_token(refresh_url,
-                                 refresh_token=refresh_token,
-                                 body=body)
+    try:
+        session.refresh_token(refresh_url,
+                              refresh_token=refresh_token,
+                              body=body)
+    except Exception as e:
+        raise Exception("Exception occurred while getting a new token with the refresh token: {}".format(refresh_token))
 
 
 def getAuthorizationUrl():

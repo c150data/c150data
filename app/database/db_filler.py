@@ -50,7 +50,8 @@ def insertWorkoutsIntoDb(start_date, end_date):
                 athlete.id, date_period)
             workoutsList += currWorkouts
             athlete_num_workouts += len(currWorkouts)
-        log.info("{} workouts found for {} from {} to {}".format(athlete_num_workouts, athlete['name'], start_date, end_date))
+        log.info("{} workouts found for {} from {} to {}".format(
+            athlete_num_workouts, athlete['name'], start_date, end_date))
 
     db_functions.dbInsert(workoutsList)
     return len(workoutsList)
