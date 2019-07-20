@@ -6,6 +6,7 @@ of this module.
 """
 from app.database import db_functions
 from app.db_models import Workout
+from app.mappers import workout_mapper
 from app import log
 
 
@@ -73,17 +74,16 @@ def processModifiedWorkouts(modified_workouts):
 
 def updateWorkout(workout_json):
     """
-    Updates a workout by checking if it already exists in the database. If it does, deletes the existing and inserts the new one.
-    Otherwise, just inserts the new one
+    Checks if a workout already exists in the database. If it doesn't exist, just returns the
+    database Workout object to insert. If it does exist, it first deletes the existing Workout object.
 
     Arguments:
         workout_json {JSON} -- Workout to insert JSON
     """
-
     if Workout.query.filter_by(id=workout_json['Id']) is None:
         # Workout does not exist in DB
-        db_functions.getWorkoutObjectFromJSON(workout_json)
+        return workout_mapper.getWorkoutObjectFromJSON(workout_json)
     else:
         # Workout already exists in db, need to first delete existing then return new one to insert
         Workout.query.filter_by(id=workout_json['Id']).delete()
-        db_functions.getWorkoutObjectFromJSON(workout_json)
+        return workout_mapper.getWorkoutObjectFromJSON(workout_json)

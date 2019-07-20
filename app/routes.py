@@ -6,7 +6,7 @@ Note: our general flow is going to be that these routes handle the error checkin
 This means that any route that calls a function that throws errors should surround that
 method with a try-catch block
 """
-from flask import request, render_template, redirect, url_for, flash, session
+from flask import request, render_template, redirect, url_for, flash, session, jsonify
 from flask_login import login_user, current_user, logout_user, login_required
 from authlib.client import OAuth2Session
 from app import app, db, bcrypt, log, ACCESS, mail
@@ -103,10 +103,10 @@ def getData():
         athletes = athlete_hours.getHoursForAllAthletes(start_date, end_date)
         response_code = 200
     except Exception as e:
-        log.exception("Not able to get hours: {error}".format(error=e))
-        flash("Not able to get hours. Please contact your system administrator", 'danger')
+        log.error("Was not able to get hours: {error}".format(error=e))
         response_code = 500 
-    return render_template("data.html", athletes=athletes), response_code 
+    return jsonify(athletes), response_code
+
 
 # LOGIN
 

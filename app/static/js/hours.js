@@ -3,6 +3,7 @@
 
 $(document).ready(function () {
 
+
     $(window).scroll(function () {
     if ($(this).scrollTop() > 25) {
       $('#datetimepickerStart').fadeOut('fast');
@@ -31,45 +32,6 @@ $(document).ready(function () {
             // $('#datetimepickerEnd').hide();
             // $('#dataSubmitButton').hide();
         }
-    });
-
-    // Ajax makes a call to go to hours/getData (a function in our routes.py)
-    // getData then calls getHoursForAllAthletes from hours with start data and end date
-    // This returns len of athletes and the athletes which getData renders into a template data.html
-    // If it is a success ajax returns this data.html template. 
-    $("#dataSubmitButton").click(function (e) {
-        e.preventDefault();
-        $.ajax({
-            url: "/hours/getData",
-            type: "get",
-            data: {
-                'start_date': $("#startDateInput").val(),
-                'end_date': $("#endDateInput").val()
-            },
-            success: function (response) { 
-                $("#hours-table-div").html(response);
-            },
-            error: function (xhr) {
-                location.reload()
-            }
-        });
-    });
-    
-
-    $(function () {
-        $('#datetimepickerStart').datetimepicker({
-            format: 'L'
-        });
-        $('#datetimepickerEnd').datetimepicker({
-            format: 'L',
-            useCurrent: false
-        });
-        $("#datetimepickerStart").on("change.datetimepicker", function (e) {
-            $('#datetimepickerEnd').datetimepicker('minDate', e.date);
-        });
-        $("#datetimepickerEnd").on("change.datetimepicker", function (e) {
-            $('#datetimepickerStart').datetimepicker('maxDate', e.date);
-        });
     });
 });
 
