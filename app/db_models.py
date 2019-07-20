@@ -1,9 +1,13 @@
+"""
+Models class that defines the database objects that we use in the application. 
+"""
 from app import db, login_manager, ACCESS
 from flask_login import UserMixin
 from sqlalchemy import Column, Float, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
 
+# LUKAS: What is this and should it be in this file? It doesn't seem to fit with the rest of what is going on
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -28,7 +32,6 @@ class User(db.Model, UserMixin):
         return "User('{}','{}')".format(self.username, self.email)
 
 
-# Oauth Views
 class AuthToken(db.Model):
     __tablename__ = 'authtoken'
 
