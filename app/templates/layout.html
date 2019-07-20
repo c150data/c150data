@@ -77,35 +77,8 @@
   </header><!-- #header -->
 
   <!-- Content -->
-<<<<<<< HEAD
   <!-- Main content -->
   {% block content %}{% endblock %}
-=======
-  <section id="hero">
-    <div class="bg-light" id="messages">
-      <!-- Handles any alerts -->
-      {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-      {% for category, message in messages %}
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col"></div>
-          <div class="col">
-            <div class="text-center alert alert-{{ category }}">
-              {{ message }}
-            </div>
-          </div>
-          <div class="col"></div>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
-    <!-- Main content -->
-    {% block content %}{% endblock %}
-  </section>
->>>>>>> 7c953caa12c6abc4bc3b462f30815e5601a5ecdf
 
 
 
