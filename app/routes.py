@@ -135,8 +135,6 @@ def logout():
 @app.route("/admin")
 @requires_access_level(ACCESS['admin'])
 def admin():
-    if app.config['ENV'] == 'production':
-        return redirect(url_for('about'))
     return render_template("/admin/home.html")
 
 

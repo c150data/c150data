@@ -3,7 +3,6 @@ from dateutil import parser
 
 
 def getWorkoutObjectFromJSON(workout_json):
-    # Below are fields that are specified in the API but were not returned in the response...have to look into this more and maybe talk to Ben
     return Workout(
         id=workout_json.get('Id', None),
         athleteId=workout_json.get('AthleteId', None),

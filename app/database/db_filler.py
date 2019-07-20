@@ -32,12 +32,13 @@ def insertWorkoutsIntoDb(start_date, end_date):
     workoutsList = list()
 
     for athlete in athletes:
-        numWorkouts = 0
+        athlete_num_workouts = 0
         for date_period in datesList:
-            workoutsList += api_service.getDBWorkoutsUsingAPI(
+            currWorkouts = api_service.getDBWorkoutsUsingAPI(
                 athlete.id, date_period)
-            numWorkouts += len(workoutsList)
-        log.info("{} workouts found for {} from {} to {}".format(numWorkouts, athlete['name'], start_date, end_date))
+            workoutsList += currWorkouts
+            athlete_num_workouts += len(currWorkouts)
+        log.info("{} workouts found for {} from {} to {}".format(athlete_num_workouts, athlete['name'], start_date, end_date))
 
     result = db_functions.dbInsert(workoutsList)
     return len(workoutsList) if result else -1 
