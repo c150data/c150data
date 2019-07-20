@@ -1,3 +1,9 @@
+"""
+Makes the direct calls to the TrainingPeaks API
+
+Generally, each method receives the parameters to add to the API request,
+makes the request, and returns the API response
+"""
 import requests
 from app.api import urls, oauth
 
@@ -5,7 +11,7 @@ from app.api import urls, oauth
 def getAthletes():
     valid_token = oauth.getValidAuthToken()
     headers = getAPIRequestHeaders(valid_token)
-    return requests.get(urls.COACH_ATHLETES_URL, headers=headers)
+    return requests.get(urls.COACH_ATHLETES_URL(), headers=headers)
 
 
 def getWorkoutsForAthlete(id, start_date, end_date):
