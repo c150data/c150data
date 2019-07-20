@@ -1,4 +1,8 @@
+"""
+Handles mapping involving Athlete object
+"""
 from app.db_models import Athlete
+
 
 def getAthleteObjectFromJSON(athlete_json):
     return Athlete(
