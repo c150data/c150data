@@ -16,14 +16,13 @@
 
 .hours-content {
 	width: 100%;
-  height: 300vh;
- 	background: url(../img/LightweightLion.jpeg) top center;
-  background-attachment: fixed;
+ 	height: 100vh;
+	background: url(../img/LightweightLion.jpeg) top center;
+ 	background-attachment: fixed;
 }
 
 #hero:before {
   content: "";
-  height: 300vh;
   background: rgba(0, 0, 0, 0.6);
   position: absolute;
   bottom: 0;
