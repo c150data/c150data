@@ -1,9 +1,14 @@
+"""
+Handles mapping involving Workout object
+"""
 from app.db_models import Workout
 from dateutil import parser
 
 
 def getWorkoutObjectFromJSON(workout_json):
-    # Below are fields that are specified in the API but were not returned in the response...have to look into this more and maybe talk to Ben
+    """
+    Converts a json object to a db.Model Workout object
+    """
     return Workout(
         id=workout_json.get('Id', None),
         athleteId=workout_json.get('AthleteId', None),
@@ -62,6 +67,10 @@ def getWorkoutObjectFromJSON(workout_json):
 
 
 def tryParse(str_date):
+    """
+    Used to parse a date, but avoid None error. If the date is None,
+    will not attempt to parse, but instead just set the variable to None
+    """
     try:
         return parser.parse(str_date)
     except:
@@ -69,6 +78,10 @@ def tryParse(str_date):
 
 
 def tryListConvert(list):
+    """
+    Used to convert a list to a string, but if the list is None, will just
+    return None to avoid None error
+    """
     try:
         return " ".join(list)
     except:
