@@ -124,3 +124,9 @@ form {
 	color: #eee;
   	font-size: 24px;
 }
+
+.animated {
+  -webkit-animation-duration: 1s;
+  -moz-animation-duration: 1s;
+  animation-duration: 1s;
+}

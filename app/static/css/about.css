@@ -4,6 +4,7 @@
 
 /* General
 --------------------------------*/
+
 #about-page {
     display: table;
     height: 100%;
@@ -122,6 +123,7 @@
     text-align: center;
     z-index: 10;
   }
+
 .header-down-arrow img { /*TODO: Check if this works on all browsers*/
   animation: fade-slide-up 1s 1s ease-out forwards,
              pulse 2s 3s ease-out infinite;

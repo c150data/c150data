@@ -230,6 +230,12 @@ h1, h2, h3, h4, h5, h6 {
 	top: 200px;
 }
 
+#hero .main-content {
+  -webkit-animation-duration: 2s;
+  -moz-animation-duration: 2s;
+  animation-duration: 2s;
+}
+
 /*--------------------------------------------------------------
 # Navigation Menu
 --------------------------------------------------------------*/
@@ -607,4 +613,18 @@ body.mobile-nav-active #mobile-nav-toggle {
   text-align: center;
   font-size: 13px;
   color: #ccc;
+}
+
+/*--------------------------------------------------------------
+# KeyFrames: allows for animations
+--------------------------------------------------------------*/
+@keyframes fade-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(4rem);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
 }

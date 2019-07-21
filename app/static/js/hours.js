@@ -61,7 +61,7 @@
 
     $(function() {
     $('#dataSubmitButton').click(function () {
-      alert("refresh")
+      // alert("refresh")
       firstTime = 0
       $table.bootstrapTable('refresh')
     })
@@ -70,7 +70,7 @@
   function getData() {
     var on_load_start = getToday()
     var on_load_end = getLastWeek()
-    alert(firstTime)
+    // alert(firstTime)
     var data = {
                     'start_date': on_load_start,
                     'end_date': on_load_end
@@ -92,7 +92,7 @@ $(function() {
     var end = moment();
 
     function cb(start, end) {
-        alert("Callback has been called!");
+        // alert("Callback has been called!");
         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         $('#to').val(start.format('MM/DD/YYYY'));
         $('#from').val(end.format('MM/DD/YYYY'));

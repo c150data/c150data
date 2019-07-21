@@ -13,10 +13,6 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-<!--   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css"/>
-  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-  <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script> -->
-
 <script type="text/javascript" src="../static/js/hours.js"></script>
 <link rel="stylesheet" href="../static/css/hours.css"/>
 
@@ -30,6 +26,9 @@
       background-color: grey;
       opacity: .9;
       color: white;
+      -webkit-animation-duration: 1s;
+      -moz-animation-duration: 1s;
+      animation-duration: 1s;
   }
 </style>
 
@@ -52,22 +51,15 @@
   {% endfor %}
   {% endif %}
   {% endwith %}
-    <div class="text-center" id="main-text">
+
+    <div class="text-center zoomIn" id="main-text">
       <h1>This is the Hours page.</h1>
       <h2>Simply select the time period of which you want to see the completed hours and press enter!</h2>
     </div>
 
-    <div class="row text-center" style="z-index: 2;">
-      <div class="col-lg-6 align-self-center">
+    <div class="row text-center zoomIn" id="date-fields" style="z-index: 2;">
+      <div class="col-md-6 align-self-center">
         <div class="form-group">
-
-          <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-            <i class="fa fa-calendar"></i>&nbsp;
-            <span></span> <i class="fa fa-caret-down"></i>
-          </div>
-          <input type="hidden" name="to" id="to" value="">
-          <input type="hidden" name="from" id="from" value="">
-
           <div class="input-group date" id="datetimepickerStart"  data-target-input="nearest">
             <input type="text" placeholder="Start Date" id="startDateInput"
            class="form-control datetimepicker-input" data-target="#datetimepickerStart" />
@@ -77,7 +69,7 @@
           </div>
         </div>
       </div>
-      <div class='col-lg-6 align-self-center'>
+      <div class='col-md-6 align-self-center'>
         <div class="form-group">
           <div class="input-group date" id="datetimepickerEnd" data-target-input="nearest">
             <input type="text" placeholder="End Date" id="endDateInput"
@@ -88,6 +80,18 @@
           </div>
         </div>
       </div>
+
+      <!-- <div class="col-md-6 align-self-center">
+        <div class="form-group">
+          <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+            <i class="fa fa-calendar"></i>&nbsp;
+            <span></span> <i class="fa fa-caret-down"></i>
+          </div>
+          <input type="hidden" name="to" id="to" value="">
+          <input type="hidden" name="from" id="from" value="">
+        </div>
+      </div> -->
+
       <div class="col-lg-2 align-self-center">
         <button type="submit" id="dataSubmitButton" class="btn btn-primary">
           <span id='spinner' class="spinner-border spinner-border-sm" role="status"></span>
@@ -112,6 +116,16 @@
       data-ajax="ajaxRequest"
       data-pagination="false"
       data-row-attributes="rowAttributes">
+        <div class="row date-placeholder">
+          <div class="col-lg-12">
+            <div class="form-group">
+              <div id="reportrange" class="selectbox pull-left">
+            <i class="fa fa-calendar"></i>&nbsp;
+            <span></span> <i class="fa fa-caret-down"></i>
+            </div>
+          </div>
+          </div>
+        </div>
         <thead>
             <tr>
                 <th data-field="rank">Rank</th>
@@ -121,6 +135,7 @@
         </thead>
       </table>
     <!-- </div> -->
+
 
   </div>
 </section>
