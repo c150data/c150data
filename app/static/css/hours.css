@@ -15,6 +15,11 @@
     background-attachment: fixed;
   }
 }
+@media (max-width: 540px) {
+  #hours {
+    height: 130vh;
+  }
+}
 
 #hours .alert {
   width: 400px;
@@ -42,6 +47,16 @@
   align-items: center;
   flex-direction: column;
   text-align: center;
+}
+@media (max-width: 540px) {
+  #hours .hours-container {
+    top: 70px;
+  }
+}
+@media (max-width: 360px) {
+  #hours .hours-container {
+    top: 120px;
+  }
 }
 
 #hours h1 {

@@ -1,7 +1,6 @@
 // Javascript file for hours.html. Allows for hiding items when scrolling and calls to 
 // database for athlete hours.
 
-  var $button = $('#button')
   var $table = $('#table')
   var firstTime = 1
 
@@ -55,14 +54,14 @@
            },
            error: function(e) {
               // alert('failure')
-              log.info(e.responseText);
+              console.log(e.responseText);
            }
         });
   }
 
     $(function() {
-    $button.click(function () {
-      // alert("refresh")
+    $('#dataSubmitButton').click(function () {
+      alert("refresh")
       firstTime = 0
       $table.bootstrapTable('refresh')
     })
@@ -71,19 +70,48 @@
   function getData() {
     var on_load_start = getToday()
     var on_load_end = getLastWeek()
+    alert(firstTime)
     var data = {
                     'start_date': on_load_start,
                     'end_date': on_load_end
                 }
     if (!firstTime) {
+      alert($("#to").val())
       data = {
-                'start_date': $("#startDateInput").val(),
-                'end_date': $("#endDateInput").val()
+                'start_date': $("#to").val(),
+                'end_date': $("#from").val()
               }
     }
 
     return data
   }
+
+// DateRange
+$(function() {
+    var start = moment().subtract(29, 'days');
+    var end = moment();
+
+    function cb(start, end) {
+        alert("Callback has been called!");
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        $('#to').val(start.format('MM/DD/YYYY'));
+        $('#from').val(end.format('MM/DD/YYYY'));
+    }
+
+    $('#reportrange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, cb);
+
+    cb(start, end);
+
+});
 
 $(document).ready(function () {
 
@@ -124,20 +152,22 @@ $(document).ready(function () {
     })
   })
 
-  $(function () {
-        $('#datetimepickerStart').datetimepicker({
-            format: 'L'
-        });
-        $('#datetimepickerEnd').datetimepicker({
-            format: 'L',
-            useCurrent: false
-        });
-        $("#datetimepickerStart").on("change.datetimepicker", function (e) {
-            $('#datetimepickerEnd').datetimepicker('minDate', e.date);
-        });
-        $("#datetimepickerEnd").on("change.datetimepicker", function (e) {
-            $('#datetimepickerStart').datetimepicker('maxDate', e.date);
-        });
-    });
+
+
+  // $(function () {
+  //       $('#datetimepickerStart').datetimepicker({
+  //           format: 'L'
+  //       });
+  //       $('#datetimepickerEnd').datetimepicker({
+  //           format: 'L',
+  //           useCurrent: false
+  //       });
+  //       $("#datetimepickerStart").on("change.datetimepicker", function (e) {
+  //           $('#datetimepickerEnd').datetimepicker('minDate', e.date);
+  //       });
+  //       $("#datetimepickerEnd").on("change.datetimepicker", function (e) {
+  //           $('#datetimepickerStart').datetimepicker('maxDate', e.date);
+  //       });
+  //   });
 });
 

@@ -9,6 +9,10 @@
 
 <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
 
+<!-- DateRange -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 <!--   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css"/>
   <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
   <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script> -->
@@ -56,6 +60,14 @@
     <div class="row text-center" style="z-index: 2;">
       <div class="col-lg-6 align-self-center">
         <div class="form-group">
+
+          <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+            <i class="fa fa-calendar"></i>&nbsp;
+            <span></span> <i class="fa fa-caret-down"></i>
+          </div>
+          <input type="hidden" name="to" id="to" value="">
+          <input type="hidden" name="from" id="from" value="">
+
           <div class="input-group date" id="datetimepickerStart"  data-target-input="nearest">
             <input type="text" placeholder="Start Date" id="startDateInput"
            class="form-control datetimepicker-input" data-target="#datetimepickerStart" />
@@ -77,7 +89,7 @@
         </div>
       </div>
       <div class="col-lg-2 align-self-center">
-        <button id="button" type="submit" id="dataSubmitButton" class="btn btn-primary">
+        <button type="submit" id="dataSubmitButton" class="btn btn-primary">
           <span id='spinner' class="spinner-border spinner-border-sm" role="status"></span>
           <span id='submitLabel'>Get Hours</span>
         </button>
@@ -114,111 +126,7 @@
 </section>
 
 <script>
-  var $button = $('#button')
-  var $table = $('#table')
-  var firstTime = 1
 
-  function getLastWeek() {
-    var today = new Date();
-    var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-    var lastWeekMonth = lastWeek.getMonth() + 1;
-    var lastWeekDay = lastWeek.getDate();
-    var lastWeekYear = lastWeek.getFullYear();
-    var lastWeekDisplayPadded = ("00" + lastWeekMonth.toString()).slice(-2) + "/" + ("00" + lastWeekDay.toString()).slice(-2) + "/" + ("0000" + lastWeekYear.toString()).slice(-4);
-    return lastWeekDisplayPadded
-    }
-  function getToday() {
-    var today = new Date();
-    var todayMonth = today.getMonth()+1
-    var todayDate = today.getDate()
-    var todayYear = today.getFullYear()
-    var lastWeek = getLastWeek();
-    var todayDisplayPadded = ("00" + todayMonth.toString()).slice(-2) + "/" + ("00" + todayDate.toString()).slice(-2) + "/" + ("0000" + todayYear.toString()).slice(-4);
-    return todayDisplayPadded
-  }
-
-  $(function() {
-    $button.click(function () {
-      // alert("refresh")
-      firstTime = 0
-      $table.bootstrapTable('refresh')
-    })
-  })
-
-  function getData() {
-    var on_load_start = getToday()
-    var on_load_end = getLastWeek()
-    var data = {
-                    'start_date': on_load_start,
-                    'end_date': on_load_end
-                }
-    if (!firstTime) {
-      data = {
-                'start_date': $("#startDateInput").val(),
-                'end_date': $("#endDateInput").val()
-              }
-    }
-
-    return data
-  }
-
-  function ajaxRequest(params) {
-    // previous code that worked
-    // var url = '/hours/getData'
-    // $.get(url + '?' + $.param(params.data)).then(function (response) {
-    //   params.success(response)
-    // })
-    $.ajax({
-           url: '/hours/getData',
-           type: "get",
-           dataType: 'json',
-           data: getData(), 
-           success: function(response) {
-               // alert('done');
-               params.success(response)
-           },
-           error: function(e) {
-              // alert('failure')
-              log.info(e.responseText);
-           }
-        });
-  }
-
-  function rowAttributes(row, index) {
-    return {
-      'data-toggle': 'popover',
-      'data-placement': 'bottom',
-      'data-trigger': 'hover',
-      'data-content': [
-        'Rank: ' + row.rank,
-        'Name: ' + row.name,
-        'Hours: ' + row.rounded_hours
-      ].join(', ')
-    }
-  }
-    $(function() {
-    $('#table').on('post-body.bs.table', function (e) {
-      $('[data-toggle="popover"]').popover()
-    })
-  })
-
-  $(function () {
-        $('#datetimepickerStart').datetimepicker({
-            format: 'L'
-        });
-        $('#datetimepickerEnd').datetimepicker({
-            format: 'L',
-            useCurrent: false
-        });
-        $("#datetimepickerStart").on("change.datetimepicker", function (e) {
-            $('#datetimepickerEnd').datetimepicker('minDate', e.date);
-        });
-        $("#datetimepickerEnd").on("change.datetimepicker", function (e) {
-            $('#datetimepickerStart').datetimepicker('maxDate', e.date);
-        });
-    });
 </script>
-
-<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
 {% endblock content %}

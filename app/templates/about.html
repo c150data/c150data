@@ -26,7 +26,9 @@
     <h1>Welcome to C150 Data</h1>
     <h2>A website designed to meaningfully display the Columbia Lightweight Rowing team's training data.</h2>
     {% if not current_user.is_authenticated %}
-    <a href="/login" class="btn-get-started">Login</a>
+    <a href="{{ url_for('login') }}" class="btn-get-started">Login</a>
+    {% else %}
+    <a href="{{ url_for('hours') }}" class="btn-get-started">Hours</a>
     {% endif %}
   </div>
   <section class="header-down-arrow" id="downarrow">

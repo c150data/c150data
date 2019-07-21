@@ -30,7 +30,7 @@
     <div class="container text-center">
       <form method="POST" action="">
         {{ form.hidden_tag() }}
-        <fieldset class="form-group">
+        <fieldset class="form-group border-bottom">
           <legend class="border-bottom"><h1>Log In</h1></legend>
           <div class="form-group">
             {{ form.email.label(class="form-control-label") }}
@@ -67,15 +67,15 @@
             </div>
           </fieldset>
         <!-- </form> -->
-          <div class="row">
-            <div class="col-md-6 border-top pt-2">
-              <small class="text-white float-left">
+          <div class="row self-align-center">
+            <div class="col-lg-6 pt-2">
+              <small id="forgot" class="text-white">
                 <!-- TODO: Create Forgot Password workflow -->
                 <h5><a class="ml-2" href="#">Forgot Password</a></h5> 
               </small>
             </div>
-            <div class="col-md-6 border-top pt-2">
-              <small class="text-white float-right">
+            <div class="col-lg-6 pt-2">
+              <small id="contact-admin" class="text-white">
                 <h5>Need An Account? <a class="ml-1 " href="{{ url_for('contact') }}">Contact an Administrator</a></h5>
               </small>
             </div>

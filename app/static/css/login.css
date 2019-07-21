@@ -17,6 +17,12 @@
   }
 }
 
+@media (max-width: 360px) {
+  #login {
+    height: 130vh;
+  }
+}
+
 #login .alert {
     width: 400px;
     margin-top: -75px;
@@ -90,6 +96,15 @@
   }
 }
 
+
+@media (min-width: 1024px) {
+  #contact-admin {
+	float: left;
+  }
+  #forgot {
+  	float: left;
+  }
+}
 
 #login .container-fluid {
     position: fixed;
