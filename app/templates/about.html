@@ -5,18 +5,40 @@
 
 <section id="hero">
   <div class="hero-container">
-    <h1>Welcome to C150 Data</h1>
-    <h2>A website designed to meaningfully display the Columbia Lightweight Rowing team's training data.</h2>
-    {% if not current_user.is_authenticated %}
-    <a href="/login" class="btn-get-started">Login</a>
-    {% endif %}
+      <!-- Handles any alerts -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col"></div>
+          <div class="col">
+            <div class="text-center alert alert-{{ category }}">
+              {{ message }}
+            </div>
+          </div>
+          <div class="col"></div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    <div class="main-content fadeInDown">
+      <h1>Welcome to C150 Data</h1>
+      <h2>A website designed to meaningfully display the Columbia Lightweight Rowing team's training data.</h2>
+      {% if not current_user.is_authenticated %}
+      <a href="{{ url_for('login') }}" class="btn-get-started">Login</a>
+      {% else %}
+      <a href="{{ url_for('hours') }}" class="btn-get-started">Hours</a>
+      {% endif %}
+    </div>
   </div>
   <section class="header-down-arrow" id="downarrow">
     <a href="#about"><img src="../static/img/downarrow.png" width="40"></a>
   </section>
 </section><!-- #hero -->
 
-<!--===============e===========
+<!--==========================
   About Us Section 
   ============================-->
 <section id="about">
@@ -58,10 +80,10 @@
   Footer Section 
   ============================-->
 <section id="contact">
-  <div class="container wow fadeInUp mt-5">
+  <div class="container wow fadeInUp">
     <div class="row justify-content-center">
 
-      <div class="col-lg-3 col-md-4">
+      <div class="col-md-4">
 
         <div class="info">
           <div>
