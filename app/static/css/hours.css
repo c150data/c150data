@@ -15,9 +15,9 @@
     background-attachment: fixed;
   }
 }
-@media (max-width: 540px) {
+@media (max-width: 800px) {
   #hours {
-    height: 130vh;
+    height: 150vh;
   }
 }
 
@@ -37,7 +37,7 @@
   right: 0;
 }
 #hours .hours-container {
-  position: absolute;
+  position: relative;
   bottom: 0;
   top: 130px;
   left: 0;
@@ -118,5 +118,20 @@
 .pull-left {
     float: left!important;
 }
+.date-placeholder {
+  display: inline;
+}
+
+#hours .my-table {
+      position: relative;
+      z-index: 1;
+      margin-top: -20px;
+      margin-left: 2.5%;
+      width: 95%;
+      height: auto;
+      background-color: grey;
+      opacity: .9;
+      color: white;
+  }
 
 

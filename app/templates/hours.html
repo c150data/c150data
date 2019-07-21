@@ -17,19 +17,7 @@
 <link rel="stylesheet" href="../static/css/hours.css"/>
 
 <style>
-  #table {
-      position: fixed;
-      z-index: 1;
-      margin-top: 480px;
-      width: 95%;
-      height: auto;
-      background-color: grey;
-      opacity: .9;
-      color: white;
-      -webkit-animation-duration: 1s;
-      -moz-animation-duration: 1s;
-      animation-duration: 1s;
-  }
+  
 </style>
 
 <section id="hours">
@@ -51,7 +39,6 @@
   {% endfor %}
   {% endif %}
   {% endwith %}
-
     <div class="text-center zoomIn" id="main-text">
       <h1>This is the Hours page.</h1>
       <h2>Simply select the time period of which you want to see the completed hours and press enter!</h2>
@@ -92,15 +79,11 @@
         </div>
       </div> -->
 
-      <div class="col-lg-2 align-self-center">
-        <button type="submit" id="dataSubmitButton" class="btn btn-primary">
-          <span id='spinner' class="spinner-border spinner-border-sm" role="status"></span>
-          <span id='submitLabel'>Get Hours</span>
-        </button>
-      </div>
+      
     </div>
+  </div>
 
-    <!-- <div class="my-table"> -->
+    <div class="my-table container-fluid">
     <!-- <table
       class="display table table-striped"
       id="table"
@@ -108,22 +91,30 @@
       data-only-info-pagination="true"-->
       <table
       id="table"
-      class="col-md table table-bordered table-hover table-striped"
+      class="table table-bordered table-hover table-striped"
       data-toggle="table"
-      data-search="true"
-      data-show-search-button="true"
-      data-height="490"
+      data-search="false"
+      data-show-search-button="false"
+      data-height="460"
       data-ajax="ajaxRequest"
       data-pagination="false"
       data-row-attributes="rowAttributes">
-        <div class="row date-placeholder">
+        <div class="row">
           <div class="col-lg-12">
             <div class="form-group">
               <div id="reportrange" class="selectbox pull-left">
-            <i class="fa fa-calendar"></i>&nbsp;
-            <span></span> <i class="fa fa-caret-down"></i>
+                <i class="fa fa-calendar"></i>&nbsp;
+                <span></span> <i class="fa fa-caret-down"></i>
+              </div>
+              <input type="hidden" name="to" id="to" value="">
+              <input type="hidden" name="from" id="from" value="">
             </div>
           </div>
+          <div class="col-lg-2 align-self-center">
+            <button id="dataSubmitButton" type="submit" class="btn btn-primary">
+              <span id='spinner' class="spinner-border spinner-border-sm" role="status"></span>
+              <span id='submitLabel'>Get Hours</span>
+            </button>
           </div>
         </div>
         <thead>
@@ -134,14 +125,9 @@
             </tr>
         </thead>
       </table>
-    <!-- </div> -->
+    </div>
 
+    </section>
 
-  </div>
-</section>
-
-<script>
-
-</script>
 
 {% endblock content %}

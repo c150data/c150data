@@ -61,9 +61,9 @@
 
     $(function() {
     $('#dataSubmitButton').click(function () {
-      // alert("refresh")
+      alert("refresh")
       firstTime = 0
-      $table.bootstrapTable('refresh')
+      $('#table').bootstrapTable('refresh')
     })
   })
 
@@ -154,20 +154,20 @@ $(document).ready(function () {
 
 
 
-  // $(function () {
-  //       $('#datetimepickerStart').datetimepicker({
-  //           format: 'L'
-  //       });
-  //       $('#datetimepickerEnd').datetimepicker({
-  //           format: 'L',
-  //           useCurrent: false
-  //       });
-  //       $("#datetimepickerStart").on("change.datetimepicker", function (e) {
-  //           $('#datetimepickerEnd').datetimepicker('minDate', e.date);
-  //       });
-  //       $("#datetimepickerEnd").on("change.datetimepicker", function (e) {
-  //           $('#datetimepickerStart').datetimepicker('maxDate', e.date);
-  //       });
-  //   });
+  $(function () {
+        $('#datetimepickerStart').datetimepicker({
+            format: 'L'
+        });
+        $('#datetimepickerEnd').datetimepicker({
+            format: 'L',
+            useCurrent: false
+        });
+        $("#datetimepickerStart").on("change.datetimepicker", function (e) {
+            $('#datetimepickerEnd').datetimepicker('minDate', e.date);
+        });
+        $("#datetimepickerEnd").on("change.datetimepicker", function (e) {
+            $('#datetimepickerStart').datetimepicker('maxDate', e.date);
+        });
+    });
 });
 
