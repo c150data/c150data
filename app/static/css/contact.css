@@ -20,9 +20,15 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 700px) {
   #contact {
-    height: 130vh;
+    height: 120vh;
+  }
+}
+
+@media (max-width: 360px) {
+  #contact {
+    height: 150vh;
   }
 }
 

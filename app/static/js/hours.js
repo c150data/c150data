@@ -3,6 +3,7 @@
 
   var $table = $('#table')
   var firstTime = 1
+  var total = 0
 
   function getLastWeek() {
     var today = new Date();
@@ -36,6 +37,17 @@
     }
   }
 
+  function rankFormatter() {
+    return 'Total'
+  }
+
+  function nameFormatter(data) {
+    return '# of Athletes: '+String(data.length)
+  }
+
+  function hoursFormatter() {
+    return total
+    }   
 
   function ajaxRequest(params) {
     // previous code that worked
@@ -49,8 +61,12 @@
            dataType: 'json',
            data: getData(), 
            success: function(response) {
-               // alert('done');
-               params.success(response)
+                // Get Totals
+                for (var i = 0; i < response.length; i++) {
+                    total += response[i].hours;
+                };
+                total = Math.round(total)
+               params.success(response, total);
            },
            error: function(e) {
               // alert('failure')
@@ -76,19 +92,17 @@
                     'end_date': on_load_end
                 }
     if (!firstTime) {
-      alert($("#to").val())
       data = {
                 'start_date': $("#to").val(),
                 'end_date': $("#from").val()
               }
-    }
-
+        }
     return data
   }
 
 // DateRange
 $(function() {
-    var start = moment().subtract(29, 'days');
+    var start = moment().subtract(6, 'days');
     var end = moment();
 
     function cb(start, end) {
@@ -104,8 +118,10 @@ $(function() {
         ranges: {
            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'This Month': [moment().startOf('month'), moment().endOf('month')],
-           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+           'This Month to Now': [moment().startOf('month'), moment()],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+           '2018/19 Season to Now': [new Date(2018, 8, 6), moment().endOf('month')],
+           '2017/18 Season': [new Date(2017, 8, 6), new Date(2018, 5, 12)]
         }
     }, cb);
 
@@ -114,22 +130,6 @@ $(function() {
 });
 
 $(document).ready(function () {
-
-
-    $(window).scroll(function () {
-    if ($(this).scrollTop() > 25) {
-      $('#datetimepickerStart').fadeOut('fast');
-      $('#datetimepickerEnd').fadeOut('fast');
-      $('#dataSubmitButton').fadeOut('fast');
-      $('#main-text').fadeOut('fast');
-    } else {
-      $('#datetimepickerStart').fadeIn('fast');
-      $('#datetimepickerEnd').fadeIn('fast');
-      $('#dataSubmitButton').fadeIn('fast');
-      $('#main-text').fadeIn('fast');
-      
-    }
-  });
 
     $('#spinner').hide();
     $(document).on({
@@ -146,28 +146,11 @@ $(document).ready(function () {
         }
     });
 
-        $(function() {
-    $('#table').on('post-body.bs.table', function (e) {
-      $('[data-toggle="popover"]').popover()
+    $(function() {
+        $('#table').on('post-body.bs.table', function (e) {
+            $('[data-toggle="popover"]').popover()
+        })
     })
-  })
 
-
-
-  $(function () {
-        $('#datetimepickerStart').datetimepicker({
-            format: 'L'
-        });
-        $('#datetimepickerEnd').datetimepicker({
-            format: 'L',
-            useCurrent: false
-        });
-        $("#datetimepickerStart").on("change.datetimepicker", function (e) {
-            $('#datetimepickerEnd').datetimepicker('minDate', e.date);
-        });
-        $("#datetimepickerEnd").on("change.datetimepicker", function (e) {
-            $('#datetimepickerStart').datetimepicker('maxDate', e.date);
-        });
-    });
 });
 

@@ -39,95 +39,61 @@
   {% endfor %}
   {% endif %}
   {% endwith %}
-    <div class="text-center zoomIn" id="main-text">
+    <div class="text-center animated zoomIn" id="main-text">
       <h1>This is the Hours page.</h1>
       <h2>Simply select the time period of which you want to see the completed hours and press enter!</h2>
     </div>
-
-    <div class="row text-center zoomIn" id="date-fields" style="z-index: 2;">
-      <div class="col-md-6 align-self-center">
-        <div class="form-group">
-          <div class="input-group date" id="datetimepickerStart"  data-target-input="nearest">
-            <input type="text" placeholder="Start Date" id="startDateInput"
-           class="form-control datetimepicker-input" data-target="#datetimepickerStart" />
-            <div class="input-group-append" data-target="#datetimepickerStart" data-toggle="datetimepicker">
-              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class='col-md-6 align-self-center'>
-        <div class="form-group">
-          <div class="input-group date" id="datetimepickerEnd" data-target-input="nearest">
-            <input type="text" placeholder="End Date" id="endDateInput"
-           class="form-control datetimepicker-input" data-target="#datetimepickerEnd" />
-            <div class="input-group-append" data-target="#datetimepickerEnd" data-toggle="datetimepicker">
-              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- <div class="col-md-6 align-self-center">
-        <div class="form-group">
-          <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-            <i class="fa fa-calendar"></i>&nbsp;
-            <span></span> <i class="fa fa-caret-down"></i>
-          </div>
-          <input type="hidden" name="to" id="to" value="">
-          <input type="hidden" name="from" id="from" value="">
-        </div>
-      </div> -->
-
-      
-    </div>
   </div>
 
-    <div class="my-table container-fluid">
-    <!-- <table
-      class="display table table-striped"
-      id="table"
-      data-search=true> 
-      data-only-info-pagination="true"-->
-      <table
-      id="table"
-      class="table table-bordered table-hover table-striped"
-      data-toggle="table"
-      data-search="false"
-      data-show-search-button="false"
-      data-height="460"
-      data-ajax="ajaxRequest"
-      data-pagination="false"
-      data-row-attributes="rowAttributes">
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="form-group">
-              <div id="reportrange" class="selectbox pull-left">
-                <i class="fa fa-calendar"></i>&nbsp;
-                <span></span> <i class="fa fa-caret-down"></i>
-              </div>
-              <input type="hidden" name="to" id="to" value="">
-              <input type="hidden" name="from" id="from" value="">
+  <div class="my-table container-fluid animated zoomIn">
+  <!-- <table
+    class="display table table-striped"
+    id="table"
+    data-search=true> 
+    data-only-info-pagination="true"-->
+    <table
+    id="table"
+    class="table table-bordered table-hover table-striped"
+    data-toggle="table"
+    data-toolbar="#toolbar"
+    data-show-columns="true"
+    data-search="true"
+    data-show-footer="true"
+    data-show-search-button="true"
+    data-search-align="left"
+    data-height="550"
+    data-ajax="ajaxRequest"
+    data-pagination="false"
+    data-row-attributes="rowAttributes">
+      <div class="row">
+        <div class="input-group">
+          <div class="col-lg-12 date-fields">
+            <div id="reportrange" class="selectbox pull-left">
+              <!-- <i class="fa fa-calendar"></i>&nbsp; -->
+              <span></span> <i class="fa fa-caret-down"></i>
+            </div>
+            <input type="hidden" name="to" id="to" value="">
+            <input type="hidden" name="from" id="from" value="">
+            <div class="input-group-append">
+              <button id="dataSubmitButton" type="submit" class="btn btn-primary">
+                <span id='spinner' class="spinner-border spinner-border-sm" role="status"></span>
+                <span id='submitLabel'>Get Hours</span>
+              </button>
             </div>
           </div>
-          <div class="col-lg-2 align-self-center">
-            <button id="dataSubmitButton" type="submit" class="btn btn-primary">
-              <span id='spinner' class="spinner-border spinner-border-sm" role="status"></span>
-              <span id='submitLabel'>Get Hours</span>
-            </button>
-          </div>
         </div>
-        <thead>
-            <tr>
-                <th data-field="rank">Rank</th>
-                <th data-field="name">Name</th>
-                <th data-field="rounded_hours">Hours</th>
-            </tr>
-        </thead>
-      </table>
-    </div>
+      </div>
 
-    </section>
+      <thead>
+          <tr>
+              <th data-field="rank" data-footer-formatter="rankFormatter">Rank</th>
+              <th data-field="name" data-footer-formatter="nameFormatter">Name</th>
+              <th data-field="rounded_hours" data-footer-formatter="hoursFormatter">Hours</th>
+          </tr>
+      </thead>
+    </table>
+  </div>
+</section>
 
 
 {% endblock content %}
