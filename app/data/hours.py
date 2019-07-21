@@ -109,7 +109,7 @@ def updateWorkouts(lastUpdatedTime):
         total_num_modified += num_modified
 
     log.info("Deleted {num_deleted} workouts and modified {num_modified} workouts since {lastUpdatedTime}."
-             .format(total_num_deleted=total_num_deleted, total_num_modified=total_num_modified, lastUpdatedTime=lastUpdatedTime))
+             .format(num_deleted=total_num_deleted, num_modified=total_num_modified, lastUpdatedTime=lastUpdatedTime))
 
 
 def updateAthletesWorkoutsTime():
