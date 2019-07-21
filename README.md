@@ -1,5 +1,38 @@
+Landing page screenshot
 # c150data
+Short description of project
+
+## Table of Contents
+* Introduction
+* Header 2
+
+## Introduction
+Projects aim, what problems the project solves.
+
+## Features
+* Current
+* Features
+
+## Site
+Short description of each page along with screenshot/gif of it's use.
+
+## Technologies
+Languages used, libraries, and versions
+Example:
+* Bootstrap 4
+* Python 3.7
+* Flask (Version number?)
+* TrainingPeaks API
+* OAuth2 Authentication
+
+#### To Do:
+* Future
+* Features
 Website for Columbia Lightweight Rowing
+
+ ## Author Information
+ Links to Lukas and I's Github Accounts, which will have our contact information
+ ## Contact Information
 
 Authors: Lukas Geiger and Max Amsterdam
 
