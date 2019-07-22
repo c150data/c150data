@@ -1,6 +1,6 @@
 ]Landing page screenshot
 
-![alt text](app/static/img/favicon.png)
+![C150 Logo](app/static/img/favicon.png)
 # [C150data](https://www.c150data.com)
 Live web application created with Flask, Bootstrap, SQLAlchemy, and TrainingPeaks API. 
 
@@ -34,7 +34,7 @@ Short description of each page along with screenshot/gif of it's use.
 │   │   ├── oauth.py              -- Gets/Updates access tokens for TP API
 │   │   └── urls.py               -- Build urls to make API requests
 │   ├── data
-│   │   └── hours.py              -- Holds functions necessary to display hours table 
+│   │   └── data.py              -- Holds functions necessary to display hours table 
 │   ├── database
 │   │   ├── db_filler.py          -- DB functions for large batch requests to TP API
 │   │   ├── db_functions.py       -- Handles basic SQL functions

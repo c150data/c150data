@@ -59,8 +59,8 @@
         <ul class="nav-menu">
           <li class="{{ 'active' if active_page == 'about' else '' }}"><a href="{{ url_for('about') }}">Home</a></li>
           {% if current_user.is_authenticated %}
-          <li class="{{ 'active' if active_page == 'hours' else '' }}"><a class="nav-link"
-              href="{{ url_for('hours') }}">Hours</a></li>
+          <li class="{{ 'active' if active_page == 'data' else '' }}"><a class="nav-link"
+              href="{{ url_for('data') }}">Data</a></li>
           <li class="{{ 'active' if active_page == 'contact' else '' }}"><a class="nav-link"
               href="{{ url_for('contact') }}">Contact</a></li>
           <li class="{{ 'active' if active_page == 'logout' else '' }}"><a class="nav-link"
