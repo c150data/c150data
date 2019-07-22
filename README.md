@@ -1,26 +1,40 @@
-]Landing page screenshot
-
-![alt text](app/static/img/favicon.png)
 # [C150data](https://www.c150data.com)
-Live web application created with Flask, Bootstrap, SQLAlchemy, and TrainingPeaks API. 
+
+C150data is a live web application created with Flask, Bootstrap, SQLAlchemy, and TrainingPeaks API. You can visit the website now at [www.c150data.com](https://www.c150data.com/).
+
+![Landing Page](app/static/img/landingpage.png)
 
 ## Table of Contents
-* Introduction
-* Features
-* Site
-* Project Layout
-* Technologies
-* Authors
+
+* [Introduction](#Introduction)
+* [Features](#Features)
+* [Site](#Site)
+* [Project Layout](#Project-Layout)
+* [Technologies](#Technologies)
+* [Authors](#Authors)
 
 ## Introduction
-Projects aim, what problems the project solves.
+
+C150Data is an application designed specifically for the use of the Columbia Lightweight Rowing Team (C150).
+Before this application, athletes had no way of viewing the team's training data and it was difficult and time consuming for coaches to compile data for all their athletes in one place. In an effort to solve these problems, C150Data was created. This web application stores and meaningfully displays up to date workout data for all rowers on the team,
+allowing coaches and athletes to view organized and detailed team information, all in one place.
+
+C150Data utilizes the TrainingPeaks API to store and display up to date workout information. In order to access this site,
+one must be pre-registered by an administrator.
 
 ## Features
-* Current	
-* Features
+
+* Secure login system to keep data private.
+* Data page that displays athletes' total training hours within a given date range. The page has sorting and filtering functionality.
+* Contact page that allows users to reach out to administrators with comments, questions, or concerns.
 
 ## Site
-Short description of each page along with screenshot/gif of it's use.
+
+**Login**
+![Login Gif](app/static/img/login.mp4)
+
+**Data**
+TODO
 
 ## Project Layout
 ```
@@ -34,28 +48,28 @@ Short description of each page along with screenshot/gif of it's use.
 │   │   ├── oauth.py              -- Gets/Updates access tokens for TP API
 │   │   └── urls.py               -- Build urls to make API requests
 │   ├── data
-│   │   └── hours.py              -- Holds functions necessary to display hours table 
+│   │   └── hours.py              -- Holds functions necessary to display hours table
 │   ├── database
 │   │   ├── db_filler.py          -- DB functions for large batch requests to TP API
 │   │   ├── db_functions.py       -- Handles basic SQL functions
-│   │   ├── db_updater.py         -- DB functions for updating database 
+│   │   ├── db_updater.py         -- DB functions for updating database
 │   │   └── sql_statements.py     -- Commonly used SQL expressions
 │   ├── db_models.py              -- Defines DB objects used in app
 │   ├── forms
 │   │   └── forms.py              -- Uses flask_wtf to create forms for app
-│   ├── __init__.py               -- Initializes app, db, log, etc. 
+│   ├── __init__.py               -- Initializes app, db, log, etc.
 │   ├── mappers
 │   │   ├── athlete_mapper.py     -- Handles mapping involving athlete object
 │   │   └── workout_mapper.py     -- Handles mapping involving workout object
 │   ├── routes.py                 -- Handles all url endpoints - Main driver of app
 │   ├── site.db                   -- SQLite DB
-│   ├── static                    -- Static files for app 
+│   ├── static                    -- Static files for app
 │   │   ├── css
 │   │   ├── img
 │   │   ├── js
 │   │   └── lib
 │   └── templates                 -- Templates for app
-├── config.py                     -- Config file 
+├── config.py                     -- Config file
 ├── README.md
 └── run.py                        -- Calls __init__ to initialize package structure
 ```
@@ -96,7 +110,7 @@ Languages used, libraries, and versions
 **Server Side:**
 * gunicorn 19.9.0
 * NGINX
-* Supervisor 
+* Supervisor
 * Linode Server
 
 
@@ -105,21 +119,7 @@ Languages used, libraries, and versions
 * Features
 Website for Columbia Lightweight Rowing
 
- ## Author Information
- Links to Lukas and I's Github Accounts, which will have our contact information
- ## Contact Information
-
-Authors: Lukas Geiger and Max Amsterdam
-
-This website is meant to store and meaningfully display workout data for all athletes of C150. 
-In order to access this site you must be preregistered by an admin. 
-
-The goal of this webpage is to motivate the athletes of C150 to upload all of their training data. Therefore
-we display a list of athletes ranked by the percentage of training hours completed to hours assigned. By 
-making this data accessible we hope to motivate the athletes to complete all assigned work. Extra is extra. 
-
-In the future we plan on collecting and analyzing all rowing data and displaying it in a way to give our coach 
-oversight of the progress of the entire team. 
-
-For a detailed outline of our project please go to this website: https://drive.google.com/file/d/1HHwZq2sI0DBk9f-UMeV8MYHYhMpAWNMN/view
-
+ ## Authors
+[![Lukas Geiger](https://avatars0.githubusercontent.com/u/39981740?s=460&v=4)](https://github.com/ljogeiger) | [![Max Amsterdam](https://avatars0.githubusercontent.com/u/44952097?s=460&v=4 )](https://github.com/max-amsterdam)
+---|---
+[Lukas Geiger](https://github.com/ljogeiger) |[Max Amsterdam](https://github.com/max-amsterdam)
