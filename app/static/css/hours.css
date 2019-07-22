@@ -2,16 +2,23 @@
   CSS file for hours.html - the hours page for C150data. 
 */
 
-.form-control {
-  positon: fixed;
-  margin: auto;
+#hours {
+  width: 100%;
+  height: 100vh;
+  background: url(../img/LightweightLion.jpeg) top center;
+  /*background-size: cover;*/
+  position: relative;
 }
 
-.form-group {
-  /*position: relative;*/
-  padding-bottom: 15px;
-  margin: auto;
-  max-width: 300px;
+@media (min-width: 1024px) {
+  #hours {
+    background-attachment: fixed;
+  }
+}
+@media (max-width: 800px) {
+  #hours {
+    height: 150vh;
+  }
 }
 
 .hours-content {
@@ -21,7 +28,13 @@
  	background-attachment: fixed;
 }
 
-#hero:before {
+#hours .alert {
+  width: 400px;
+  margin-top: -75px;
+  z-index: 1;
+}
+
+#hours:before {
   content: "";
   background: rgba(0, 0, 0, 0.6);
   position: absolute;
@@ -30,15 +43,97 @@
   left: 0;
   right: 0;
 }
-
-p {
-	color: white;
+#hours .hours-container {
+  position: relative;
+  bottom: 0;
+  top: 130px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+@media (max-width: 540px) {
+  #hours .hours-container {
+    top: 70hpx;
+  }
+}
+@media (max-width: 360px) {
+  #hours .hours-container {
+    top: 120px;
+  }
 }
 
-.container-fluid{
-  margin-top: -65px;
-	/*display: inline-block;*/
-	z-index: 2;
-	/*margin-left: auto;*/
+#hours h1 {
+  margin: 30px 0 10px 0;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 56px;
+  text-transform: uppercase;
+  color: #fff;
 }
+
+@media (max-width: 768px) {
+  #hours h1 {
+    font-size: 28px;
+    line-height: 36px;
+  }
+}
+
+#hours h2 {
+  color: #eee;
+  margin-bottom: 50px;
+  font-size: 24px;
+}
+
+@media (max-width: 768px) {
+  #hours h2 {
+    font-size: 18px;
+    line-height: 24px;
+    margin-bottom: 30px;
+  }
+}
+
+#hours .container-fluid {
+  position: fixed;
+  top: 200px;
+}
+
+.animated {
+  -webkit-animation-duration: 1s;
+  -moz-animation-duration: 1s;
+  animation-duration: 1s;
+
+}
+
+.date-fields{
+  padding-left: 15px;
+  padding-top: 8px;
+}
+
+.selectbox {
+    background: #fff;
+    color: #1d3b4a;
+    padding: 10px;
+    line-height: 18px;
+    border-radius: 4px;
+    border-width: 0 1px 4px;
+}
+
+
+#hours .my-table {
+      position: relative;
+      z-index: 1;
+      margin-top: -30px;
+      margin-left: 2.5%;
+      width: 95%;
+      height: auto;
+      padding-bottom: 15px;
+      background-color: grey;
+      opacity: .9;
+      color: black;
+  }
+
 
