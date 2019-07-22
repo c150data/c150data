@@ -91,7 +91,7 @@ def contact():
 @requires_access_level(ACCESS['user'])
 def getData():
     """
-    On error, this returns a 500 internal server error status code. The Jquery call that 
+    On error, this returns a 500 internal server error status code. The Jquery call that
     calls this end point then reloads the page, forcing the flash message to appear.
 
     On success though, the webpage does not need to be reloaded at all.
@@ -103,7 +103,7 @@ def getData():
         response_code = 200
     except Exception as e:
         log.exception("Was not able to get hours: {error}".format(error=e))
-        response_code = 500 
+        response_code = 500
     return jsonify(athletes), response_code
 
 

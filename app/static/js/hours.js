@@ -1,4 +1,4 @@
-// Javascript file for hours.html. Allows for hiding items when scrolling and calls to 
+// Javascript file for hours.html. Allows for hiding items when scrolling and calls to
 // database for athlete hours.
 
   var $table = $('#table')
@@ -100,25 +100,19 @@ $(function() {
 
   function hoursFormatter() {
     return total
-    }   
+    }
 
 // GET requests for to /hours/getData which returns a json object called "response".
-// On success this gets passed into the table along with the total hours 
+// On success this gets passed into the table along with the total hours
 // On error it logs the failure to the console
   function ajaxRequest(params) {
     $.ajax({
            url: '/hours/getData',
            type: "get",
            dataType: 'json',
-           data: getData(), 
+           data: getData(),
            success: function(response) {
-                // Get Totals
-                total=0
-                for (var i = 0; i < response.length; i++) {
-                    total += response[i].hours;
-                };
-                total = Math.round(total)
-               params.success(response, total);
+               params.success(response['athlete_list'], response['total_hours']);
            },
            error: function(e) {
               // alert('failure')
@@ -128,7 +122,7 @@ $(function() {
   }
 
 // Every time you press the submit button it refreshes the table
-// TODO: Build in a constraint as failsafe of user pressing repeatedly 
+// TODO: Build in a constraint as failsafe of user pressing repeatedly
     $(function() {
     $('#dataSubmitButton').click(function () {
       alert("refresh")

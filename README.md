@@ -1,4 +1,4 @@
-# [C150data](https://www.c150data.com)
+# C150data
 
 C150data is a live web application created with Flask, Bootstrap, SQLAlchemy, and TrainingPeaks API. You can visit the website now at [www.c150data.com](https://www.c150data.com/).
 
@@ -75,7 +75,7 @@ TODO
 ```
 
 ## Technologies
-Languages used, libraries, and versions
+Below is a complete list of the languages and libraries used in this application, as well as their respective versions.
 
 **API:**
 * TrainingPeaks API
@@ -115,9 +115,9 @@ Languages used, libraries, and versions
 
 
 #### To Do:
-* Future
-* Features
-Website for Columbia Lightweight Rowing
+
+* Add a "Training Plan" score for every athlete on the data page. This score will calculate an athlete's completion of the coach-prescribed training plan on a scale from 0 to 100.
+* Add a "Test Analysis" page, which will take an in-depth look at the team's performance on every test workout. This page will include graphs and charts that analyze the test results of athletes, groupings of athletes, and the entire team.
 
  ## Authors
 [![Lukas Geiger](https://avatars0.githubusercontent.com/u/39981740?s=460&v=4)](https://github.com/ljogeiger) | [![Max Amsterdam](https://avatars0.githubusercontent.com/u/44952097?s=460&v=4 )](https://github.com/max-amsterdam)
