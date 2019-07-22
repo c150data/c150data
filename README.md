@@ -48,7 +48,7 @@ TODO
 │   │   ├── oauth.py              -- Gets/Updates access tokens for TP API
 │   │   └── urls.py               -- Build urls to make API requests
 │   ├── data
-│   │   └── hours.py              -- Holds functions necessary to display hours table
+│   │   └── data.py              -- Holds functions necessary to display hours table 
 │   ├── database
 │   │   ├── db_filler.py          -- DB functions for large batch requests to TP API
 │   │   ├── db_functions.py       -- Handles basic SQL functions
