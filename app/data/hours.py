@@ -32,9 +32,8 @@ def getHoursForAllAthletes(start_date, end_date):
         end_date {str} -- Formatted MM/DD/YYYY
 
     Returns:
-        List -- Sorted list of objects, with each object representing an athlete
-        with a name, number of hours (between the given dates), and number of rounded
-        hours to be used by the UI
+        JSON object - Json object with an array of athletes, along with their hours, and
+        the total number of hours for all athletes.
     """
     # Update workouts if they are old
     updateWorkoutsIfNecessary()
@@ -44,22 +43,22 @@ def getHoursForAllAthletes(start_date, end_date):
 
     # Parses sql rows into list of objects formatted for UI
     athleteHourList = list()
+    rank = 1
+    total_hours = 0
     for row in result:
         athlete_info = {
-            "rank": 0,
+            "rank": rank,
             "name": row['name'],
-            "hours": row['hours'],
-            "rounded_hours": round(row['hours'], 2)
+            "rounded_hours": row['hours']
         }
         athleteHourList.append(athlete_info)
-    sortedAthleteHourList = sorted(
-        athleteHourList, key=operator.itemgetter('hours'), reverse=True)
-    rank = 1
-    for athlete in sortedAthleteHourList:
-        log.info(athlete)
-        athlete["rank"] = rank
-        rank+=1
-    return sortedAthleteHourList
+        total_hours += row['hours']
+        rank += 1
+    jsonToReturn = {
+        "athlete_list": athleteHourList,
+        "total_hours": round(total_hours, 2)
+    }
+    return jsonToReturn
 
 
 def updateWorkoutsIfNecessary():
