@@ -5,6 +5,8 @@
   var firstTime = 1
   var total = 0
 
+  // Date Functions
+
   function getLastWeek() {
     var today = new Date();
     var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
@@ -14,6 +16,7 @@
     var lastWeekDisplayPadded = ("00" + lastWeekMonth.toString()).slice(-2) + "/" + ("00" + lastWeekDay.toString()).slice(-2) + "/" + ("0000" + lastWeekYear.toString()).slice(-4);
     return lastWeekDisplayPadded
     }
+
   function getToday() {
     var today = new Date();
     var todayMonth = today.getMonth()+1
@@ -23,65 +26,6 @@
     var todayDisplayPadded = ("00" + todayMonth.toString()).slice(-2) + "/" + ("00" + todayDate.toString()).slice(-2) + "/" + ("0000" + todayYear.toString()).slice(-4);
     return todayDisplayPadded
   }
-
-  function rowAttributes(row, index) {
-    return {
-      'data-toggle': 'popover',
-      'data-placement': 'bottom',
-      'data-trigger': 'hover',
-      'data-content': [
-        'Rank: ' + row.rank,
-        'Name: ' + row.name,
-        'Hours: ' + row.rounded_hours
-      ].join(', ')
-    }
-  }
-
-  function rankFormatter() {
-    return 'Total'
-  }
-
-  function nameFormatter(data) {
-    return '# of Athletes: '+String(data.length)
-  }
-
-  function hoursFormatter() {
-    return total
-    }   
-
-  function ajaxRequest(params) {
-    // previous code that worked
-    // var url = '/hours/getData'
-    // $.get(url + '?' + $.param(params.data)).then(function (response) {
-    //   params.success(response)
-    // })
-    $.ajax({
-           url: '/hours/getData',
-           type: "get",
-           dataType: 'json',
-           data: getData(), 
-           success: function(response) {
-                // Get Totals
-                for (var i = 0; i < response.length; i++) {
-                    total += response[i].hours;
-                };
-                total = Math.round(total)
-               params.success(response, total);
-           },
-           error: function(e) {
-              // alert('failure')
-              console.log(e.responseText);
-           }
-        });
-  }
-
-    $(function() {
-    $('#dataSubmitButton').click(function () {
-      alert("refresh")
-      firstTime = 0
-      $('#table').bootstrapTable('refresh')
-    })
-  })
 
   function getData() {
     var on_load_start = getToday()
@@ -100,7 +44,7 @@
     return data
   }
 
-// DateRange
+  // DateRange
 $(function() {
     var start = moment().subtract(6, 'days');
     var end = moment();
@@ -129,6 +73,71 @@ $(function() {
 
 });
 
+// Bootstrap Table Functions
+
+// Enables hover for detail in Bootstrap table
+  function rowAttributes(row, index) {
+    return {
+      'data-toggle': 'popover',
+      'data-placement': 'bottom',
+      'data-trigger': 'hover',
+      'data-content': [
+        'Rank: ' + row.rank,
+        'Name: ' + row.name,
+        'Hours: ' + row.rounded_hours
+      ].join(', ')
+    }
+  }
+
+// Formatters for the footer row in table
+  function rankFormatter() {
+    return 'Total'
+  }
+
+  function nameFormatter(data) {
+    return '# of Athletes: '+String(data.length)
+  }
+
+  function hoursFormatter() {
+    return total
+    }   
+
+// GET requests for to /hours/getData which returns a json object called "response".
+// On success this gets passed into the table along with the total hours 
+// On error it logs the failure to the console
+  function ajaxRequest(params) {
+    $.ajax({
+           url: '/hours/getData',
+           type: "get",
+           dataType: 'json',
+           data: getData(), 
+           success: function(response) {
+                // Get Totals
+                total=0
+                for (var i = 0; i < response.length; i++) {
+                    total += response[i].hours;
+                };
+                total = Math.round(total)
+               params.success(response, total);
+           },
+           error: function(e) {
+              // alert('failure')
+              console.log(e.responseText);
+           }
+        });
+  }
+
+// Every time you press the submit button it refreshes the table
+// TODO: Build in a constraint as failsafe of user pressing repeatedly 
+    $(function() {
+    $('#dataSubmitButton').click(function () {
+      alert("refresh")
+      firstTime = 0
+      $('#table').bootstrapTable('refresh')
+    })
+  })
+
+
 $(document).ready(function () {
 
     $('#spinner').hide();
@@ -140,12 +149,10 @@ $(document).ready(function () {
         ajaxStop: function () {
             $('#submitLabel').html("Get Hours");
             $('#spinner').hide();
-            // $('#datetimepickerStart').hide();
-            // $('#datetimepickerEnd').hide();
-            // $('#dataSubmitButton').hide();
         }
     });
 
+    // Additional function to enable table hover functionality
     $(function() {
         $('#table').on('post-body.bs.table', function (e) {
             $('[data-toggle="popover"]').popover()
