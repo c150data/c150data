@@ -1,0 +1,138 @@
+/*
+  CSS file for register.html - the register page for C150data
+*/
+
+
+#register {
+  width: 100%;
+  height: 100vh;
+  background: url(../img/hero-bg.jpg) top center;
+  background-size: cover;
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  #register {
+    background-attachment: fixed;
+  }
+}
+
+@media (max-width: 700px) {
+  #register {
+    height: 110vh;
+  }
+}
+
+@media (max-width: 360px) {
+  #register {
+    height: 130vh;
+  }
+}
+
+#register .alert {
+    width: 400px;
+    margin-top: -75px;
+    z-index: 1;
+}
+
+#register:before {
+  content: "";
+  background: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+#register .register-container {
+  position: relative;
+  bottom: 0;
+  top: 130px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+@media (max-width: 768px) {
+    #register .register-container {
+      position: relative;
+      bottom: 0;
+      top: 130px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+    }
+}
+
+#register h1 {
+  margin: 30px 0 10px 0;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 56px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  #register h1 {
+    font-size: 28px;
+    line-height: 36px;
+  }
+}
+
+#register h2 {
+  color: #eee;
+  margin-bottom: 50px;
+  font-size: 24px;
+}
+
+@media (max-width: 768px) {
+  #register h2 {
+    font-size: 18px;
+    line-height: 24px;
+    margin-bottom: 30px;
+  }
+}
+
+
+@media (min-width: 1024px) {
+  #contact-admin {
+	float: left;
+  }
+  #forgot {
+  	float: left;
+  }
+}
+
+#register .container-fluid {
+    position: fixed;
+    top: 100px;
+}
+
+form {
+    padding: 0% 15% 15%;
+    height: 100%;
+}
+
+.submit {
+    padding-top: 10px;
+}
+
+.form-control-label {
+	color: #eee;
+  	font-size: 24px;
+}
+
+.animated {
+  -webkit-animation-duration: 1s;
+  -moz-animation-duration: 1s;
+  animation-duration: 1s;
+}
