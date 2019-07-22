@@ -100,7 +100,7 @@ $(function() {
 
   function hoursFormatter() {
     return total
-    }   
+    }
 
 // GET requests for to /data/getData which returns a json object called "response".
 // On success this gets passed into the table along with the total hours 
@@ -110,15 +110,10 @@ $(function() {
            url: '/data/getData',
            type: "get",
            dataType: 'json',
-           data: getData(), 
+           data: getData(),
            success: function(response) {
-                // Get Totals
-                total=0
-                for (var i = 0; i < response.length; i++) {
-                    total += response[i].hours;
-                };
-                total = Math.round(total)
-               params.success(response, total);
+               total = response['total_hours']
+               params.success(response['athlete_list'], response['total_hours']);
            },
            error: function(e) {
               // alert('failure')
@@ -128,7 +123,7 @@ $(function() {
   }
 
 // Every time you press the submit button it refreshes the table
-// TODO: Build in a constraint as failsafe of user pressing repeatedly 
+// TODO: Build in a constraint as failsafe of user pressing repeatedly
     $(function() {
     $('#dataSubmitButton').click(function () {
       alert("refresh")
@@ -147,7 +142,7 @@ $(document).ready(function () {
             $('#spinner').show();
         },
         ajaxStop: function () {
-            $('#submitLabel').html("Get Hours");
+            $('#submitLabel').html("Get Data!");
             $('#spinner').hide();
         }
     });

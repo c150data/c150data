@@ -1,5 +1,5 @@
 // Javascript file for admin page. Allows for calls to database
-// to put workouts in database. 
+// to put workouts in database.
 
 $(document).ready(function () {
     $('#spinner').hide();
@@ -9,7 +9,7 @@ $(document).ready(function () {
             $('#spinner').show();
         },
         ajaxStop: function () {
-            $('#submitLabel').html("Get Hours");
+            $('#submitLabel').html("Insert Workouts!");
             $('#spinner').hide();
         }
     });

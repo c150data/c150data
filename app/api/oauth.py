@@ -124,7 +124,7 @@ def getNewTokenWithRefreshToken(refresh_token):
         raise Exception("Was not able to get a session for refresing token.")
     body = "grant_type=refresh_token"
     try:
-        session.refresh_token(refresh_url,
+        return session.refresh_token(refresh_url,
                               refresh_token=refresh_token,
                               body=body)
     except Exception as e:
