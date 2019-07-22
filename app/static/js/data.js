@@ -1,4 +1,4 @@
-// Javascript file for hours.html. Allows for hiding items when scrolling and calls to 
+// Javascript file for data.html. Allows for hiding items when scrolling and calls to 
 // database for athlete hours.
 
   var $table = $('#table')
@@ -102,12 +102,12 @@ $(function() {
     return total
     }   
 
-// GET requests for to /hours/getData which returns a json object called "response".
+// GET requests for to /data/getData which returns a json object called "response".
 // On success this gets passed into the table along with the total hours 
 // On error it logs the failure to the console
   function ajaxRequest(params) {
     $.ajax({
-           url: '/hours/getData',
+           url: '/data/getData',
            type: "get",
            dataType: 'json',
            data: getData(), 
