@@ -16,11 +16,12 @@ C150data is a live web application created with Flask, Bootstrap, SQLAlchemy, an
 ## Introduction
 
 C150Data is an application designed specifically for the use of the Columbia Lightweight Rowing Team (C150).
-Before this application, athletes had no way of viewing the team's training data and it was difficult and time consuming for coaches to compile data for all their athletes in one place. In an effort to solve these problems, C150Data was created. This web application stores and meaningfully displays up to date workout data for all rowers on the team,
+Before this application, athletes had no way of viewing the team's training data and it was difficult and time consuming for coaches to compile data for all their athletes in one place. In an effort to solve these problems, C150Data was created. This web app stores and meaningfully displays up to date workout data for all rowers on the team,
 allowing coaches and athletes to view organized and detailed team information, all in one place.
 
-C150Data utilizes the TrainingPeaks API to store and display up to date workout information. In order to access this site,
-one must be pre-registered by an administrator.
+C150Data utilizes the TrainingPeaks API to access accurate and up to date workout information. 
+
+At this time, you must be a member of C150 in order to access this site.
 
 ## Features
 
@@ -114,7 +115,7 @@ Below is a complete list of the languages and libraries used in this application
 * Linode Server
 
 
-#### To Do:
+## To Do:
 
 * Add a "Training Plan" score for every athlete on the data page. This score will calculate an athlete's completion of the coach-prescribed training plan on a scale from 0 to 100.
 * Add a "Test Analysis" page, which will take an in-depth look at the team's performance on every test workout. This page will include graphs and charts that analyze the test results of athletes, groupings of athletes, and the entire team.
