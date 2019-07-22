@@ -78,6 +78,7 @@ def contact():
                        From: %s %s <%s>
                        %s
                        """ % (form.firstname.data, form.lastname.data, form.email.data, form.message.data)
+            log.info("Sending message from {first} {last} to lwtpoodles150@gmail.com".format(first=form.firstname.data, last=form.lastname.data))
             mail.send(msg)
             return 'Form sent.'
     elif request.method == 'GET':
@@ -92,7 +93,7 @@ def contact():
 @requires_access_level(ACCESS['user'])
 def getData():
     """
-    On error, this returns a 500 internal server error status code. The Jquery call that 
+    On error, this returns a 500 internal server error status code. The Jquery call that
     calls this end point then reloads the page, forcing the flash message to appear.
 
     On success though, the webpage does not need to be reloaded at all.
@@ -104,7 +105,7 @@ def getData():
         response_code = 200
     except Exception as e:
         log.exception("Was not able to get hours: {error}".format(error=e))
-        response_code = 500 
+        response_code = 500
     return jsonify(athletes), response_code
 
 
@@ -138,6 +139,7 @@ def register():
                     email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
+        log.info("A new account has been created with the username: {}".format(form.username.data))
         flash('A new account has been created with the username: {}. You are now able to log in.'.format(
             form.username.data), 'success')
         return redirect(url_for('login'))
@@ -207,6 +209,7 @@ def admin():
 def user_authorization():
     try:
         url = oauth.getAuthorizationUrl()
+        log.info("Redirecting user to {} for authorization...".format(url))
         return redirect(url)
     except Exception as e:
         log.exception(
@@ -219,6 +222,7 @@ def user_authorization():
 @requires_access_level(ACCESS['admin'])
 def insertNewToken():
     try:
+        log.info("Getting new token...")
         oauth.insertNewToken(oauth.getNewAccessToken())
         flash("A new access token was successfuly inserted into the database.", 'success')
     except Exception as e:
@@ -231,6 +235,7 @@ def insertNewToken():
 @requires_access_level(ACCESS['admin'])
 def insertAllAthletesApp():
     try:
+        log.info("Inserting all athletes into database...")
         numAthletesInserted = db_filler.insertAllAthletesIntoDB()
         flash("Successfully inserted {} athletes into the database.".format(
             numAthletesInserted), 'success')
@@ -250,6 +255,7 @@ def insertAllWorkoutsApp():
     start_date, end_date = request.args.get(
         'start_date'), request.args.get('end_date')
     try:
+        log.info("Inserting all workouts into the database...")
         numWorkoutsInserted = db_filler.insertWorkoutsIntoDb(
             start_date, end_date)
         result = "success"
