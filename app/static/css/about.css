@@ -92,9 +92,19 @@ About Us Section
   border: 2px solid #b9d9eb;
 }
 
+#about .about-container .icon-box .icon img {
+    border-radius: 50%;
+    height: 64px;
+    width: 64px;
+}
+
 #about .about-container .icon-box .icon i {
   color: #b9d9eb;
-  font-size: 24px;
+  font-size: 30px;
+}
+
+#about .about-container .icon-box .description a {
+  color: rgb(68, 68, 242);
 }
 
 #about .about-container .icon-box .title {
@@ -220,7 +230,7 @@ Contact Section
 
 
 /*-----------------------------
-Arrow Down 
+Arrow Down
 --------------------------------*/
 .header-down-arrow {
     position: absolute;
