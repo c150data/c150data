@@ -112,6 +112,7 @@ $(function() {
            dataType: 'json',
            data: getData(),
            success: function(response) {
+               total = response['total_hours']
                params.success(response['athlete_list'], response['total_hours']);
            },
            error: function(e) {
