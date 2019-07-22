@@ -1,18 +1,22 @@
-Landing page screenshot
+]Landing page screenshot
 
-# c150data
 ![alt text](app/static/img/favicon.png)
-Web application created with Flask, Bootstrap, SQLAlchemy, and TrainingPeaks API. 
+# [C150data](https://www.c150data.com)
+Live web application created with Flask, Bootstrap, SQLAlchemy, and TrainingPeaks API. 
 
 ## Table of Contents
 * Introduction
-* Header 2
+* Features
+* Site
+* Project Layout
+* Technologies
+* Authors
 
 ## Introduction
 Projects aim, what problems the project solves.
 
 ## Features
-* Current
+* Current	
 * Features
 
 ## Site
@@ -23,48 +27,48 @@ Short description of each page along with screenshot/gif of it's use.
 .
 ├── app
 │   ├── admin
-│   │   └── admin.py               -- Flask-Admin site with views to allow db oversight
+│   │   └── admin.py              -- Flask-Admin site with views to allow db oversight
 │   ├── api
-│   │   ├── api_requester.py       -- Handles direct calls to TP API
-│   │   ├── api_service.py         -- TP API functions to handl large amounts of similar data
-│   │   ├── oauth.py      		   -- Gets/Updates access tokens for TP API
-│   │   └── urls.py 			   -- Build urls to make API requests
+│   │   ├── api_requester.py      -- Handles direct calls to TP API
+│   │   ├── api_service.py        -- TP API functions to handl large amounts of similar data
+│   │   ├── oauth.py              -- Gets/Updates access tokens for TP API
+│   │   └── urls.py               -- Build urls to make API requests
 │   ├── data
-│   │   └── hours.py 			   -- Holds functions necessary to display hours table 
+│   │   └── hours.py              -- Holds functions necessary to display hours table 
 │   ├── database
-│   │   ├── db_filler.py      	   -- DB functions for large batch requests to TP API
-│   │   ├── db_functions.py 	   -- Handles basic SQL functions
-│   │   ├── db_updater.py 		   -- DB functions for updating database 
-│   │   └── sql_statements.py 	   -- Commonly used SQL expressions
-│   ├── db_models.py 			   -- Defines DB objects used in app
+│   │   ├── db_filler.py          -- DB functions for large batch requests to TP API
+│   │   ├── db_functions.py       -- Handles basic SQL functions
+│   │   ├── db_updater.py         -- DB functions for updating database 
+│   │   └── sql_statements.py     -- Commonly used SQL expressions
+│   ├── db_models.py              -- Defines DB objects used in app
 │   ├── forms
-│   │   └── forms.py 			   -- Uses flask_wtf to create forms for app
-│   ├── __init__.py 			   -- Initializes app, db, log, etc. 
+│   │   └── forms.py              -- Uses flask_wtf to create forms for app
+│   ├── __init__.py               -- Initializes app, db, log, etc. 
 │   ├── mappers
-│   │   ├── athlete_mapper.py 	   -- Handles mapping involving athlete object
-│   │   └── workout_mapper.py 	   -- Handles mapping involving workout object
-│   ├── routes.py 				   -- Handles all url endpoints - Main driver of app
-│   ├── site.db 				   -- SQLite DB
-│   ├── static   				   -- Static files for app 
+│   │   ├── athlete_mapper.py     -- Handles mapping involving athlete object
+│   │   └── workout_mapper.py     -- Handles mapping involving workout object
+│   ├── routes.py                 -- Handles all url endpoints - Main driver of app
+│   ├── site.db                   -- SQLite DB
+│   ├── static                    -- Static files for app 
 │   │   ├── css
 │   │   ├── img
 │   │   ├── js
 │   │   └── lib
-│   └── templates 				   -- Templates for app
-├── config.py 					   -- Config file 
+│   └── templates                 -- Templates for app
+├── config.py                     -- Config file 
 ├── README.md
-└── run.py    					   -- Calls __init__ to initialize package structure
+└── run.py                        -- Calls __init__ to initialize package structure
 ```
 
 ## Technologies
 Languages used, libraries, and versions
 
-API:
+**API:**
 * TrainingPeaks API
 * OAuth2 Authentication 3.0.1
 * Authlib 0.11
 
-Web Page:
+**Web Page:**
 * Python 3.7
 * Bootstrap 4.0.0
 * Flask 1.0.3
@@ -75,7 +79,8 @@ Web Page:
 * Flask-Session 0.3.1
 * Flask-SQLAlchemy 2.4.0
 * Flask-WTF 0.14.2
-* Jinja2==2.10.1
+* JQuery 3.2.1
+* Jinja2 2.10.1
 * bcrypt 3.1.7
 * python-dateutil 2.8.0
 * requests 2.22.0
@@ -84,11 +89,11 @@ Web Page:
 * WTForms 2.2.1
 * pyOpenSSL 19.0.0
 
-Database: 
+**Database:**
 * SQLAlchemy 1.3.5
 * SQLite
 
-Server Side:
+**Server Side:**
 * gunicorn 19.9.0
 * NGINX
 * Supervisor 
