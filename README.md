@@ -1,7 +1,7 @@
 Landing page screenshot
 
 # c150data
-![alt text](app/static/imgs/favicon.png)
+![alt text](app/static/img/favicon.png)
 Web application created with Flask, Bootstrap, SQLAlchemy, and TrainingPeaks API. 
 
 ## Table of Contents
@@ -19,6 +19,7 @@ Projects aim, what problems the project solves.
 Short description of each page along with screenshot/gif of it's use.
 
 ## Project Layout
+```
 .
 ├── app
 │   ├── admin
@@ -53,6 +54,7 @@ Short description of each page along with screenshot/gif of it's use.
 ├── config.py 					   -- Config file 
 ├── README.md
 └── run.py    					   -- Calls __init__ to initialize package structure
+```
 
 ## Technologies
 Languages used, libraries, and versions
