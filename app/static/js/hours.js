@@ -142,7 +142,7 @@ $(document).ready(function () {
             $('#spinner').show();
         },
         ajaxStop: function () {
-            $('#submitLabel').html("Get Hours");
+            $('#submitLabel').html("Get Data!");
             $('#spinner').hide();
         }
     });
