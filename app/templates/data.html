@@ -64,6 +64,8 @@
     data-height="550"
     data-ajax="ajaxRequest"
     data-pagination="false"
+    data-sort-hours="true"
+    data-sort-order="desc"
     data-row-attributes="rowAttributes">
       <div class="row">
         <div class="input-group">
@@ -88,7 +90,7 @@
           <tr>
               <th data-field="rank" data-footer-formatter="rankFormatter">Rank</th>
               <th data-field="name" data-footer-formatter="nameFormatter">Name</th>
-              <th data-field="rounded_hours" data-footer-formatter="hoursFormatter">Hours</th>
+              <th data-field="rounded_hours" data-footer-formatter="hoursFormatter" data-sortable="true">Hours</th>
           </tr>
       </thead>
     </table>
