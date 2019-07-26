@@ -102,6 +102,33 @@ $(function() {
     return total
     }
 
+  function zoneFormatter() {
+    return total
+    }
+
+  function rowStyle(row, index) {
+    //   'bg-primary',
+    //   'bg-danger',
+    //   'bg-success',
+    //   'bg-warning',
+    //   'bg-info'
+    if (row.rounded_hours == 0) {
+      return {
+       classes: 'bg-danger'
+      }
+    }
+    else if (row.rounded_hours > 0) {
+      return {
+       classes: 'bg-success'
+      }
+    }
+    return {
+      css: {
+        color: 'yellow'
+      }
+    }
+  }
+
 // GET requests for to /data/getData which returns a json object called "response".
 // On success this gets passed into the table along with the total hours 
 // On error it logs the failure to the console
@@ -126,7 +153,7 @@ $(function() {
 // TODO: Build in a constraint as failsafe of user pressing repeatedly
     $(function() {
     $('#dataSubmitButton').click(function () {
-      alert("refresh")
+      // alert("refresh")
       firstTime = 0
       $('#table').bootstrapTable('refresh')
     })
