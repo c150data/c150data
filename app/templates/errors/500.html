@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<section id="hero">
+  <div class="hero-container">
+    <div class="col-lg">
+      <h1>Internal Server Error (500)</h1>
+      <p> We are experiencing some trouble on our end. Please <a href="{{ url_for('main.contact') }}">contact</a> an administrator to get this fixed immediately and try again later.</p>
+    </div>
+    <div class="col-lg">
+      <h3>Return to home <a href="{{ url_for('main.about') }}">here</a></h3>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

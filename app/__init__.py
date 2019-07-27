@@ -53,11 +53,13 @@ from app.users.routes import users  # position important to avoid circular impor
 from app.admin.routes import admin1
 from app.main.routes import main
 from app.data.routes import data1
+from app.errors.handlers import errors
 
 app.register_blueprint(users)
 app.register_blueprint(admin1)
 app.register_blueprint(main)
 app.register_blueprint(data1)
+app.register_blueprint(errors)
 
 # Workout.__table__.drop(db.engine) # Use if you want to drop the table and reset it
 # Athlete.__table__.drop(db.engine) # Use if you want to drop the table and reset it
