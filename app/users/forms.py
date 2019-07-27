@@ -1,10 +1,6 @@
-"""
-Handles the various forms within the application using flast_wtf library
-"""
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from wtforms.widgets import TextArea
 from app.db_models import User
 
 
@@ -44,20 +40,6 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 
-class ContactForm(FlaskForm):
-    firstname = StringField('First Name',
-                            validators=[DataRequired(), Length(min=2, max=25)])
-    lastname = StringField('Last Name',
-                           validators=[DataRequired(), Length(min=2, max=25)])
-    email = StringField('Email',
-                        validators=[DataRequired(), Email()])
-    subject = StringField('Subject of Message',
-                          validators=[DataRequired(), Length(min=2, max=25)])
-    message = StringField('Feedback, Comments, Concerns?', widget=TextArea(),
-                          validators=[DataRequired()])
-    submit = SubmitField('Send')
-
-
 class RequestResetForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
@@ -75,8 +57,4 @@ class ResetPasswordForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password',
                                      validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
-
-
-
-
 
