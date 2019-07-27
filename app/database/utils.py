@@ -1,5 +1,4 @@
-from app.db_models import Athlete
-from app.db_models import Workout
+from app.database.db_models import Athlete, Workout
 from dateutil import parser
 
 """

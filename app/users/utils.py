@@ -1,4 +1,4 @@
-from app.db_models import User
+from app.database.db_models import User
 from app import mail
 from flask import url_for
 from flask_mail import Message

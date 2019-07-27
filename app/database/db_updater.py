@@ -5,7 +5,7 @@ need to update the database according to that the API response. The later part o
 of this module.
 """
 from app.database import db_functions
-from app.db_models import Workout
+from app.database.db_models import Workout
 from app.database.utils import getWorkoutObjectFromJSON
 from app import log
 

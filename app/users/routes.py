@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, redirect, url_for, flash, session
 from flask_login import login_user, current_user, logout_user, login_required
 from app import db, bcrypt, log, ACCESS
-from app.db_models import User
+from app.database.db_models import User
 from app.users.forms import (RegistrationForm, LoginForm, 
                             RequestResetForm, ResetPasswordForm)
 from app.users.utils import send_reset_email

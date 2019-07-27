@@ -43,11 +43,12 @@ log.addHandler(streamHandler)
 # Set up login manager
 login_manager = LoginManager(app)
 login_manager.login_view = 'users.login'  # route that login_required redirects to
+
 # Set up encryption mechanism for passwords
 bcrypt = Bcrypt(app)
 
 
-from app.db_models import User, AuthToken, Athlete, Workout
+from app.database.db_models import User, AuthToken, Athlete, Workout
 
 from app.users.routes import users  # position important to avoid circular importation
 from app.admin.routes import admin1

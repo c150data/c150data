@@ -6,7 +6,7 @@ Can also insert all workouts for every athlete under the current coach (Nich), a
 Note: the workouts request accepts a date range and gets all requests within that range.
 """
 from app import log
-from app.db_models import Athlete, Workout
+from app.database.db_models import Athlete, Workout
 from app.database import db_functions, sql_statements as sql
 from app.api import api_requester, oauth, api_service
 from datetime import datetime, timedelta
