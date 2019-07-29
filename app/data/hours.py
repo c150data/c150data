@@ -6,7 +6,7 @@ Eventually, when more fields and statistics are added to this
 from app import db, log
 from app.database import db_functions, db_filler, sql_statements as sql, db_updater
 from app.api import api_requester
-from app.db_models import Athlete
+from app.database.db_models import Athlete
 import operator
 from datetime import datetime, timedelta
 

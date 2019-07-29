@@ -5,8 +5,8 @@ need to update the database according to that the API response. The later part o
 of this module.
 """
 from app.database import db_functions
-from app.db_models import Workout
-from app.mappers import workout_mapper
+from app.database.db_models import Workout
+from app.database.utils import getWorkoutObjectFromJSON
 from app import log
 
 
@@ -82,8 +82,8 @@ def updateWorkout(workout_json):
     """
     if Workout.query.filter_by(id=workout_json['Id']) is None:
         # Workout does not exist in DB
-        return workout_mapper.getWorkoutObjectFromJSON(workout_json)
+        return getWorkoutObjectFromJSON(workout_json)
     else:
         # Workout already exists in db, need to first delete existing then return new one to insert
         Workout.query.filter_by(id=workout_json['Id']).delete()
-        return workout_mapper.getWorkoutObjectFromJSON(workout_json)
+        return getWorkoutObjectFromJSON(workout_json)
