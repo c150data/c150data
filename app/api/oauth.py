@@ -6,7 +6,7 @@ to make API requests to TrainingPeaks.
 from authlib.client import OAuth2Session
 from app import log, app
 from app.database import db_functions
-from app.db_models import AuthToken
+from app.database.db_models import AuthToken
 from datetime import datetime, timedelta
 
 remote = app.config['IS_REMOTE']

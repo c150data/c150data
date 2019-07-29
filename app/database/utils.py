@@ -1,9 +1,9 @@
+from app.database.db_models import Athlete, Workout
+from dateutil import parser
+
 """
 Handles mapping involving Workout object
 """
-from app.db_models import Workout
-from dateutil import parser
-
 
 def getWorkoutObjectFromJSON(workout_json):
     """

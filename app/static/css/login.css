@@ -34,6 +34,11 @@
     margin-top: -75px;
     z-index: 1;
 }
+@media (max-width: 700px) {
+  #login .alert{
+    width: 300px;
+  }
+}
 
 #login:before {
   content: "";

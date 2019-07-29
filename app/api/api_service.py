@@ -7,7 +7,7 @@ into database objects.
 """
 from app.api import api_requester
 from app.database import db_functions
-from app.mappers import athlete_mapper, workout_mapper
+from app.api.utils import getAthleteObjectFromJSON, getWorkoutObjectFromJSON
 from datetime import datetime, timedelta
 import math
 
@@ -25,7 +25,7 @@ def getDBAthletesUsingAPI():
     athletes_to_return = list()
     for athlete in athletes_response.json():
         athletes_to_return.append(
-            athlete_mapper.getAthleteObjectFromJSON(athlete))
+            getAthleteObjectFromJSON(athlete))
 
     return athletes_to_return
 
@@ -47,5 +47,5 @@ def getDBWorkoutsUsingAPI(athlete_id, date_period_tuple):
     workouts_json = api_requester.getWorkoutsForAthlete(athlete_id, start_date, end_date).json()
     dbWorkoutsList = list()
     for workout_j in workouts_json:
-        dbWorkoutsList.append(workout_mapper.getWorkoutObjectFromJSON(workout_j))
+        dbWorkoutsList.append(getWorkoutObjectFromJSON(workout_j))
     return dbWorkoutsList

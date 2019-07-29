@@ -27,9 +27,9 @@
       <h1>Welcome to C150 Data</h1>
       <h2>A website designed to meaningfully display the Columbia Lightweight Rowing team's training data.</h2>
       {% if not current_user.is_authenticated %}
-      <a href="{{ url_for('login') }}" class="btn-get-started">Login</a>
+      <a href="{{ url_for('users.login') }}" class="btn-get-started">Login</a>
       {% else %}
-      <a href="{{ url_for('data') }}" class="btn-get-started">Data</a>
+      <a href="{{ url_for('data1.data') }}" class="btn-get-started">Data</a>
       {% endif %}
     </div>
   </div>
@@ -66,7 +66,7 @@
         <div class="icon-box wow fadeInUp" data-wow-delay="0.4s">
           <div class="icon"><i class="fa fa-question"></i></div>
           <h4 class="title"><a href="">What's Next?</a></h4>
-          <p class="description">This web application is in active development, so more features are on the horizon! Feel free to <a href="{{ url_for('contact') }}">reach out</a> to us with suggestions or comments.</p>
+          <p class="description">This web application is in active development, so more features are on the horizon! Feel free to <a href="{{ url_for('main.contact') }}">reach out</a> to us with suggestions or comments.</p>
         </div>
 
       </div>
@@ -102,7 +102,7 @@
           <a href="https://www.linkedin.com/in/columbia-lightweight-rowing-87448690" class="linkedin"><i class="fa fa-linkedin"></i></a>
           <a href="https://gocolumbialions.com/index.aspx?path=lwrow" class="roster"><i class="fa fa-globe"></i></a>
         </div>
-
+        <div style="font-size: 14px; padding-top: 20px;"><p><a href="https://github.com/max-amsterdam" style="color: black;">Max Amsterdam</a> and <a href="https://github.com/ljogeiger" style="color: black;">Lukas Geiger</a></p></div>
       </div>
 
     </div>
