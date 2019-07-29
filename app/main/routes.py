@@ -31,7 +31,8 @@ def contact():
                        From: %s %s <%s>
                        %s
                        """ % (form.firstname.data, form.lastname.data, form.email.data, form.message.data)
-            log.info("Sending message from {first} {last} to lwtpoodles150@gmail.com".format(first=form.firstname.data, last=form.lastname.data))
+            log.info("Sending message from {first} {last} to lwtpoodles150@gmail.com".format(
+                first=form.firstname.data, last=form.lastname.data))
             mail.send(msg)
             return 'Form sent.'
     elif request.method == 'GET':

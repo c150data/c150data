@@ -43,4 +43,3 @@ def getAPIRequestHeaders(valid_token):
 
     return {'host': 'api.sandbox.trainingpeaks.com', 'content-type':
             'application/json', 'Authorization': 'Bearer ' + valid_token.access_token}
-

@@ -1,6 +1,13 @@
 """
 Init module that handles initialization of the app, database, and log, among other things
 """
+from app.errors.handlers import errors
+from app.data.routes import data1
+from app.main.routes import main
+from app.admin.routes import admin1
+# position important to avoid circular importation
+from app.users.routes import users
+from app.database.db_models import User, AuthToken, Athlete, Workout
 from flask import Flask
 from operator import itemgetter
 from flask_sqlalchemy import SQLAlchemy
@@ -15,13 +22,13 @@ ACCESS = {
     'admin': '2'
 }
 
-app = Flask(__name__) 
+app = Flask(__name__)
 
-# Config.py file should be in the same directory level as this file. 
+# Config.py file should be in the same directory level as this file.
 # It should have all the confidential info necessary for the application to run
-app.config.from_object('config') 
+app.config.from_object('config')
 
-# Initialize mail 
+# Initialize mail
 mail = Mail(app)
 
 # Initilize database object
@@ -42,19 +49,12 @@ log.addHandler(streamHandler)
 
 # Set up login manager
 login_manager = LoginManager(app)
-login_manager.login_view = 'users.login'  # route that login_required redirects to
+# route that login_required redirects to
+login_manager.login_view = 'users.login'
 
 # Set up encryption mechanism for passwords
 bcrypt = Bcrypt(app)
 
-
-from app.database.db_models import User, AuthToken, Athlete, Workout
-
-from app.users.routes import users  # position important to avoid circular importation
-from app.admin.routes import admin1
-from app.main.routes import main
-from app.data.routes import data1
-from app.errors.handlers import errors
 
 app.register_blueprint(users)
 app.register_blueprint(admin1)
@@ -65,4 +65,4 @@ app.register_blueprint(errors)
 # Workout.__table__.drop(db.engine) # Use if you want to drop the table and reset it
 # Athlete.__table__.drop(db.engine) # Use if you want to drop the table and reset it
 db.create_all()  # Only creates tables when they do not already exist
-db.session.commit() # Commits any changes made in the above 3 lines
+db.session.commit()  # Commits any changes made in the above 3 lines

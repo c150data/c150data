@@ -118,5 +118,6 @@ def updateAthletesWorkoutsTime():
     """
     active_athletes = Athlete.query.filter_by(is_active=True).all()
     for athlete in active_athletes:
-        athlete.last_updated_workouts = datetime.utcnow()  # Note: UTC time needs to be used here, that is what we are using for updating workouts time
+        # Note: UTC time needs to be used here, that is what we are using for updating workouts time
+        athlete.last_updated_workouts = datetime.utcnow()
     db.session.commit()
