@@ -35,6 +35,21 @@ General
 }
 
 /*-----------------------------
+Alert CSS
+--------------------------------*/
+#hero .alert {
+    width: 400px;
+    margin-top: -75px;
+    z-index: 1;
+}
+
+@media (max-width: 700px) {
+  #hero .alert{
+    width: 300px;
+  }
+}
+
+/*-----------------------------
 About Us Section
 --------------------------------*/
 #about {
@@ -131,7 +146,7 @@ Contact Section
 --------------------------------*/
 #contact {
   background: #f7f7f7;
-  padding: 15px 0 40px 0;
+  padding: 15px 0 0px 0;
 }
 
 #contact .info {

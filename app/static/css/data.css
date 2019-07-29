@@ -4,9 +4,9 @@
 
 #hours {
   width: 100%;
-  height: 100vh;
-  background: url(../img/LightweightLion.jpeg) top center;
-  /*background-size: cover;*/
+  height: 105vh;
+  background: url(../img/hero-bg.jpg) top center;
+  background-size: cover;
   position: relative;
 }
 
@@ -17,21 +17,8 @@
 }
 @media (max-width: 800px) {
   #hours {
-    height: 150vh;
+    height: 120vh;
   }
-}
-
-.hours-content {
-	width: 100%;
- 	height: 100vh;
-	background: url(../img/LightweightLion.jpeg) top center;
- 	background-attachment: fixed;
-}
-
-#hours .alert {
-  width: 400px;
-  margin-top: -75px;
-  z-index: 1;
 }
 
 #hours:before {
@@ -131,9 +118,9 @@
       width: 95%;
       height: auto;
       padding-bottom: 15px;
-      background-color: grey;
+      background-color: #191919;
       opacity: .9;
-      color: black;
+      /*color: black;*/
   }
 
 
