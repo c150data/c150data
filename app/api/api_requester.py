@@ -30,11 +30,19 @@ def getWorkoutsChangedSince(athlete_id, sinceDate):
     headers = getAPIRequestHeaders(valid_token)
     base_url = urls.WORKOUTS_CHANGED_SINCE(athlete_id, sinceDate)
     params = dict()
+    # TODO fix this so it pages correctly. It should make an API call until the size of the returned JSON is less than the page size
+    # Ask Ben about exactly what the page size signifies. Is it the number of workouts in the modified array or deleted array or both combined?
     params['includeDescription'] = True
-    # TODO ask Ben about pageSize and page
     params['pageSize'] = 100
     params['page'] = 0
     return requests.get(base_url, headers=headers, params=params)
+
+
+def getZonesForWorkout(athlete_id, workout_id):
+    valid_token = oauth.getValidAuthToken()
+    headers = getAPIRequestHeaders(valid_token)
+    base_url = urls.ZONES_FOR_ATHLETE_WORKOUT(athlete_id, workout_id)
+    return requests.get(base_url, headers=headers)
 
 
 def getAPIRequestHeaders(valid_token):

@@ -49,6 +49,11 @@ def getHoursForAllAthletes(start_date, end_date):
         athlete_info = {
             "rank": rank,
             "name": row['name'],
+            "zone1": row['hrZone1'],
+            "zone2": row['hrZone2'],
+            "zone3": row['hrZone3'],
+            "zone4": row['hrZone4'],
+            "zone5": row['hrZone5'],
             "rounded_hours": row['hours']
         }
         athleteHourList.append(athlete_info)

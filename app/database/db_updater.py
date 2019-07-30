@@ -6,7 +6,8 @@ of this module.
 """
 from app.database import db_functions
 from app.database.db_models import Workout
-from app.database.utils import getWorkoutObjectFromJSON
+from app.api import api_requester
+from app.api.utils import getWorkoutObjectFromJSON
 from app import log
 
 
@@ -62,9 +63,6 @@ def processModifiedWorkouts(modified_workouts):
     Returns:
         int -- number of workouts modified
     """
-    # TODO ask Ben about this. Does the modified workouts tab return the entire workout's fields or only the fields that changed??
-    # Right now, this is coded such that the modified workouts json returns all of the fields in the updated workout such that the
-    # old workout can be deleted and be entirely recreated from the json
     workoutsToInsert = list()
     for modified_workout in modified_workouts:
         workoutsToInsert.append(updateWorkout(modified_workout))
@@ -80,10 +78,11 @@ def updateWorkout(workout_json):
     Arguments:
         workout_json {JSON} -- Workout to insert JSON
     """
+    zones_json = api_requester.getZonesForWorkout(workout_json['AthleteId'], workout_json['Id']).json()
     if Workout.query.filter_by(id=workout_json['Id']) is None:
         # Workout does not exist in DB
-        return getWorkoutObjectFromJSON(workout_json)
+        return getWorkoutObjectFromJSON(workout_json, zones_json)
     else:
         # Workout already exists in db, need to first delete existing then return new one to insert
         Workout.query.filter_by(id=workout_json['Id']).delete()
-        return getWorkoutObjectFromJSON(workout_json)
+        return getWorkoutObjectFromJSON(workout_json, zones_json)
