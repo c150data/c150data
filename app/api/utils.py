@@ -10,8 +10,10 @@ Handles mapping involving Athlete object
 
 
 class InvalidZoneAthletes:
-    athletesWithWrongHrZones = dict()
-    athletesWithWrongPowerZones = dict()
+    wrongNumHrZones = dict()
+    wrongNumPowerZones = dict()
+    reverseHrZones = dict()
+    reversePowerZones = dict()
 
 
 def getAthleteObjectFromJSON(athlete_json):
@@ -36,7 +38,8 @@ def getWorkoutObjectFromJSON(workout_json, zones_json):
     """
 
     athleteName = dbSelect(getAthleteNameFromId(workout_json['AthleteId']))[0][0]
-    hrZones, powerZones = getTimeInZones(athleteName, zones_json)
+    workoutType = workout_json.get('WorkoutType', None)
+    hrZones, powerZones = getTimeInZones(athleteName, workoutType, zones_json)
 
     return Workout(
         id=workout_json.get('Id', None),
@@ -105,7 +108,7 @@ def getWorkoutObjectFromJSON(workout_json, zones_json):
     )
 
 
-def getTimeInZones(athlete_name, zones_obj):
+def getTimeInZones(athlete_name, workout_type, zones_obj):
     hrZonesList = [None, None, None, None, None]
     powerZonesList = [None, None, None, None, None]
     invalid_zones = ([None, None, None, None, None],
@@ -122,8 +125,8 @@ def getTimeInZones(athlete_name, zones_obj):
         timeInHrZones = hrZones.get('TimeInZones')
         if timeInHrZones is not None:
             if len(timeInHrZones) != 5:
-                if athlete_name not in InvalidZoneAthletes.athletesWithWrongHrZones:
-                    InvalidZoneAthletes.athletesWithWrongHrZones[athlete_name] = "Wrong number of HR zones: has {} zones, should have 5 zones".format(len(timeInHrZones))
+                if athlete_name not in InvalidZoneAthletes.wrongNumHrZones:
+                    InvalidZoneAthletes.wrongNumHrZones[athlete_name] = "Has {} zones for {}".format(len(timeInHrZones), workout_type)
             else:
                 # The first zone (0) should be the EASY zone. The 5th zone (4) should be the HARD zone. If that's not the case, set isReverse to True
                 hrZonesReverse = isReverse(timeInHrZones)
@@ -135,7 +138,7 @@ def getTimeInZones(athlete_name, zones_obj):
                     timeInHrZones.get('4').get('Seconds')/60,
                 ]
                 if hrZonesReverse:
-                    InvalidZoneAthletes.athletesWithWrongHrZones[athlete_name] = "HR zones are reversed. The first zone should be Zone V (EASY), the last should be Zone I (HARD)"
+                    InvalidZoneAthletes.reverseHrZones[athlete_name] = "HR zones reveresed for {}".format(workout_type)
                     hrZonesList.reverse()
 
     # Do power zones
@@ -144,8 +147,8 @@ def getTimeInZones(athlete_name, zones_obj):
         timeInPowerZones = powerZones.get('TimeInZones')
         if timeInPowerZones is not None:
             if len(timeInPowerZones) != 5:
-                if athlete_name not in InvalidZoneAthletes.athletesWithWrongPowerZones:
-                    InvalidZoneAthletes.athletesWithWrongPowerZones[athlete_name] = "Wrong number of power zones: has {} zones, should have 5 zones".format(len(timeInPowerZones))
+                if athlete_name not in InvalidZoneAthletes.wrongNumPowerZones:
+                    InvalidZoneAthletes.wrongNumPowerZones[athlete_name] = "Has {} zones for {}".format(len(timeInPowerZones), workout_type)
             else:
                 # The first zone (0) should be the EASY zone. The 5th zone (4) should be the HARD zone. If that's not the case, set isReverse to True
                 powerZonesReverse = isReverse(timeInPowerZones)
@@ -157,7 +160,7 @@ def getTimeInZones(athlete_name, zones_obj):
                     timeInPowerZones.get('4'),
                 ]
                 if powerZonesReverse:
-                    InvalidZoneAthletes.athletesWithWrongPowerZones[athlete_name] = "Power zones are reversed. The first zone should be Zone V (EASY), the last should be Zone I (HARD)"
+                    InvalidZoneAthletes.reversePowerZones[athlete_name] = "Power zonre reversed for {}".format(workout_type)
                     powerZonesList.reverse()
 
     return (hrZonesList, powerZonesList)
