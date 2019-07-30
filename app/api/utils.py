@@ -126,7 +126,8 @@ def getTimeInZones(athlete_name, workout_type, zones_obj):
         if timeInHrZones is not None:
             if len(timeInHrZones) != 5:
                 if athlete_name not in InvalidZoneAthletes.wrongNumHrZones:
-                    InvalidZoneAthletes.wrongNumHrZones[athlete_name] = "Has {} zones for {}".format(len(timeInHrZones), workout_type)
+                    InvalidZoneAthletes.wrongNumHrZones[athlete_name] = dict()
+                InvalidZoneAthletes.wrongNumHrZones[athlete_name][workout_type] = "Wrong number of HR zones: {}".len(timeInHrZones)
             else:
                 # The first zone (0) should be the EASY zone. The 5th zone (4) should be the HARD zone. If that's not the case, set isReverse to True
                 hrZonesReverse = isReverse(timeInHrZones)
@@ -138,7 +139,9 @@ def getTimeInZones(athlete_name, workout_type, zones_obj):
                     timeInHrZones.get('4').get('Seconds')/60,
                 ]
                 if hrZonesReverse:
-                    InvalidZoneAthletes.reverseHrZones[athlete_name] = "HR zones reveresed for {}".format(workout_type)
+                    if athlete_name not in InvalidZoneAthletes.reverseHrZones:
+                        InvalidZoneAthletes.reverseHrZones[athlete_name] = dict()
+                    InvalidZoneAthletes.reverseHrZones[athlete_name][workout_type] = "HR zones reversed"
                     hrZonesList.reverse()
 
     # Do power zones
@@ -148,7 +151,8 @@ def getTimeInZones(athlete_name, workout_type, zones_obj):
         if timeInPowerZones is not None:
             if len(timeInPowerZones) != 5:
                 if athlete_name not in InvalidZoneAthletes.wrongNumPowerZones:
-                    InvalidZoneAthletes.wrongNumPowerZones[athlete_name] = "Has {} zones for {}".format(len(timeInPowerZones), workout_type)
+                    InvalidZoneAthletes.wrongNumPowerZones[athlete_name] = dict()
+                InvalidZoneAthletes.wrongNumPowerZones[athlete_name][workout_type] = "Wrong number of power zones: {}".len(timeInPowerZones)
             else:
                 # The first zone (0) should be the EASY zone. The 5th zone (4) should be the HARD zone. If that's not the case, set isReverse to True
                 powerZonesReverse = isReverse(timeInPowerZones)
@@ -160,7 +164,9 @@ def getTimeInZones(athlete_name, workout_type, zones_obj):
                     timeInPowerZones.get('4'),
                 ]
                 if powerZonesReverse:
-                    InvalidZoneAthletes.reversePowerZones[athlete_name] = "Power zonre reversed for {}".format(workout_type)
+                    if athlete_name not in InvalidZoneAthletes.reversePowerZones:
+                        InvalidZoneAthletes.reversePowerZones[athlete_name] = dict()
+                    InvalidZoneAthletes.reversePowerZones[athlete_name][workout_type] = "Power zones reversed"
                     powerZonesList.reverse()
 
     return (hrZonesList, powerZonesList)
