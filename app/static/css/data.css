@@ -15,9 +15,10 @@
     background-attachment: fixed;
   }
 }
-@media (max-width: 800px) {
+
+@media (max-width: 500px) {
   #hours {
-    height: 120vh;
+    height: 180vh;
   }
 }
 
