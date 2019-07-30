@@ -57,7 +57,7 @@
       <!-- NavBar Menu -->
       <nav id="nav-menu-container">
         <ul class="nav-menu">
-          <li class="{{ 'active' if active_page == 'about' else '' }}"><a href="{{ url_for('about') }}">Home</a></li>
+        <li class="{{ 'active' if active_page == 'about' else '' }}"><a href="{{ url_for('about') }}">Home</a></li>
           {% if current_user.is_authenticated %}
           <li class="{{ 'active' if active_page == 'data' else '' }}"><a class="nav-link"
               href="{{ url_for('data') }}">Data</a></li>
