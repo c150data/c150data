@@ -135,6 +135,7 @@ def getTimeInZones(athlete_name, zones_obj):
                     timeInHrZones.get('4').get('Seconds')/60,
                 ]
                 if hrZonesReverse:
+                    InvalidZoneAthletes.athletesWithWrongHrZones[athlete_name] = "HR zones are reversed. The first zone should be Zone V (EASY), the last should be Zone I (HARD)"
                     hrZonesList.reverse()
 
     # Do power zones
@@ -156,6 +157,7 @@ def getTimeInZones(athlete_name, zones_obj):
                     timeInPowerZones.get('4'),
                 ]
                 if powerZonesReverse:
+                    InvalidZoneAthletes.athletesWithWrongPowerZones[athlete_name] = "Power zones are reversed. The first zone should be Zone V (EASY), the last should be Zone I (HARD)"
                     powerZonesList.reverse()
 
     return (hrZonesList, powerZonesList)
