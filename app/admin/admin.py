@@ -3,7 +3,7 @@ Handles the admin page, specifically adding the database table views
 """
 from flask_admin import Admin, AdminIndexView
 from app import app, db
-from app.db_models import User, Athlete, Workout, AuthToken
+from app.database.db_models import User, Athlete, Workout, AuthToken
 from flask import redirect, url_for, flash, request, render_template
 from flask_login import current_user
 from flask_admin.contrib.sqla import ModelView
@@ -19,7 +19,7 @@ class MyAdminIndexView(AdminIndexView):
 
     def inaccessible_callback(self, name, **kwargs):
         flash('Please login as an administrator to access Admin pages', 'danger')
-        return redirect(url_for('login'))
+        return redirect(url_for('users.login'))
 
 
 class AdminView(ModelView):
@@ -28,7 +28,7 @@ class AdminView(ModelView):
             return current_user.is_admin()
 
     def inaccessible_callback(self, name, **kwargs):
-        return redirect(url_for('login'), next=request.url)
+        return redirect(url_for('users.login'), next=request.url)
 
 
 admin = Admin(app, name='Admin Dashboard', index_view=MyAdminIndexView(

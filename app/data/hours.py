@@ -6,7 +6,7 @@ Eventually, when more fields and statistics are added to this
 from app import db, log
 from app.database import db_functions, db_filler, sql_statements as sql, db_updater
 from app.api import api_requester
-from app.db_models import Athlete
+from app.database.db_models import Athlete
 import operator
 from datetime import datetime, timedelta
 
@@ -49,6 +49,11 @@ def getHoursForAllAthletes(start_date, end_date):
         athlete_info = {
             "rank": rank,
             "name": row['name'],
+            "zone1": row['hrZone1'],
+            "zone2": row['hrZone2'],
+            "zone3": row['hrZone3'],
+            "zone4": row['hrZone4'],
+            "zone5": row['hrZone5'],
             "rounded_hours": row['hours']
         }
         athleteHourList.append(athlete_info)
@@ -118,5 +123,6 @@ def updateAthletesWorkoutsTime():
     """
     active_athletes = Athlete.query.filter_by(is_active=True).all()
     for athlete in active_athletes:
-        athlete.last_updated_workouts = datetime.utcnow()  # Note: UTC time needs to be used here, that is what we are using for updating workouts time
+        # Note: UTC time needs to be used here, that is what we are using for updating workouts time
+        athlete.last_updated_workouts = datetime.utcnow()
     db.session.commit()

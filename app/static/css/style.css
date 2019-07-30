@@ -147,12 +147,6 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-#hero .alert {
-	width: 400px;
-  margin-top: -75px;
-	z-index: 1;
-}
-
 #hero:before {
   content: "";
   background: rgba(0, 0, 0, 0.6);

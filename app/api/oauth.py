@@ -6,7 +6,7 @@ to make API requests to TrainingPeaks.
 from authlib.client import OAuth2Session
 from app import log, app
 from app.database import db_functions
-from app.db_models import AuthToken
+from app.database.db_models import AuthToken
 from datetime import datetime, timedelta
 
 remote = app.config['IS_REMOTE']
@@ -125,10 +125,11 @@ def getNewTokenWithRefreshToken(refresh_token):
     body = "grant_type=refresh_token"
     try:
         return session.refresh_token(refresh_url,
-                              refresh_token=refresh_token,
-                              body=body)
+                                     refresh_token=refresh_token,
+                                     body=body)
     except Exception as e:
-        raise Exception("Exception occurred while getting a new token with the refresh token: {}".format(refresh_token))
+        raise Exception(
+            "Exception occurred while getting a new token with the refresh token: {}".format(refresh_token))
 
 
 def getAuthorizationUrl():

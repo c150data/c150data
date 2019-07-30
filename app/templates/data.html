@@ -4,7 +4,6 @@
 {% set active_page = "data" %}
 {% block content %}
 
-
 <link href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css" rel="stylesheet">
 
 <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
@@ -53,7 +52,7 @@
     data-only-info-pagination="true"-->
     <table
     id="table"
-    class="table table-bordered table-hover table-striped"
+    class="table table-dark table-bordered table-hover table-striped"
     data-toggle="table"
     data-toolbar="#toolbar"
     data-show-columns="true"
@@ -64,6 +63,9 @@
     data-height="550"
     data-ajax="ajaxRequest"
     data-pagination="false"
+    data-sort-hours="true"
+    data-sort-order="desc"
+    data-row-style="rowStyle"
     data-row-attributes="rowAttributes">
       <div class="row">
         <div class="input-group">
@@ -85,15 +87,22 @@
       </div>
 
       <thead>
-          <tr>
+          <tr class="table-primary">
               <th data-field="rank" data-footer-formatter="rankFormatter">Rank</th>
               <th data-field="name" data-footer-formatter="nameFormatter">Name</th>
-              <th data-field="rounded_hours" data-footer-formatter="hoursFormatter">Hours</th>
+              <th data-field="zone1" data-footer-formatter="zoneFormatter">Zone 1</th>
+              <th data-field="zone2" data-footer-formatter="zoneFormatter">Zone 2</th>
+              <th data-field="zone3" data-footer-formatter="zoneFormatter">Zone 3</th>
+              <th data-field="zone4" data-footer-formatter="zoneFormatter">Zone 4</th>
+              <th data-field="zone5" data-footer-formatter="zoneFormatter">Zone 5</th>
+              <th data-field="rounded_hours" data-footer-formatter="hoursFormatter" data-sortable="true">Hours</th>
           </tr>
       </thead>
     </table>
   </div>
 </section>
 
+<!-- #F65058FF #FBDE44FF #339E66FF -->
+<!-- #00FFCO GREEEN #40FFFF BLUE #FF4040 RED #FFFF40 YELLOW -->
 
 {% endblock content %}

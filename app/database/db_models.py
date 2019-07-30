@@ -1,17 +1,11 @@
 """
-Models class that defines the database objects that we use in the application. 
+Models class that defines the database objects that we use in the application.
 """
-from app import db, login_manager, ACCESS, app
+from app import db, ACCESS, app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
 from sqlalchemy import Column, Float, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-
-
-# LUKAS: What is this and should it be in this file? It doesn't seem to fit with the rest of what is going on
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
 
 class User(db.Model, UserMixin):
@@ -32,7 +26,7 @@ class User(db.Model, UserMixin):
         s = Serializer(app.config['SECRET_KEY'])
         try:
             user_id = s.loads(token)['user_id']
-        except: 
+        except:
             return None
         return User.query.get(user_id)
 
@@ -145,6 +139,16 @@ class Workout(db.Model):
     velocityAverage = Column(Float, nullable=True)
     velocityMaximum = Column(Float, nullable=True)
     velocityPlanned = Column(Float, nullable=True)
+    hrZone1Time = Column(Float, nullable=True)
+    hrZone2Time = Column(Float, nullable=True)
+    hrZone3Time = Column(Float, nullable=True)
+    hrZone4Time = Column(Float, nullable=True)
+    hrZone5Time = Column(Float, nullable=True)
+    powerZone1Time = Column(Float, nullable=True)
+    powerZone2Time = Column(Float, nullable=True)
+    powerZone3Time = Column(Float, nullable=True)
+    powerZone4Time = Column(Float, nullable=True)
+    powerZone5Time = Column(Float, nullable=True)
 
     def __repr__(self):
         return """Workout('{}', '{}', '{}', '{}', '{}',
@@ -152,6 +156,8 @@ class Workout(db.Model):
                         '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}'
+                        '{}', '{}', '{}', '{}', '{}',
+                        '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}',
@@ -210,5 +216,15 @@ class Workout(db.Model):
             self.tssPlanned,
             self.velocityAverage,
             self.velocityMaximum,
-            self.velocityPlanned
+            self.velocityPlanned,
+            self.hrZone1Time,
+            self.hrZone2Time,
+            self.hrZone3Time,
+            self.hrZone4Time,
+            self.hrZone5Time,
+            self.powerZone1Time,
+            self.powerZone2Time,
+            self.powerZone3Time,
+            self.powerZone4Time,
+            self.powerZone5Time,
         )
