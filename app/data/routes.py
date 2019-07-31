@@ -24,8 +24,6 @@ def getData():
     athletes = None
     try:
         athletes = athlete_hours.getHoursForAllAthletes(start_date, end_date)
-        response_code = 200
     except Exception as e:
         log.exception("Was not able to get hours: {error}".format(error=e))
-        response_code = 500
-    return jsonify(athletes), response_code
+    return jsonify(athletes)

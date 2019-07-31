@@ -143,7 +143,6 @@ $(function() {
                params.success(response['athlete_list'], response['total_hours']);
            },
            error: function(e) {
-              // alert('failure')
               console.log(e.responseText);
            }
         });

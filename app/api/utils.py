@@ -127,7 +127,7 @@ def getTimeInZones(athlete_name, workout_type, zones_obj):
             if len(timeInHrZones) != 5:
                 if athlete_name not in InvalidZoneAthletes.wrongNumHrZones:
                     InvalidZoneAthletes.wrongNumHrZones[athlete_name] = dict()
-                InvalidZoneAthletes.wrongNumHrZones[athlete_name][workout_type] = "Wrong number of HR zones: {}".len(timeInHrZones)
+                InvalidZoneAthletes.wrongNumHrZones[athlete_name][workout_type] = "Wrong number of HR zones: {}".format(len(timeInHrZones))
             else:
                 # The first zone (0) should be the EASY zone. The 5th zone (4) should be the HARD zone. If that's not the case, set isReverse to True
                 hrZonesReverse = isReverse(timeInHrZones)
@@ -152,16 +152,16 @@ def getTimeInZones(athlete_name, workout_type, zones_obj):
             if len(timeInPowerZones) != 5:
                 if athlete_name not in InvalidZoneAthletes.wrongNumPowerZones:
                     InvalidZoneAthletes.wrongNumPowerZones[athlete_name] = dict()
-                InvalidZoneAthletes.wrongNumPowerZones[athlete_name][workout_type] = "Wrong number of power zones: {}".len(timeInPowerZones)
+                InvalidZoneAthletes.wrongNumPowerZones[athlete_name][workout_type] = "Wrong number of power zones: {}".format(len(timeInPowerZones))
             else:
                 # The first zone (0) should be the EASY zone. The 5th zone (4) should be the HARD zone. If that's not the case, set isReverse to True
                 powerZonesReverse = isReverse(timeInPowerZones)
                 powerZonesList = [
-                    timeInPowerZones.get('0'),
-                    timeInPowerZones.get('1'),
-                    timeInPowerZones.get('2'),
-                    timeInPowerZones.get('3'),
-                    timeInPowerZones.get('4'),
+                    timeInPowerZones.get('0').get('Seconds')/60,
+                    timeInPowerZones.get('1').get('Seconds')/60,
+                    timeInPowerZones.get('2').get('Seconds')/60,
+                    timeInPowerZones.get('3').get('Seconds')/60,
+                    timeInPowerZones.get('4').get('Seconds')/60,
                 ]
                 if powerZonesReverse:
                     if athlete_name not in InvalidZoneAthletes.reversePowerZones:

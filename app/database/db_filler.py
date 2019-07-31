@@ -56,8 +56,8 @@ def insertWorkoutsIntoDb(start_date, end_date):
 
     log.info("Wrong num HR zones: {}".format(InvalidZoneAthletes.wrongNumHrZones))
     log.info("Wrong num power zones: {}".format(InvalidZoneAthletes.wrongNumPowerZones))
-    log.info("Reverse HR zones".format(InvalidZoneAthletes.reverseHrZones))
-    log.info("Reverse Power zones".format(InvalidZoneAthletes.reversePowerZones))
+    log.info("Reverse HR zones: {}".format(InvalidZoneAthletes.reverseHrZones))
+    log.info("Reverse Power zones: {}".format(InvalidZoneAthletes.reversePowerZones))
     db_functions.dbInsert(workoutsList)
     return len(workoutsList)
 
