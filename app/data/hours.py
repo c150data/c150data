@@ -35,8 +35,6 @@ def getHoursForAllAthletes(start_date, end_date):
         JSON object - Json object with an array of athletes, along with their hours, and
         the total number of hours for all athletes.
     """
-    # Update workouts if they are old
-    updateWorkoutsIfNecessary()
 
     # Run SQL query against DB for hours
     result = db_functions.dbSelect(sql.getAllHoursSQL(start_date, end_date))
@@ -118,5 +116,6 @@ def updateAthletesWorkoutsTime():
     """
     active_athletes = Athlete.query.filter_by(is_active=True).all()
     for athlete in active_athletes:
-        athlete.last_updated_workouts = datetime.utcnow()  # Note: UTC time needs to be used here, that is what we are using for updating workouts time
+        # Note: UTC time needs to be used here, that is what we are using for updating workouts time
+        athlete.last_updated_workouts = datetime.utcnow()
     db.session.commit()

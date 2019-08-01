@@ -1,4 +1,4 @@
-// Javascript file for data.html. Allows for hiding items when scrolling and calls to 
+// Javascript file for data.html. Allows for hiding items when scrolling and calls to
 // database for athlete hours.
 
   var $table = $('#table')
@@ -45,33 +45,33 @@
   }
 
   // DateRange
-$(function() {
-    var start = moment().subtract(6, 'days');
-    var end = moment();
+  $(function() {
+      var start = moment().subtract(6, 'days');
+      var end = moment();
 
-    function cb(start, end) {
-        // alert("Callback has been called!");
-        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-        $('#to').val(start.format('MM/DD/YYYY'));
-        $('#from').val(end.format('MM/DD/YYYY'));
-    }
+      function cb(start, end) {
+          // alert("Callback has been called!");
+          $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+          $('#to').val(start.format('MM/DD/YYYY'));
+          $('#from').val(end.format('MM/DD/YYYY'));
+      }
 
-    $('#reportrange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        ranges: {
-           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'This Month to Now': [moment().startOf('month'), moment()],
-           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-           '2018/19 Season to Now': [new Date(2018, 8, 6), moment().endOf('month')],
-           '2017/18 Season': [new Date(2017, 8, 6), new Date(2018, 5, 12)]
-        }
-    }, cb);
+      $('#reportrange').daterangepicker({
+          startDate: start,
+          endDate: end,
+          ranges: {
+             'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+             'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+             'This Month to Now': [moment().startOf('month'), moment()],
+             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+             '2018/19 Season to Now': [new Date(2018, 8, 6), moment().endOf('month')],
+             '2017/18 Season': [new Date(2017, 8, 6), new Date(2018, 5, 12)]
+          }
+      }, cb);
 
-    cb(start, end);
+      cb(start, end);
 
-});
+  });
 
 // Bootstrap Table Functions
 
@@ -106,6 +106,8 @@ $(function() {
     return total
     }
 
+  // Formatter for row colors.
+  // TODO: Needs to be adjusted to more specific values
   function rowStyle(row, index) {
     //   'bg-primary',
     //   'bg-danger',
@@ -130,30 +132,41 @@ $(function() {
   }
 
 // GET requests for to /data/getData which returns a json object called "response".
-// On success this gets passed into the table along with the total hours 
-// On error it logs the failure to the console
+// On success this gets passed into the table along with the total hours.
+// At this point another ajax request (POST this time) is made in order to update data in the table
+// On error it logs the failure to the console and alerts the user that the data was unable to load.
   function ajaxRequest(params) {
     $.ajax({
-           url: '/data/getData',
-           type: "get",
-           dataType: 'json',
-           data: getData(),
-           success: function(response) {
-               total = response['total_hours']
-               params.success(response['athlete_list'], response['total_hours']);
-           },
-           error: function(e) {
-              // alert('failure')
-              console.log(e.responseText);
-           }
-        });
+       url: '/data/getData',
+       type: "get",
+       dataType: 'json',
+       data: getData(),
+       success: function(response) {
+           total = response['total_hours']
+           params.success(response['athlete_list'], response['total_hours']);
+           $.ajax({
+            type: "POST",
+            url: "data/updateData",
+            success: function(text) {
+              console.log(text);
+            },
+            error: function(text) {
+              alertify.alert('DATA UPDATE ERROR', "<h5>The data failed to update. If you think this should be fixed, click <a href=contact>here</a> to contact Administrator</h5>");
+              console.log(text);
+            }
+          });
+       },
+       error: function(e) {
+          alertify.alert('DATA LOAD ERROR', "<h5>The data failed to load. If you think this should be fixed, click <a href=contact>here</a> to contact Administrator</h5>");
+          console.log(e.responseText);
+       }
+    });
   }
 
 // Every time you press the submit button it refreshes the table
 // TODO: Build in a constraint as failsafe of user pressing repeatedly
     $(function() {
     $('#dataSubmitButton').click(function () {
-      // alert("refresh")
       firstTime = 0
       $('#table').bootstrapTable('refresh')
     })
