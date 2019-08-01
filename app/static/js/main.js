@@ -1,5 +1,11 @@
 // Javascript file for navigation and smooth scrolling. Linked to layout.html
 
+  // Defaults for alertify. Can use this throughout the entire app but only in js
+  alertify.defaults.transition = "slide";
+  alertify.defaults.theme.ok = "btn btn-primary";
+  alertify.defaults.theme.cancel = "btn btn-danger";
+  alertify.defaults.theme.input = "form-control";
+
 jQuery(document).ready(function ($) {
 
   // Header fixed and Back to top button
