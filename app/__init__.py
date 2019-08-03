@@ -15,13 +15,13 @@ ACCESS = {
     'admin': '2'
 }
 
-app = Flask(__name__) 
+app = Flask(__name__)
 
-# Config.py file should be in the same directory level as this file. 
+# Config.py file should be in the same directory level as this file.
 # It should have all the confidential info necessary for the application to run
-app.config.from_object('config') 
+app.config.from_object('config')
 
-# Initialize mail 
+# Initialize mail
 mail = Mail(app)
 
 # Initilize database object

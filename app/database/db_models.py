@@ -1,5 +1,5 @@
 """
-Models class that defines the database objects that we use in the application. 
+Models class that defines the database objects that we use in the application.
 """
 from app import db, ACCESS, app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -26,7 +26,7 @@ class User(db.Model, UserMixin):
         s = Serializer(app.config['SECRET_KEY'])
         try:
             user_id = s.loads(token)['user_id']
-        except: 
+        except:
             return None
         return User.query.get(user_id)
 

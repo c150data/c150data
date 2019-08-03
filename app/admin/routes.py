@@ -52,7 +52,8 @@ def insertAllAthletesApp():
         flash("Successfully inserted {} athletes into the database.".format(
             numAthletesInserted), 'success')
     except Exception as e:
-        log.exception("Error occurred while inserting all athletes: {}".format(e))
+        log.exception(
+            "Error occurred while inserting all athletes: {}".format(e))
         flash("Error while inserting athletes into database.", 'danger')
     return render_template("/admin/home.html")
 
@@ -74,7 +75,8 @@ def insertAllWorkoutsApp():
         message = "Successfully inserted {} workouts into the database.".format(
             numWorkoutsInserted)
     except Exception as e:
-        log.exception("Error occurred while inserting all workouts: {}".format(e))
+        log.exception(
+            "Error occurred while inserting all workouts: {}".format(e))
         result = "danger"
         message = "Error while inserting workouts."
     return render_template("alert.html", alert_type=result, alert_message=message)

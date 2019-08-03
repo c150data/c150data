@@ -5,6 +5,7 @@ from dateutil import parser
 Handles mapping involving Athlete object
 """
 
+
 def getAthleteObjectFromJSON(athlete_json):
     """
     Converts a json object to a db.model Athlete object
@@ -21,6 +22,7 @@ def getAthleteObjectFromJSON(athlete_json):
 """
 Handles mapping involving Workout object
 """
+
 
 def getWorkoutObjectFromJSON(workout_json):
     """

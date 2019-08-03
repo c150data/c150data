@@ -51,10 +51,10 @@ class RequestResetForm(FlaskForm):
             raise ValidationError(
                 'There is no account with that email. Please contact an administrator to create an account.')
 
+
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password',
                              validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password',
                                      validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
-
