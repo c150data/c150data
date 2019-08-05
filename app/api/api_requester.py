@@ -6,6 +6,7 @@ makes the request, and returns the API response
 """
 import requests
 from app.api import urls, oauth
+from app import log
 
 
 def getAthletes():
@@ -22,7 +23,12 @@ def getWorkoutsForAthlete(id, start_date, end_date):
     params['includeDescription'] = True
     base_url = urls.WORKOUTS_FOR_ATHLETE_START_END(
         id, start_date, end_date)
-    return requests.get(base_url, headers=headers, params=params)
+    response = requests.get(base_url, headers=headers, params=params)
+    try:
+        return response.json()
+    except Exception as e:
+        # Invalid response that is not able to be jsonified
+        return None
 
 
 def getWorkoutsChangedSince(athlete_id, sinceDate):
@@ -39,10 +45,17 @@ def getWorkoutsChangedSince(athlete_id, sinceDate):
 
 
 def getZonesForWorkout(athlete_id, workout_id):
+    if athlete_id is None or workout_id is None:
+        return None
     valid_token = oauth.getValidAuthToken()
     headers = getAPIRequestHeaders(valid_token)
     base_url = urls.ZONES_FOR_ATHLETE_WORKOUT(athlete_id, workout_id)
-    return requests.get(base_url, headers=headers)
+    response = requests.get(base_url, headers=headers)
+    try:
+        return response.json()
+    except Exception as e:
+        # Invalid response that is not able to be jsonified
+        return None
 
 
 def getAPIRequestHeaders(valid_token):

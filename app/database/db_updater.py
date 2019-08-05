@@ -46,8 +46,9 @@ def processDeletedWorkouts(deleted_workouts):
     """
     workoutsToDelete = list()
     for workout_id in deleted_workouts:
-        workout = Workout.query.filter_by(id=workout_id)
-        workoutsToDelete.append(workout)
+        workout = Workout.query.filter_by(id=workout_id).first()
+        if(workout is not None):
+            workoutsToDelete.append(workout)
     db_functions.dbDelete(workoutsToDelete)
     return len(workoutsToDelete)
 
@@ -78,7 +79,7 @@ def updateWorkout(workout_json):
     Arguments:
         workout_json {JSON} -- Workout to insert JSON
     """
-    zones_json = api_requester.getZonesForWorkout(workout_json['AthleteId'], workout_json['Id']).json()
+    zones_json = api_requester.getZonesForWorkout(workout_json.get("AthleteId", None), workout_json.get("Id", None))
     if Workout.query.filter_by(id=workout_json['Id']) is None:
         # Workout does not exist in DB
         return getWorkoutObjectFromJSON(workout_json, zones_json)

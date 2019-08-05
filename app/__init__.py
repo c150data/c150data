@@ -64,7 +64,7 @@ app.register_blueprint(main)
 app.register_blueprint(data1)
 app.register_blueprint(errors)
 
-Workout.__table__.drop(db.engine) # Use if you want to drop the table and reset it
+# Workout.__table__.drop(db.engine) # Use if you want to drop the table and reset it
 # Athlete.__table__.drop(db.engine) # Use if you want to drop the table and reset it
 db.create_all()  # Only creates tables when they do not already exist
 db.session.commit()  # Commits any changes made in the above 3 lines
