@@ -9,6 +9,7 @@ from app import log
 from app.database.db_models import Athlete, Workout
 from app.database import db_functions, sql_statements as sql
 from app.api import api_requester, oauth, api_service
+from app.api.utils import InvalidZoneAthletes
 from datetime import datetime, timedelta
 import math
 
@@ -53,6 +54,10 @@ def insertWorkoutsIntoDb(start_date, end_date):
         log.info("{} workouts found for {} from {} to {}".format(
             athlete_num_workouts, athlete['name'], start_date, end_date))
 
+    log.info("Wrong num HR zones: {}".format(InvalidZoneAthletes.wrongNumHrZones))
+    log.info("Wrong num power zones: {}".format(InvalidZoneAthletes.wrongNumPowerZones))
+    log.info("Reverse HR zones: {}".format(InvalidZoneAthletes.reverseHrZones))
+    log.info("Reverse Power zones: {}".format(InvalidZoneAthletes.reversePowerZones))
     db_functions.dbInsert(workoutsList)
     return len(workoutsList)
 

@@ -5,6 +5,7 @@ the TrainingPeaks API.
 Generally, will make one or several API requests, and parses the response
 into database objects.
 """
+from app import log
 from app.api import api_requester
 from app.database import db_functions
 from app.api.utils import getAthleteObjectFromJSON, getWorkoutObjectFromJSON
@@ -44,8 +45,11 @@ def getDBWorkoutsUsingAPI(athlete_id, date_period_tuple):
         List of Workout db.Model objects
     """
     start_date, end_date = date_period_tuple
-    workouts_json = api_requester.getWorkoutsForAthlete(athlete_id, start_date, end_date).json()
+    workouts_json = api_requester.getWorkoutsForAthlete(athlete_id, start_date, end_date)
+    if workouts_json is None:
+        return None
     dbWorkoutsList = list()
     for workout_j in workouts_json:
-        dbWorkoutsList.append(getWorkoutObjectFromJSON(workout_j))
+        zones_json = api_requester.getZonesForWorkout(workout_j['AthleteId'], workout_j['Id'])
+        dbWorkoutsList.append(getWorkoutObjectFromJSON(workout_j, zones_json))
     return dbWorkoutsList

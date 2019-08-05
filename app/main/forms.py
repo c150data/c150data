@@ -3,6 +3,7 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from wtforms.widgets import TextArea
 
+
 class ContactForm(FlaskForm):
     firstname = StringField('First Name',
                             validators=[DataRequired(), Length(min=2, max=25)])

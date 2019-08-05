@@ -79,7 +79,10 @@ def dbDelete(items):
 
     try:
         if isinstance(items, list):
+
             for item in items:
+                if item is None:
+                    raise TypeError("Cannot insert item of type None.")
                 db.session.delete(item)
         else:
             db.session.delete(item)
