@@ -63,4 +63,4 @@ def getAPIRequestHeaders(valid_token):
         raise Exception("Authentication token is None.")
 
     return {'host': 'api.sandbox.trainingpeaks.com', 'content-type':
-            'application/json', 'Authorization': 'Bearer ' + valid_token.access_token, 'User-Agent': 'columbiaC150'}
+            'application/json', 'Authorization': 'Bearer ' + valid_token.access_token, 'User-Agent': 'columbiac150'}
