@@ -16,11 +16,12 @@ C150data is a live web application created with Flask, Bootstrap, SQLAlchemy, an
 ## Introduction
 
 C150Data is an application designed specifically for the use of the Columbia Lightweight Rowing Team (C150).
-Before this application, athletes had no way of viewing the team's training data and it was difficult and time consuming for coaches to compile data for all their athletes in one place. In an effort to solve these problems, C150Data was created. This web application stores and meaningfully displays up to date workout data for all rowers on the team,
+Before this application, athletes had no way of viewing the team's training data and it was difficult and time consuming for coaches to compile data for all their athletes in one place. In an effort to solve these problems, C150Data was created. This web app stores and meaningfully displays up to date workout data for all rowers on the team,
 allowing coaches and athletes to view organized and detailed team information, all in one place.
 
-C150Data utilizes the TrainingPeaks API to store and display up to date workout information. In order to access this site,
-one must be pre-registered by an administrator.
+C150Data utilizes the TrainingPeaks API to access accurate and up to date workout information.
+
+At this time, you must be a member of C150 in order to access this site.
 
 ## Features
 
@@ -30,11 +31,19 @@ one must be pre-registered by an administrator.
 
 ## Site
 
-**Login**
+### Login
+
+C150Data features a secure login system that restricts access to members of the Columbia Lightweight Rowing team. Accounts are created and managed by the administrators. The login system also features a "Forgot Password" function which sends a temporary password to the user's email.
 ![Login Gif](app/static/img/login.mp4)
 
-**Data**
-TODO
+### Data
+
+The Data page is the main feature of C150Data. The data page features a dynamic ranking table, featuring all active athletes on C150 along with the desired data. At this time, the sum of all hours trained within the given date range is displayed for every athlete. The date range can be changed to one of the default preset date ranges, or can be set to a custom date range.
+<Login Gif>
+
+### Contact
+
+Since this application is in active development, feedback on our website is extremely important. As a result, we have implemented a contact form which, when submitted, will send an email directly to our administrators who can handle from there.
 
 ## Project Layout
 ```
@@ -48,7 +57,7 @@ TODO
 │   │   ├── oauth.py              -- Gets/Updates access tokens for TP API
 │   │   └── urls.py               -- Build urls to make API requests
 │   ├── data
-│   │   └── data.py              -- Holds functions necessary to display hours table 
+│   │   └── data.py              -- Holds functions necessary to display hours table
 │   ├── database
 │   │   ├── db_filler.py          -- DB functions for large batch requests to TP API
 │   │   ├── db_functions.py       -- Handles basic SQL functions
@@ -114,7 +123,7 @@ Below is a complete list of the languages and libraries used in this application
 * Linode Server
 
 
-#### To Do:
+## To Do
 
 * Add a "Training Plan" score for every athlete on the data page. This score will calculate an athlete's completion of the coach-prescribed training plan on a scale from 0 to 100.
 * Add a "Test Analysis" page, which will take an in-depth look at the team's performance on every test workout. This page will include graphs and charts that analyze the test results of athletes, groupings of athletes, and the entire team.

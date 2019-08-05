@@ -1,9 +1,20 @@
 from app.database.db_models import Athlete, Workout
+from app.database.db_functions import dbSelect
+from app.database.sql_statements import getAthleteNameFromId
+from app import log
 from dateutil import parser
 
 """
 Handles mapping involving Athlete object
 """
+
+
+class InvalidZoneAthletes:
+    wrongNumHrZones = dict()
+    wrongNumPowerZones = dict()
+    reverseHrZones = dict()
+    reversePowerZones = dict()
+
 
 def getAthleteObjectFromJSON(athlete_json):
     """
@@ -18,14 +29,18 @@ def getAthleteObjectFromJSON(athlete_json):
         last_updated_workouts=None)
 
 
-"""
-Handles mapping involving Workout object
-"""
-
-def getWorkoutObjectFromJSON(workout_json):
+def getWorkoutObjectFromJSON(workout_json, zones_json):
     """
     Converts a json object to a db.Model Workout object
+
+    Returns:
+        [type] -- [description]
     """
+
+    athleteName = dbSelect(getAthleteNameFromId(workout_json['AthleteId']))[0][0]
+    workoutType = workout_json.get('WorkoutType', None)
+    hrZones, powerZones = getTimeInZones(athleteName, workoutType, zones_json)
+
     return Workout(
         id=workout_json.get('Id', None),
         athleteId=workout_json.get('AthleteId', None),
@@ -79,8 +94,134 @@ def getWorkoutObjectFromJSON(workout_json):
         preActivityComment=workout_json.get('PreActivityComment', None),
         rpe=workout_json.get('Rpe', None),
         structure=workout_json.get('Structure', None),
-        workoutFileFormats=workout_json.get('WorkoutFileFormats', None)
+        workoutFileFormats=workout_json.get('WorkoutFileFormats', None),
+        hrZone1Time=hrZones[0],
+        hrZone2Time=hrZones[1],
+        hrZone3Time=hrZones[2],
+        hrZone4Time=hrZones[3],
+        hrZone5Time=hrZones[4],
+        powerZone1Time=powerZones[0],
+        powerZone2Time=powerZones[1],
+        powerZone3Time=powerZones[2],
+        powerZone4Time=powerZones[3],
+        powerZone5Time=powerZones[4]
     )
+
+
+def getTimeInZones(athlete_name, workout_type, zones_obj):
+    hrZonesList = [None, None, None, None, None]
+    powerZonesList = [None, None, None, None, None]
+    invalid_zones = ([None, None, None, None, None],
+                     [None, None, None, None, None])
+    if zones_obj is None:
+        return invalid_zones
+    elif type(zones_obj) is str:
+        #  This means the athlete is not a premium athlete
+        return invalid_zones
+
+    # Do HR zones
+    hrZones = zones_obj.get('TimeInHeartRateZones', None)
+    if hrZones is not None:
+        timeInHrZones = hrZones.get('TimeInZones')
+        if timeInHrZones is not None:
+            if len(timeInHrZones) != 5:
+                if athlete_name not in InvalidZoneAthletes.wrongNumHrZones:
+                    InvalidZoneAthletes.wrongNumHrZones[athlete_name] = dict()
+                InvalidZoneAthletes.wrongNumHrZones[athlete_name][workout_type] = "Wrong number of HR zones: {}".format(len(timeInHrZones))
+            # The first zone (0) should be the EASY zone. The 5th zone (4) should be the HARD zone. If that's not the case, set isReverse to True
+            hrZonesReverse = isReverse(timeInHrZones)
+
+            # We are going to track their zones EVEN if they don't have the right number. This code contains
+            # failsafes for if they have less than 5 zones.
+            zone1 = timeInHrZones.get('0', None)
+            zone1Time = zone1.get('Seconds')/60 if zone1 is not None else None
+            zone2 = timeInHrZones.get('1', None)
+            zone2Time = zone2.get('Seconds')/60 if zone2 is not None else None
+            zone3 = timeInHrZones.get('2', None)
+            zone3Time = zone3.get('Seconds')/60 if zone3 is not None else None
+            zone4 = timeInHrZones.get('3', None)
+            zone4Time = zone4.get('Seconds')/60 if zone4 is not None else None
+            zone5 = timeInHrZones.get('4', None)
+            zone5Time = zone5.get('Seconds')/60 if zone5 is not None else None
+
+            hrZonesList = [
+                zone1Time,
+                zone2Time,
+                zone3Time,
+                zone4Time,
+                zone5Time
+            ]
+            if hrZonesReverse:
+                if athlete_name not in InvalidZoneAthletes.reverseHrZones:
+                    InvalidZoneAthletes.reverseHrZones[athlete_name] = dict()
+                InvalidZoneAthletes.reverseHrZones[athlete_name][workout_type] = "HR zones reversed"
+                hrZonesList.reverse()
+
+    # Do power zones
+    powerZones = zones_obj.get('TimeInPowerZones', None)
+    if powerZones is not None:
+        timeInPowerZones = powerZones.get('TimeInZones')
+        if timeInPowerZones is not None:
+            if len(timeInPowerZones) != 5:
+                if athlete_name not in InvalidZoneAthletes.wrongNumPowerZones:
+                    InvalidZoneAthletes.wrongNumPowerZones[athlete_name] = dict()
+                InvalidZoneAthletes.wrongNumPowerZones[athlete_name][workout_type] = "Wrong number of power zones: {}".format(len(timeInPowerZones))
+            # The first zone (0) should be the EASY zone. The 5th zone (4) should be the HARD zone. If that's not the case, set isReverse to True
+            powerZonesReverse = isReverse(timeInPowerZones)
+
+            # We are going to track their zones EVEN if they don't have the right number. This code contains
+            # failsafes for if they have less than 5 zones.
+            zone1 = timeInPowerZones.get('0', None)
+            zone1Time = zone1.get('Seconds')/60 if zone1 is not None else None
+            zone2 = timeInPowerZones.get('1', None)
+            zone2Time = zone2.get('Seconds')/60 if zone2 is not None else None
+            zone3 = timeInPowerZones.get('2', None)
+            zone3Time = zone3.get('Seconds')/60 if zone3 is not None else None
+            zone4 = timeInPowerZones.get('3', None)
+            zone4Time = zone4.get('Seconds')/60 if zone4 is not None else None
+            zone5 = timeInPowerZones.get('4', None)
+            zone5Time = zone5.get('Seconds')/60 if zone5 is not None else None
+
+            powerZonesList = [
+                zone1Time,
+                zone2Time,
+                zone3Time,
+                zone4Time,
+                zone5Time
+            ]
+            if powerZonesReverse:
+                if athlete_name not in InvalidZoneAthletes.reversePowerZones:
+                    InvalidZoneAthletes.reversePowerZones[athlete_name] = dict()
+                InvalidZoneAthletes.reversePowerZones[athlete_name][workout_type] = "Power zones reversed"
+                powerZonesList.reverse()
+
+    return (hrZonesList, powerZonesList)
+
+
+def isReverse(zones):
+    isReverse = False
+    zone1 = zones.get('0', None)
+    zone5 = zones.get('4', None)
+    if zone1 is None or zone5 is None:
+        return False
+    minFirstZone = zone1.get("Minimum")
+    minFifthZone = zone5.get("Minimum")
+    if minFirstZone > minFifthZone:
+        isReverse = True
+    return isReverse
+
+
+def getZone(zones, zone_num):
+    # TODO turn this into try catch block
+    if zones is not None:
+        timeInZones = zones.get("TimeInZones", None)
+        if timeInZones is not None:
+            zoneInfo = timeInZones.get('{}'.format(zone_num), None)
+            if zoneInfo is not None:
+                zoneSeconds = zoneInfo.get('Seconds')
+                if zoneSeconds is not None:
+                    return zoneSeconds/60
+    return None
 
 
 def tryParse(str_date):
