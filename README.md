@@ -34,16 +34,17 @@ At this time, you must be a member of C150 in order to access this site.
 ### Login
 
 C150Data features a secure login system that restricts access to members of the Columbia Lightweight Rowing team. Accounts are created and managed by the administrators. The login system also features a "Forgot Password" function which sends a temporary password to the user's email.
-![Login Gif](app/static/img/login.mp4)
+![Login Photo](app/static/img/login.jpg)
 
 ### Data
 
 The Data page is the main feature of C150Data. The data page features a dynamic ranking table, featuring all active athletes on C150 along with the desired data. At this time, the sum of all hours trained within the given date range is displayed for every athlete. The date range can be changed to one of the default preset date ranges, or can be set to a custom date range.
-![Data Gif](app/static/img/data.gif)
+![Data Photo](app/static/img/data.jpg)
 
 ### Contact
 
 Since this application is in active development, feedback on our website is extremely important. As a result, we have implemented a contact form which, when submitted, will send an email directly to our administrators who can handle from there.
+![Contact Photo](app/static/img/contact_filled.jpg)
 
 ## Project Layout
 ```
