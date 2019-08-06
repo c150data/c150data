@@ -21,7 +21,7 @@ REFRESH_WORKOUT_MINUTES = 30
 # - New athletes are added to the coach
 # - Previously inactive athletes are now active
 # Ask Ben about this??
-DEFAULT_LAST_UPDATED_TIME = datetime.utcnow() - timedelta(days=14)
+DEFAULT_LAST_UPDATED_TIME = datetime.utcnow() - timedelta(days=300)
 
 
 def getHoursForAllAthletes(start_date, end_date):
@@ -146,10 +146,9 @@ def updateWorkouts(lastUpdatedTime):
 
     total_num_deleted, total_num_modified = 0, 0
     for athlete in active_athletes:
-        api_response = api_requester.getWorkoutsChangedSince(
+        response_json = api_requester.getWorkoutsChangedSince(
             athlete['id'], lastUpdatedTime)
-        num_deleted, num_modified = db_updater.processWorkoutUpdateJSON(
-            api_response.json())
+        num_deleted, num_modified = db_updater.processWorkoutUpdateJSON(response_json)
         total_num_deleted += num_deleted
         total_num_modified += num_modified
 
