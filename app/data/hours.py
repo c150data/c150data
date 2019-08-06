@@ -21,7 +21,7 @@ REFRESH_WORKOUT_MINUTES = 30
 # - New athletes are added to the coach
 # - Previously inactive athletes are now active
 # Ask Ben about this??
-DEFAULT_LAST_UPDATED_TIME = datetime.utcnow() - timedelta(days=300)
+DEFAULT_LAST_UPDATED_TIME = datetime.utcnow() - timedelta(days=14)
 
 
 def getHoursForAllAthletes(start_date, end_date):
