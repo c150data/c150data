@@ -39,7 +39,7 @@ C150Data features a secure login system that restricts access to members of the 
 ### Data
 
 The Data page is the main feature of C150Data. The data page features a dynamic ranking table, featuring all active athletes on C150 along with the desired data. At this time, the sum of all hours trained within the given date range is displayed for every athlete. The date range can be changed to one of the default preset date ranges, or can be set to a custom date range.
-<Login Gif>
+![Data Gif](app/static/img/data.mp4)
 
 ### Contact
 
