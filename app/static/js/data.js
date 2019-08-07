@@ -4,6 +4,7 @@
 var $table = $('#table')
 var firstTime = 1
 var total = 0
+var average_zones = [null, null, null, null, null]
 
 // Date Functions
 
@@ -28,8 +29,8 @@ function getToday() {
 }
 
 function getData() {
-    var on_load_start = getToday()
-    var on_load_end = getLastWeek()
+    var on_load_start = getLastWeek();
+    var on_load_end = getToday();
     // alert(firstTime)
     var data = {
         'start_date': on_load_start,
@@ -37,23 +38,23 @@ function getData() {
     }
     if (!firstTime) {
         data = {
-            'start_date': $("#to").val(),
-            'end_date': $("#from").val()
+            'start_date': $("#from").val(),
+            'end_date': $("#to").val()
         }
     }
-    return data
+    return data;
 }
 
 // DateRange
-$(function() {
+$(function () {
     var start = moment().subtract(6, 'days');
     var end = moment();
 
     function cb(start, end) {
         // alert("Callback has been called!");
         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-        $('#to').val(start.format('MM/DD/YYYY'));
-        $('#from').val(end.format('MM/DD/YYYY'));
+        $('#from').val(start.format('MM/DD/YYYY'));
+        $('#to').val(end.format('MM/DD/YYYY'));
     }
 
     $('#reportrange').daterangepicker({
@@ -99,15 +100,38 @@ function nameFormatter(data) {
 }
 
 function hoursFormatter() {
-    return total
+    return total;
 }
 
-function zoneFormatter() {
-    return total
+function zone1Formatter() {
+    return getZone(average_zones['avgZone1']);
 }
 
-// Formatter for row colors.
-// TODO: Needs to be adjusted to more specific values
+function zone2Formatter() {
+    return getZone(average_zones['avgZone2']);
+}
+
+function zone3Formatter() {
+    return getZone(average_zones['avgZone3']);
+}
+
+function zone4Formatter() {
+    return getZone(average_zones['avgZone4']);
+}
+
+function zone5Formatter() {
+    return getZone(average_zones['avgZone5']);
+}
+
+function getZone(data){
+    if(data !== null){
+        return data;
+    }else{
+        return '-';
+    }
+}
+
+
 function rowStyle(row, index) {
     //   'bg-primary',
     //   'bg-danger',
@@ -142,6 +166,7 @@ function ajaxRequest(params) {
         data: getData(),
         success: function(response) {
             total = response['total_hours']
+            average_zones = response['average_zones']
             params.success(response['athlete_list'], response['total_hours']);
             $.ajax({
                 type: "POST",

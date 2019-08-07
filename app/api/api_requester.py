@@ -6,6 +6,9 @@ makes the request, and returns the API response
 """
 import requests
 from app.api import urls, oauth
+from app import log
+
+PAGE_SIZE = 50
 
 
 def getAthletes():
@@ -22,7 +25,12 @@ def getWorkoutsForAthlete(id, start_date, end_date):
     params['includeDescription'] = True
     base_url = urls.WORKOUTS_FOR_ATHLETE_START_END(
         id, start_date, end_date)
-    return requests.get(base_url, headers=headers, params=params)
+    response = requests.get(base_url, headers=headers, params=params)
+    try:
+        return response.json()
+    except Exception as e:
+        # Invalid response that is not able to be jsonified
+        return None
 
 
 def getWorkoutsChangedSince(athlete_id, sinceDate):
@@ -31,10 +39,36 @@ def getWorkoutsChangedSince(athlete_id, sinceDate):
     base_url = urls.WORKOUTS_CHANGED_SINCE(athlete_id, sinceDate)
     params = dict()
     params['includeDescription'] = True
-    # TODO ask Ben about pageSize and page
-    params['pageSize'] = 100
+    params['pageSize'] = PAGE_SIZE
     params['page'] = 0
-    return requests.get(base_url, headers=headers, params=params)
+    full_response = {
+        'Deleted': [],
+        'Modified': []
+    }
+    while True:
+        response_json = requests.get(base_url, headers=headers, params=params).json()
+        full_response['Deleted'] = full_response['Deleted'] + response_json['Deleted']
+        full_response['Modified'] = full_response['Modified'] + response_json['Modified']
+        if len(response_json['Modified']) < PAGE_SIZE:
+            break
+        else:
+            params['page'] += 1
+    return full_response
+
+
+
+def getZonesForWorkout(athlete_id, workout_id):
+    if athlete_id is None or workout_id is None:
+        return None
+    valid_token = oauth.getValidAuthToken()
+    headers = getAPIRequestHeaders(valid_token)
+    base_url = urls.ZONES_FOR_ATHLETE_WORKOUT(athlete_id, workout_id)
+    response = requests.get(base_url, headers=headers)
+    try:
+        return response.json()
+    except Exception as e:
+        # Invalid response that is not able to be jsonified
+        return None
 
 
 def getAPIRequestHeaders(valid_token):
@@ -42,5 +76,4 @@ def getAPIRequestHeaders(valid_token):
         raise Exception("Authentication token is None.")
 
     return {'host': 'api.sandbox.trainingpeaks.com', 'content-type':
-            'application/json', 'Authorization': 'Bearer ' + valid_token.access_token}
-
+            'application/json', 'Authorization': 'Bearer ' + valid_token.access_token, 'User-Agent': 'columbiac150'}

@@ -16,3 +16,7 @@ def WORKOUTS_CHANGED_SINCE(athlete_id, sinceDate):
     # Date in URL must be formatted like: 2017-10-01T00:00:00.00000Z
     formattedDate = sinceDate.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     return '{}/v1/workouts/{}/changed?date={}'.format(api_base_url, athlete_id, formattedDate)
+
+
+def ZONES_FOR_ATHLETE_WORKOUT(athlete_id, workout_id):
+    return '{}/v1/workouts/{}/id/{}/timeinzones'.format(api_base_url, athlete_id, workout_id)

@@ -4,6 +4,7 @@ Eventually, when more fields and statistics are added to this
 'ranking' page, this module will have to be broken up further
 """
 from app import db, log
+from app.data.utils import getZonePercents
 from app.database import db_functions, db_filler, sql_statements as sql, db_updater
 from app.api import api_requester
 from app.database.db_models import Athlete
@@ -38,23 +39,68 @@ def getHoursForAllAthletes(start_date, end_date):
 
     # Run SQL query against DB for hours
     result = db_functions.dbSelect(sql.getAllHoursSQL(start_date, end_date))
+    if result is None:
+        raise Exception("Get data call returned none.")
 
     # Parses sql rows into list of objects formatted for UI
     athleteHourList = list()
     rank = 1
     total_hours = 0
+    # List of lists with each inner list containing sum of all percentages and number of percentages, so at the end can determine average
+    zoneAverages = [
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0],
+        [0, 0]
+    ]
+
     for row in result:
+        hr_zones, power_zones = getZonePercents(row)
         athlete_info = {
             "rank": rank,
             "name": row['name'],
+            "zone1": hr_zones['hrZone1Percent'],
+            "zone2": hr_zones['hrZone2Percent'],
+            "zone3": hr_zones['hrZone3Percent'],
+            "zone4": hr_zones['hrZone4Percent'],
+            "zone5": hr_zones['hrZone5Percent'],
             "rounded_hours": row['hours']
         }
+        if(hr_zones['hrZone1Percent'] is not '-'):
+            zoneAverages[0][0] += hr_zones['hrZone1Percent']
+            zoneAverages[0][1] += 1
+        if(hr_zones['hrZone2Percent'] is not '-'):
+            zoneAverages[1][0] += hr_zones['hrZone2Percent']
+            zoneAverages[1][1] += 1
+        if(hr_zones['hrZone3Percent'] is not '-'):
+            zoneAverages[2][0] += hr_zones['hrZone3Percent']
+            zoneAverages[2][1] += 1
+        if(hr_zones['hrZone4Percent'] is not '-'):
+            zoneAverages[3][0] += hr_zones['hrZone4Percent']
+            zoneAverages[3][1] += 1
+        if(hr_zones['hrZone1Percent'] is not '-'):
+            zoneAverages[4][0] += hr_zones['hrZone5Percent']
+            zoneAverages[4][1] += 1
         athleteHourList.append(athlete_info)
         total_hours += row['hours']
         rank += 1
+
+    avgZone1 = round(zoneAverages[0][0]/zoneAverages[0][1], 1) if zoneAverages[0][1] is not 0 else None
+    avgZone2 = round(zoneAverages[1][0]/zoneAverages[1][1], 1) if zoneAverages[1][1] is not 0 else None
+    avgZone3 = round(zoneAverages[2][0]/zoneAverages[2][1], 1) if zoneAverages[2][1] is not 0 else None
+    avgZone4 = round(zoneAverages[3][0]/zoneAverages[3][1], 1) if zoneAverages[3][1] is not 0 else None
+    avgZone5 = round(zoneAverages[4][0]/zoneAverages[4][1], 1) if zoneAverages[4][1] is not 0 else None
     jsonToReturn = {
         "athlete_list": athleteHourList,
-        "total_hours": round(total_hours, 2)
+        "total_hours": round(total_hours, 2),
+        "average_zones": {
+            "avgZone1": avgZone1,
+            "avgZone2": avgZone2,
+            "avgZone3": avgZone3,
+            "avgZone4": avgZone4,
+            "avgZone5": avgZone5
+        }
     }
     return jsonToReturn
 
@@ -98,10 +144,9 @@ def updateWorkouts(lastUpdatedTime):
 
     total_num_deleted, total_num_modified = 0, 0
     for athlete in active_athletes:
-        api_response = api_requester.getWorkoutsChangedSince(
+        response_json = api_requester.getWorkoutsChangedSince(
             athlete['id'], lastUpdatedTime)
-        num_deleted, num_modified = db_updater.processWorkoutUpdateJSON(
-            api_response.json())
+        num_deleted, num_modified = db_updater.processWorkoutUpdateJSON(response_json)
         total_num_deleted += num_deleted
         total_num_modified += num_modified
 

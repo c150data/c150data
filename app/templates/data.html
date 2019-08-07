@@ -8,8 +8,6 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script type="text/javascript" src="../static/js/data.js"></script>
 <link rel="stylesheet" href="../static/css/data.css" />
-<style>
-</style>
 <section id="hours">
     <div class="hours-container">
         <!-- Handles any alerts -->
@@ -30,8 +28,8 @@
         {% endif %}
         {% endwith %}
         <div class="text-center animated zoomIn" id="main-text">
-            <h1>This is the Hours page.</h1>
-            <h2>Simply select the time period of which you want to see the completed hours and press enter!</h2>
+            <h1>This is the Data page.</h1>
+            <h2>Select your desired date range and press Get Data!</h2>
         </div>
     </div>
     <div class="my-table container-fluid animated zoomIn">
@@ -59,20 +57,20 @@
                     </div>
                 </div>
             </div>
-            <thead>
-                <tr class="table-primary">
-                    <th data-field="rank" data-footer-formatter="rankFormatter">Rank</th>
-                    <th data-field="name" data-footer-formatter="nameFormatter">Name</th>
-                    <th data-field="zone1" data-footer-formatter="zoneFormatter">Zone 1</th>
-                    <th data-field="zone2" data-footer-formatter="zoneFormatter">Zone 2</th>
-                    <th data-field="zone3" data-footer-formatter="zoneFormatter">Zone 3</th>
-                    <th data-field="zone4" data-footer-formatter="zoneFormatter">Zone 4</th>
-                    <th data-field="zone5" data-footer-formatter="zoneFormatter">Zone 5</th>
-                    <th data-field="rounded_hours" data-footer-formatter="hoursFormatter" data-sortable="true">Hours</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
+      <thead>
+          <tr class="table-primary">
+              <th data-field="rank" data-footer-formatter="rankFormatter">Rank</th>
+              <th data-field="name" data-footer-formatter="nameFormatter">Name</th>
+              <th data-field="zone1" data-footer-formatter="zone1Formatter" data-sortable="true">% HR Zone V</th>
+              <th data-field="zone2" data-footer-formatter="zone2Formatter" data-sortable="true">% HR Zone IV</th>
+              <th data-field="zone3" data-footer-formatter="zone3Formatter" data-sortable="true">% HR Zone III</th>
+              <th data-field="zone4" data-footer-formatter="zone4Formatter" data-sortable="true">% HR Zone II</th>
+              <th data-field="zone5" data-footer-formatter="zone5Formatter" data-sortable="true">% HR Zone I</th>
+              <th data-field="rounded_hours" data-footer-formatter="hoursFormatter" data-sortable="true">Hours</th>
+          </tr>
+      </thead>
+    </table>
+  </div>
 </section>
 <!-- #F65058FF #FBDE44FF #339E66FF -->
 <!-- #00FFCO GREEEN #40FFFF BLUE #FF4040 RED #FFFF40 YELLOW -->

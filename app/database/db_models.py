@@ -139,6 +139,16 @@ class Workout(db.Model):
     velocityAverage = Column(Float, nullable=True)
     velocityMaximum = Column(Float, nullable=True)
     velocityPlanned = Column(Float, nullable=True)
+    hrZone1Time = Column(Float, nullable=True)
+    hrZone2Time = Column(Float, nullable=True)
+    hrZone3Time = Column(Float, nullable=True)
+    hrZone4Time = Column(Float, nullable=True)
+    hrZone5Time = Column(Float, nullable=True)
+    powerZone1Time = Column(Float, nullable=True)
+    powerZone2Time = Column(Float, nullable=True)
+    powerZone3Time = Column(Float, nullable=True)
+    powerZone4Time = Column(Float, nullable=True)
+    powerZone5Time = Column(Float, nullable=True)
 
     def __repr__(self):
         return """Workout('{}', '{}', '{}', '{}', '{}',
@@ -146,6 +156,8 @@ class Workout(db.Model):
                         '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}'
+                        '{}', '{}', '{}', '{}', '{}',
+                        '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}',
@@ -204,5 +216,15 @@ class Workout(db.Model):
             self.tssPlanned,
             self.velocityAverage,
             self.velocityMaximum,
-            self.velocityPlanned
+            self.velocityPlanned,
+            self.hrZone1Time,
+            self.hrZone2Time,
+            self.hrZone3Time,
+            self.hrZone4Time,
+            self.hrZone5Time,
+            self.powerZone1Time,
+            self.powerZone2Time,
+            self.powerZone3Time,
+            self.powerZone4Time,
+            self.powerZone5Time,
         )

@@ -11,7 +11,6 @@ data1 = Blueprint('data1', __name__)
 def data():
     return render_template("data.html")
 
-
 @data1.route("/data/getData")
 @requires_access_level(ACCESS['user'])
 def getData():
@@ -21,17 +20,15 @@ def getData():
 
     On success though, the webpage does not need to be reloaded at all.
     """
-    start_date, end_date = request.args.get(
-        'start_date'), request.args.get('end_date')
-    athletes = None
+    start_date, end_date = request.args.get('start_date'), request.args.get('end_date')
     try:
         athletes = athlete_hours.getHoursForAllAthletes(start_date, end_date)
-        response_code = 200
+        response = 200
     except Exception as e:
         log.exception("Was not able to get hours: {error}".format(error=e))
-        response_code = 500
-    return jsonify(athletes), response_code
-
+        athletes = None
+        response = 404
+    return jsonify(athletes), response
 
 @data1.route("/data/updateData", methods=['POST'])
 @requires_access_level(ACCESS['user'])

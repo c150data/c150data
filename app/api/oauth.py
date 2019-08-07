@@ -125,10 +125,11 @@ def getNewTokenWithRefreshToken(refresh_token):
     body = "grant_type=refresh_token"
     try:
         return session.refresh_token(refresh_url,
-                              refresh_token=refresh_token,
-                              body=body)
+                                     refresh_token=refresh_token,
+                                     body=body)
     except Exception as e:
-        raise Exception("Exception occurred while getting a new token with the refresh token: {}".format(refresh_token))
+        raise Exception(
+            "Exception occurred while getting a new token with the refresh token: {}".format(refresh_token))
 
 
 def getAuthorizationUrl():

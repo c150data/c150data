@@ -16,11 +16,12 @@ C150data is a live web application created with Flask, Bootstrap, SQLAlchemy, an
 ## Introduction
 
 C150Data is an application designed specifically for the use of the Columbia Lightweight Rowing Team (C150).
-Before this application, athletes had no way of viewing the team's training data and it was difficult and time consuming for coaches to compile data for all their athletes in one place. In an effort to solve these problems, C150Data was created. This web application stores and meaningfully displays up to date workout data for all rowers on the team,
+Before this application, athletes had no way of viewing the team's training data and it was difficult and time consuming for coaches to compile data for all their athletes in one place. In an effort to solve these problems, C150Data was created. This web app stores and meaningfully displays up to date workout data for all rowers on the team,
 allowing coaches and athletes to view organized and detailed team information, all in one place.
 
-C150Data utilizes the TrainingPeaks API to store and display up to date workout information. In order to access this site,
-one must be pre-registered by an administrator.
+C150Data utilizes the TrainingPeaks API to access accurate and up to date workout information.
+
+At this time, you must be a member of C150 in order to access this site.
 
 ## Features
 
@@ -30,11 +31,25 @@ one must be pre-registered by an administrator.
 
 ## Site
 
-**Login**
-![Login Gif](app/static/img/login.mp4)
+### Login
 
-**Data**
-TODO
+C150Data features a secure login system that restricts access to members of the Columbia Lightweight Rowing team. Accounts are created and managed by the administrators. The login system also features a "Forgot Password" function which sends a temporary password to the user's email.
+![Login Photo](app/static/img/login.jpg)
+
+### Data
+
+The Data page is the main feature of C150Data. This page features a dynamic ranking table that sorts and displays training data for all active C150 members. We display data from over 30,000 workouts, with hundreds more workouts added weekly.
+
+Each athlete's training **volume** and **intensity** for the desired date range is displayed. Training volume is represented by the total number of hours trained, while training intensity is represented by the percentage of time spent in different heart rate zones. These zones are athlete specific, and range from Zone V (Easiest) to Zone I (Hardest).
+
+The date range can be changed to one of the several preset date ranges, or can be set to a custom date range.
+
+![Data Photo](app/static/img/data.jpg)
+
+### Contact
+
+Since this application is in active development, feedback on our website is extremely important. As a result, we have implemented a contact form which, when submitted, will send an email directly to our administrators who can handle from there.
+![Contact Photo](app/static/img/contact_filled.jpg)
 
 ## Project Layout
 ```
@@ -48,7 +63,7 @@ TODO
 │   │   ├── oauth.py              -- Gets/Updates access tokens for TP API
 │   │   └── urls.py               -- Build urls to make API requests
 │   ├── data
-│   │   └── data.py              -- Holds functions necessary to display hours table 
+│   │   └── data.py              -- Holds functions necessary to display hours table
 │   ├── database
 │   │   ├── db_filler.py          -- DB functions for large batch requests to TP API
 │   │   ├── db_functions.py       -- Handles basic SQL functions
@@ -75,14 +90,17 @@ TODO
 ```
 
 ## Technologies
+
 Below is a complete list of the languages and libraries used in this application, as well as their respective versions.
 
 **API:**
+
 * TrainingPeaks API
 * OAuth2 Authentication 3.0.1
 * Authlib 0.11
 
 **Web Page:**
+
 * Python 3.7
 * Bootstrap 4.0.0
 * Flask 1.0.3
@@ -104,22 +122,24 @@ Below is a complete list of the languages and libraries used in this application
 * pyOpenSSL 19.0.0
 
 **Database:**
+
 * SQLAlchemy 1.3.5
 * SQLite
 
 **Server Side:**
+
 * gunicorn 19.9.0
 * NGINX
 * Supervisor
 * Linode Server
 
-
-#### To Do:
+## To Do
 
 * Add a "Training Plan" score for every athlete on the data page. This score will calculate an athlete's completion of the coach-prescribed training plan on a scale from 0 to 100.
 * Add a "Test Analysis" page, which will take an in-depth look at the team's performance on every test workout. This page will include graphs and charts that analyze the test results of athletes, groupings of athletes, and the entire team.
 
- ## Authors
-[![Lukas Geiger](https://avatars0.githubusercontent.com/u/39981740?s=460&v=4)](https://github.com/ljogeiger) | [![Max Amsterdam](https://avatars0.githubusercontent.com/u/44952097?s=460&v=4 )](https://github.com/max-amsterdam)
----|---
-[Lukas Geiger](https://github.com/ljogeiger) |[Max Amsterdam](https://github.com/max-amsterdam)
+## Authors
+
+| [![Lukas Geiger](https://avatars0.githubusercontent.com/u/39981740?s=460&v=4)](https://github.com/ljogeiger) | [![Max Amsterdam](https://avatars0.githubusercontent.com/u/44952097?s=460&v=4 )](https://github.com/max-amsterdam) |
+|--------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| [Lukas Geiger](https://github.com/ljogeiger)                                                                 | [Max Amsterdam](https://github.com/max-amsterdam)                                                                  |

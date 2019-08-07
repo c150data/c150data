@@ -74,9 +74,9 @@
 }
 
 #hours h2 {
-    color: #eee;
-    margin-bottom: 50px;
-    font-size: 24px;
+  color: #eee;
+  margin-bottom: 50px;
+  font-size: 28px;
 }
 
 @media (max-width: 768px) {
