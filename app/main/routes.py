@@ -1,4 +1,4 @@
-from flask import render_template, url_for, redirect, request, Blueprint
+from flask import render_template, url_for, redirect, request, Blueprint, flash
 from app.main.forms import ContactForm
 from flask_mail import Message
 from app import app, log, mail, ACCESS
@@ -34,6 +34,8 @@ def contact():
             log.info("Sending message from {first} {last} to lwtpoodles150@gmail.com".format(
                 first=form.firstname.data, last=form.lastname.data))
             mail.send(msg)
-            return 'Form sent.'
+            flash('Message Sent!', 'success')
+            # TODO: Handle error in case of unsuccessful sending
+            return render_template('contact.html', form=form)
     elif request.method == 'GET':
         return render_template("contact.html", form=form)

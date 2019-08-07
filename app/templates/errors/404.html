@@ -1,19 +1,15 @@
 {% extends "layout.html" %}
-
 {% block content %}
 <link href="static/css/errors.css" rel="stylesheet">
-
-
 <section id="hero">
-  <div class="container-fluid text-center">
-    <div class="col-lg">
-      <h1>The Page You Requested Does Not Exist (404)</h1>
-      <p>This page does not exist. Please try a different location. Or if you think it should exist <a href="{{ url_for('main.contact') }}">contact</a> an administrator.</p>
+    <div class="container-fluid text-center">
+        <div class="col-lg">
+            <h1>The Page You Requested Does Not Exist (404)</h1>
+            <p>This page does not exist. Please try a different location. Or if you think it should exist <a href="{{ url_for('main.contact') }}">contact</a> an administrator.</p>
+        </div>
+        <div class="col-lg">
+            <h2>Return to home <a href="{{ url_for('main.about') }}">here</a></h2>
+        </div>
     </div>
-    <div class="col-lg">
-      <h2>Return to home <a href="{{ url_for('main.about') }}">here</a></h2>
-    </div>
-  </div>
 </section>
-
 {% endblock %}

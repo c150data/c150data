@@ -21,7 +21,6 @@ def requires_access_level(access_level):
         return decorated_function
     return decorator
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))

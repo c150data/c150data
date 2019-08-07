@@ -155,20 +155,33 @@ function rowStyle(row, index) {
 }
 
 // GET requests for to /data/getData which returns a json object called "response".
-// On success this gets passed into the table along with the total hours
-// On error it logs the failure to the console
+// On success this gets passed into the table along with the total hours.
+// At this point another ajax request (POST this time) is made in order to update data in the table
+// On error it logs the failure to the console and alerts the user that the data was unable to load.
 function ajaxRequest(params) {
     $.ajax({
         url: '/data/getData',
         type: "get",
         dataType: 'json',
         data: getData(),
-        success: function (response) {
+        success: function(response) {
             total = response['total_hours']
             average_zones = response['average_zones']
             params.success(response['athlete_list'], response['total_hours']);
+            $.ajax({
+                type: "POST",
+                url: "data/updateData",
+                success: function(text) {
+                    console.log(text);
+                },
+                error: function(text) {
+                    alertify.alert('DATA UPDATE ERROR', "<h5>The data failed to update. If you think this should be fixed, click <a href=contact>here</a> to contact Administrator</h5>");
+                    console.log(text);
+                }
+            });
         },
-        error: function (e) {
+        error: function(e) {
+            alertify.alert('DATA LOAD ERROR', "<h5>The data failed to load. If you think this should be fixed, click <a href=contact>here</a> to contact Administrator</h5>");
             console.log(e.responseText);
         }
     });
@@ -176,32 +189,31 @@ function ajaxRequest(params) {
 
 // Every time you press the submit button it refreshes the table
 // TODO: Build in a constraint as failsafe of user pressing repeatedly
-$(function () {
-    $('#dataSubmitButton').click(function () {
-        // alert("refresh")
+$(function() {
+    $('#dataSubmitButton').click(function() {
         firstTime = 0
         $('#table').bootstrapTable('refresh')
     })
 })
 
 
-$(document).ready(function () {
+$(document).ready(function() {
 
     $('#spinner').hide();
     $(document).on({
-        ajaxStart: function () {
+        ajaxStart: function() {
             $('#submitLabel').html("Loading...");
             $('#spinner').show();
         },
-        ajaxStop: function () {
+        ajaxStop: function() {
             $('#submitLabel').html("Get Data!");
             $('#spinner').hide();
         }
     });
 
     // Additional function to enable table hover functionality
-    $(function () {
-        $('#table').on('post-body.bs.table', function (e) {
+    $(function() {
+        $('#table').on('post-body.bs.table', function(e) {
             $('[data-toggle="popover"]').popover()
         })
     })

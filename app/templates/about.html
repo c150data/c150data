@@ -2,113 +2,100 @@
 {% set active_page = "about" %}
 {% block content %}
 <link href="../static/css/about.css" rel="stylesheet">
-
 <section id="hero">
-  <div class="hero-container">
-      <!-- Handles any alerts -->
-      {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-      {% for category, message in messages %}
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col"></div>
-          <div class="col">
-            <div class="text-center alert alert-{{ category }}">
-              {{ message }}
+    <div class="hero-container">
+        <!-- Handles any alerts -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col"></div>
+                <div class="col">
+                    <div class="text-center alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                </div>
+                <div class="col"></div>
             </div>
-          </div>
-          <div class="col"></div>
         </div>
-      </div>
-      {% endfor %}
-      {% endif %}
-      {% endwith %}
-    <div class="main-content fadeInDown">
-      <h1>Welcome to C150 Data</h1>
-      <h2>A website designed to meaningfully display the Columbia Lightweight Rowing team's training data.</h2>
-      {% if not current_user.is_authenticated %}
-      <a href="{{ url_for('users.login') }}" class="btn-get-started">Login</a>
-      {% else %}
-      <a href="{{ url_for('data1.data') }}" class="btn-get-started">Data</a>
-      {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <div class="main-content fadeInDown">
+            <h1>Welcome to C150 Data</h1>
+            <h2>A website designed to meaningfully display the Columbia Lightweight Rowing team's training data.</h2>
+            {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('users.login') }}" class="btn-get-started">Login</a>
+            {% else %}
+            <a href="{{ url_for('data1.data') }}" class="btn-get-started">Data</a>
+            {% endif %}
+        </div>
     </div>
-  </div>
-  <section class="header-down-arrow" id="downarrow">
-    <a href="#about"><img src="../static/img/downarrow.png" width="40"></a>
-  </section>
+    <section class="header-down-arrow" id="downarrow">
+        <a href="#about"><img src="../static/img/downarrow.png" width="40"></a>
+    </section>
 </section><!-- #hero -->
-
 <!--==========================
   About Us Section
   ============================-->
 <section id="about">
-  <div class="container">
-    <div class="row about-container">
-
-      <div class="col-lg-6 content order-lg-1 order-2">
-        <h2 class="title">Columbia Lightweight Rowing</h2>
-        <p>
-          We train smart <strong>and</strong> hard. With detailed data analytics and competition-inducing ranking pages, C150 Data helps us do it.
-        </p>
-
-        <div class="icon-box wow fadeInUp">
-          <div class="icon"><i class="fa fa-list-ol"></i></div>
-          <h4 class="title"><a href="">Ranking Page</a></h4>
-          <p class="description">Everyone wants to be ranked number 1. This page motivates rowers to give a little extra every day to move up the ranks.</p>
+    <div class="container">
+        <div class="row about-container">
+            <div class="col-lg-6 content order-lg-1 order-2">
+                <h2 class="title">Columbia Lightweight Rowing</h2>
+                <p>
+                    We train smart <strong>and</strong> hard. With detailed data analytics and competition-inducing ranking pages, C150 Data helps us do it.
+                </p>
+                <div class="icon-box wow fadeInUp">
+                    <div class="icon"><i class="fa fa-list-ol"></i></div>
+                    <h4 class="title"><a href="">Ranking Page</a></h4>
+                    <p class="description">Everyone wants to be ranked number 1. This page motivates rowers to give a little extra every day to move up the ranks.</p>
+                </div>
+                <div class="icon-box wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="icon"><img src="../static/img/tp_icon_small.png"></div>
+                    <h4 class="title"><a href="">TrainingPeaks API</a></h4>
+                    <p class="description">Through the use of the <a href="https://www.trainingpeaks.com/" target="_blank">TrainingPeaks</a> API, our rowers only have to track their training in a single, easy-to-use application. This also guarentees that our data is up to date and accurate.</p>
+                </div>
+                <div class="icon-box wow fadeInUp" data-wow-delay="0.4s">
+                    <div class="icon"><i class="fa fa-question"></i></div>
+                    <h4 class="title"><a href="">What's Next?</a></h4>
+                    <p class="description">This web application is in active development, so more features are on the horizon! Feel free to <a href="{{ url_for('main.contact') }}">reach out</a> to us with suggestions or comments.</p>
+                </div>
+            </div>
+            <div class="col-lg-6 background order-lg-2 order-1 wow fadeInRight"></div>
         </div>
-
-        <div class="icon-box wow fadeInUp" data-wow-delay="0.2s">
-          <div class="icon"><img src="../static/img/tp_icon_small.png"></div>
-          <h4 class="title"><a href="">TrainingPeaks API</a></h4>
-          <p class="description">Through the use of the <a href="https://www.trainingpeaks.com/" target="_blank">TrainingPeaks</a> API, our rowers only have to track their training in a single, easy-to-use application. This also guarentees that our data is up to date and accurate.</p>
-        </div>
-
-        <div class="icon-box wow fadeInUp" data-wow-delay="0.4s">
-          <div class="icon"><i class="fa fa-question"></i></div>
-          <h4 class="title"><a href="">What's Next?</a></h4>
-          <p class="description">This web application is in active development, so more features are on the horizon! Feel free to <a href="{{ url_for('main.contact') }}">reach out</a> to us with suggestions or comments.</p>
-        </div>
-
-      </div>
-      <div class="col-lg-6 background order-lg-2 order-1 wow fadeInRight"></div>
     </div>
-
-  </div>
 </section><!-- #about -->
-
 <!--===============e===========
   Footer Section
   ============================-->
 <section id="contact">
-  <div class="container wow fadeInUp">
-    <div class="row justify-content-center">
-
-      <div class="col-md-4">
-
-        <div class="info">
-          <div>
-            <i class="fa fa-map-marker"></i>
-            <p>Dodge Hall<br>Columbia University<br>New York, NY</p>
-          </div>
-
-          <div>
-            <i class="fa fa-envelope"></i>
-            <p>lwtpoodles150@gmail.com</p>
-          </div>
+    <div class="container wow fadeInUp">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="info">
+                    <div>
+                        <i class="fa fa-map-marker"></i>
+                        <p>Dodge Hall<br>Columbia University<br>New York, NY</p>
+                    </div>
+                    <div>
+                        <i class="fa fa-envelope"></i>
+                        <p>lwtpoodles150@gmail.com</p>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/ColumbiaRowing/" class="facebook"><i class="fa fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/columbia_lightweight_rowing/" class="instagram"><i class="fa fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/columbia-lightweight-rowing-87448690" class="linkedin"><i class="fa fa-linkedin"></i></a>
+                    <a href="https://gocolumbialions.com/index.aspx?path=lwrow" class="roster"><i class="fa fa-globe"></i></a>
+                </div>
+                <div style="font-size: 14px; padding-top: 20px;">
+                    <p><a href="https://github.com/max-amsterdam" style="color: black;">Max Amsterdam</a> and <a href="https://github.com/ljogeiger" style="color: black;">Lukas Geiger</a></p>
+                </div>
+            </div>
         </div>
-        <div class="social-links">
-          <a href="https://www.facebook.com/ColumbiaRowing/" class="facebook"><i class="fa fa-facebook"></i></a>
-          <a href="https://www.instagram.com/columbia_lightweight_rowing/" class="instagram"><i class="fa fa-instagram"></i></a>
-          <a href="https://www.linkedin.com/in/columbia-lightweight-rowing-87448690" class="linkedin"><i class="fa fa-linkedin"></i></a>
-          <a href="https://gocolumbialions.com/index.aspx?path=lwrow" class="roster"><i class="fa fa-globe"></i></a>
-        </div>
-        <div style="font-size: 14px; padding-top: 20px;"><p><a href="https://github.com/max-amsterdam" style="color: black;">Max Amsterdam</a> and <a href="https://github.com/ljogeiger" style="color: black;">Lukas Geiger</a></p></div>
-      </div>
-
     </div>
-
-  </div>
 </section><!-- #footer -->
-
 <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 {% endblock content %}

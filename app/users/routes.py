@@ -2,8 +2,8 @@ from flask import Blueprint, request, render_template, redirect, url_for, flash,
 from flask_login import login_user, current_user, logout_user, login_required
 from app import db, bcrypt, log, ACCESS
 from app.database.db_models import User
-from app.users.forms import (RegistrationForm, LoginForm, 
-                            RequestResetForm, ResetPasswordForm)
+from app.users.forms import (RegistrationForm, LoginForm,
+                             RequestResetForm, ResetPasswordForm)
 from app.users.utils import send_reset_email
 from app.utils import requires_access_level
 
@@ -40,17 +40,20 @@ def register():
                     email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        log.info("A new account has been created with the username: {}".format(form.username.data))
+        log.info("A new account has been created with the username: {}".format(
+            form.username.data))
         flash('A new account has been created with the username: {}. You are now able to log in.'.format(
             form.username.data), 'success')
         return redirect(url_for('users.login'))
     return render_template('register.html', title='Register', form=form)
+
 
 @users.route("/logout")
 @requires_access_level(ACCESS['user'])
 def logout():
     logout_user()
     return redirect(url_for('main.about'))
+
 
 @users.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():
@@ -60,9 +63,10 @@ def reset_request():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_email(user)
-        flash('An email has been sent with instructions to reset your password.','info')
+        flash('An email has been sent with instructions to reset your password.', 'info')
         return redirect(url_for('users.login'))
     return render_template('reset_request.html', title='Reset Password', form=form)
+
 
 @users.route("/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
@@ -70,7 +74,7 @@ def reset_token(token):
         return redirect(url_for('main.about'))
     user = User.verify_reset_token(token)
     if user is None:
-        flash('That is an invalid or expired token','warning')
+        flash('That is an invalid or expired token', 'warning')
         return redirect(url_for('users.reset_request'))
     form = ResetPasswordForm()
     if form.validate_on_submit():  # Enters this section when registration form has been submitted
