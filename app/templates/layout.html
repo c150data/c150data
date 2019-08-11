@@ -7,6 +7,11 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Rowing, Data, Columbia, Statistics, Analytics, C150, Columbia Lightweight Rowing, Max Amsterdam, Lukas Geiger" name="keywords">
     <meta content="A website designed to meaningfully display the Columbia Lightweight Rowing team's training data." name="description">
+    <meta property="og:title" content="Columbia Lightweight Rowing" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://www.c150data.com" />
+    <meta property="og:image" content="http://www.c150data.com/app/static/img/LightweightLion.jpeg" />
+    <meta property="og:description" content="A website designed to meaningfully display the Columbia Lightweight Rowing team's training data." />
     <!-- Favicons -->
     <link href="../static/img/favicon.png" rel="icon">
     <link href="../static/img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -37,58 +42,47 @@
     <!--==========================
   Header
   ============================-->
-  <header id="header">
-    <div class="container">
-
-      <!-- Header Logo -->
-      <div id="logo" class="pull-left">
-        <a href="/"><img src="../static/img/LightweightLion.png" alt="" id="logoimage" /></img></a>
-        <h3><a href="/">C150</a></h3>
-      </div>
-
-      <!-- NavBar Menu -->
-      <nav id="nav-menu-container">
-        <ul class="nav-menu">
-          <li class="{{ 'active' if active_page == 'about' else '' }}"><a href="{{ url_for('main.about') }}">Home</a>
-          </li>
-          {% if current_user.is_authenticated %}
-          <li class="{{ 'active' if active_page == 'data' else '' }}"><a class="nav-link"
-              href="{{ url_for('data1.data') }}">Data</a></li>
-          <li class="{{ 'active' if active_page == 'contact' else '' }}"><a class="nav-link"
-              href="{{ url_for('main.contact') }}">Contact</a></li>
-          <li class="{{ 'active' if active_page == 'logout' else '' }}"><a class="nav-link"
-              href="{{ url_for('users.logout') }}">Logout</a></li>
-          {% if config['ENV'] == 'development' %}
-          <li><a href="{{ url_for('admin1.admin') }}">Admin</a></li>
-          {% endif %}
-          {% else %}
-          <li class="{{ 'active' if active_page == 'login' else '' }}"><a href="{{ url_for('users.login') }}">Login</a>
-          </li>
-          {% endif %}
-        </ul>
-      </nav><!-- #nav-menu-container -->
-    </div>
-  </header><!-- #header -->
-
-  <!-- Content -->
-  <!-- Main content -->
-  {% block content %}{% endblock %}
-
-
-
-  <!-- JavaScript Libraries -->
-  <script src="../static/lib/jquery/jquery-migrate.min.js"></script>
-  <script src="../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="../static/lib/easing/easing.min.js"></script>
-  <script src="../static/lib/wow/wow.min.js"></script>
-  <script src="../static/lib/waypoints/waypoints.min.js"></script>
-  <script src="../static/lib/counterup/counterup.min.js"></script>
-  <script src="../static/lib/superfish/hoverIntent.js"></script>
-  <script src="../static/lib/superfish/superfish.min.js"></script>
-
-  <!-- Template Main Javascript File -->
-  <script src="../static/js/main.js"></script>
-
+    <header id="header">
+        <div class="container">
+            <!-- Header Logo -->
+            <div id="logo" class="pull-left">
+                <a href="/"><img src="../static/img/LightweightLion.png" alt="" id="logoimage" /></img></a>
+                <h3><a href="/">C150</a></h3>
+            </div>
+            <!-- NavBar Menu -->
+            <nav id="nav-menu-container">
+                <ul class="nav-menu">
+                    <li class="{{ 'active' if active_page == 'about' else '' }}"><a href="{{ url_for('main.about') }}">Home</a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                    <li class="{{ 'active' if active_page == 'data' else '' }}"><a class="nav-link" href="{{ url_for('data1.data') }}">Data</a></li>
+                    <li class="{{ 'active' if active_page == 'contact' else '' }}"><a class="nav-link" href="{{ url_for('main.contact') }}">Contact</a></li>
+                    <li class="{{ 'active' if active_page == 'logout' else '' }}"><a class="nav-link" href="{{ url_for('users.logout') }}">Logout</a></li>
+                    {% if config['ENV'] == 'development' %}
+                    <li><a href="{{ url_for('admin1.admin') }}">Admin</a></li>
+                    {% endif %}
+                    {% else %}
+                    <li class="{{ 'active' if active_page == 'login' else '' }}"><a href="{{ url_for('users.login') }}">Login</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav><!-- #nav-menu-container -->
+        </div>
+    </header><!-- #header -->
+    <!-- Content -->
+    <!-- Main content -->
+    {% block content %}{% endblock %}
+    <!-- JavaScript Libraries -->
+    <script src="../static/lib/jquery/jquery-migrate.min.js"></script>
+    <script src="../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/lib/easing/easing.min.js"></script>
+    <script src="../static/lib/wow/wow.min.js"></script>
+    <script src="../static/lib/waypoints/waypoints.min.js"></script>
+    <script src="../static/lib/counterup/counterup.min.js"></script>
+    <script src="../static/lib/superfish/hoverIntent.js"></script>
+    <script src="../static/lib/superfish/superfish.min.js"></script>
+    <!-- Template Main Javascript File -->
+    <script src="../static/js/main.js"></script>
 </body>
 
 </html>
