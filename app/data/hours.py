@@ -36,8 +36,6 @@ def getHoursForAllAthletes(start_date, end_date):
         JSON object - Json object with an array of athletes, along with their hours, and
         the total number of hours for all athletes.
     """
-    # Update workouts if they are old
-    updateWorkoutsIfNecessary()
 
     # Run SQL query against DB for hours
     result = db_functions.dbSelect(sql.getAllHoursSQL(start_date, end_date))
@@ -146,10 +144,9 @@ def updateWorkouts(lastUpdatedTime):
 
     total_num_deleted, total_num_modified = 0, 0
     for athlete in active_athletes:
-        api_response = api_requester.getWorkoutsChangedSince(
+        response_json = api_requester.getWorkoutsChangedSince(
             athlete['id'], lastUpdatedTime)
-        num_deleted, num_modified = db_updater.processWorkoutUpdateJSON(
-            api_response.json())
+        num_deleted, num_modified = db_updater.processWorkoutUpdateJSON(response_json)
         total_num_deleted += num_deleted
         total_num_modified += num_modified
 

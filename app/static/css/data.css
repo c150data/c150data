@@ -1,104 +1,107 @@
 /*
-  CSS file for data.html - the hours page for C150data. 
+  CSS file for data.html - the hours page for C150data.
 */
 
 #hours {
-  width: 100%;
-  height: 105vh;
-  background: url(../img/hero-bg.jpg) top center;
-  background-size: cover;
-  position: relative;
+    width: 100%;
+    height: 105vh;
+    background: url(../img/hero-bg.jpg) top center;
+    background-size: cover;
+    position: relative;
 }
 
 @media (min-width: 1024px) {
-  #hours {
-    background-attachment: fixed;
-  }
+    #hours {
+        background-attachment: fixed;
+    }
 }
 
 @media (max-width: 500px) {
-  #hours {
-    height: 180vh;
-  }
+    #hours {
+        height: 180vh;
+    }
 }
 
 #hours:before {
-  content: "";
-  background: rgba(0, 0, 0, 0.6);
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  left: 0;
-  right: 0;
+    content: "";
+    background: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
 }
+
 #hours .hours-container {
-  position: relative;
-  bottom: 0;
-  top: 130px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
+    position: relative;
+    bottom: 0;
+    top: 130px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
 }
+
 @media (max-width: 540px) {
-  #hours .hours-container {
-    top: 70hpx;
-  }
+    #hours .hours-container {
+        top: 70hpx;
+    }
 }
+
 @media (max-width: 360px) {
-  #hours .hours-container {
-    top: 120px;
-  }
+    #hours .hours-container {
+        top: 120px;
+    }
 }
 
 #hours h1 {
-  margin: 30px 0 10px 0;
-  font-size: 48px;
-  font-weight: 700;
-  line-height: 56px;
-  text-transform: uppercase;
-  color: #fff;
+    margin: 30px 0 10px 0;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 56px;
+    text-transform: uppercase;
+    color: #fff;
 }
 
 @media (max-width: 768px) {
-  #hours h1 {
-    font-size: 28px;
-    line-height: 36px;
-  }
+    #hours h1 {
+        font-size: 28px;
+        line-height: 36px;
+    }
 }
 
 #hours h2 {
   color: #eee;
   margin-bottom: 50px;
-  font-size: 24px;
+  font-size: 28px;
 }
 
 @media (max-width: 768px) {
-  #hours h2 {
-    font-size: 18px;
-    line-height: 24px;
-    margin-bottom: 30px;
-  }
+    #hours h2 {
+        font-size: 18px;
+        line-height: 24px;
+        margin-bottom: 30px;
+    }
 }
 
 #hours .container-fluid {
-  position: fixed;
-  top: 200px;
+    position: fixed;
+    top: 200px;
 }
 
 .animated {
-  -webkit-animation-duration: 1s;
-  -moz-animation-duration: 1s;
-  animation-duration: 1s;
+    -webkit-animation-duration: 1s;
+    -moz-animation-duration: 1s;
+    animation-duration: 1s;
 
 }
 
-.date-fields{
-  padding-left: 15px;
-  padding-top: 8px;
+.date-fields {
+    padding-left: 15px;
+    padding-top: 8px;
 }
 
 .selectbox {
@@ -112,16 +115,14 @@
 
 
 #hours .my-table {
-      position: relative;
-      z-index: 1;
-      margin-top: -30px;
-      margin-left: 2.5%;
-      width: 95%;
-      height: auto;
-      padding-bottom: 15px;
-      background-color: #191919;
-      opacity: .9;
-      /*color: black;*/
-  }
-
-
+    position: relative;
+    z-index: 1;
+    margin-top: -30px;
+    margin-left: 2.5%;
+    width: 95%;
+    height: auto;
+    padding-bottom: 15px;
+    background-color: #191919;
+    opacity: .9;
+    /*color: black;*/
+}

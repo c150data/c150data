@@ -15,7 +15,6 @@ class InvalidZoneAthletes:
     reverseHrZones = dict()
     reversePowerZones = dict()
 
-
 def getAthleteObjectFromJSON(athlete_json):
     """
     Converts a json object to a db.model Athlete object

@@ -1,108 +1,77 @@
-
-
 {% extends 'layout.html' %}
 {% set active_page = "data" %}
 {% block content %}
-
 <link href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css" rel="stylesheet">
-
 <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
-
 <!-- DateRange -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
 <script type="text/javascript" src="../static/js/data.js"></script>
-<link rel="stylesheet" href="../static/css/data.css"/>
-
-<style>
-
-</style>
-
+<link rel="stylesheet" href="../static/css/data.css" />
 <section id="hours">
-  <div class="hours-container">
-    <!-- Handles any alerts -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col"></div>
-        <div class="col">
-          <div class="text-center alert alert-{{ category }}">
-            {{ message }}
-          </div>
+    <div class="hours-container">
+        <!-- Handles any alerts -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col"></div>
+                <div class="col">
+                    <div class="text-center alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <div class="text-center animated zoomIn" id="main-text">
+            <h1>This is the Data page.</h1>
+            <h2>Select your desired date range and press Get Data!</h2>
+        </div>
     </div>
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
-    <div class="text-center animated zoomIn" id="main-text">
-      <h1>This is the Hours page.</h1>
-      <h2>Simply select the time period of which you want to see the completed hours and press enter!</h2>
-    </div>
-  </div>
-
-  <div class="my-table container-fluid animated zoomIn">
-  <!-- <table
+    <div class="my-table container-fluid animated zoomIn">
+        <!-- <table
     class="display table table-striped"
     id="table"
     data-search=true>
     data-only-info-pagination="true"-->
-    <table
-    id="table"
-    class="table table-dark table-bordered table-hover table-striped"
-    data-toggle="table"
-    data-toolbar="#toolbar"
-    data-show-columns="true"
-    data-search="true"
-    data-show-footer="true"
-    data-show-search-button="true"
-    data-search-align="left"
-    data-height="550"
-    data-ajax="ajaxRequest"
-    data-pagination="false"
-    data-sort-hours="true"
-    data-sort-order="desc"
-    data-row-style="rowStyle"
-    data-row-attributes="rowAttributes">
-      <div class="row">
-        <div class="input-group">
-          <div class="col-lg-12 date-fields">
-            <div id="reportrange" class="selectbox pull-left">
-              <!-- <i class="fa fa-calendar"></i>&nbsp; -->
-              <span></span> <i class="fa fa-caret-down"></i>
+        <table id="table" class="table table-dark table-bordered table-hover table-striped" data-toggle="table" data-toolbar="#toolbar" data-show-columns="true" data-search="true" data-show-footer="true" data-show-search-button="true" data-search-align="left" data-height="550" data-ajax="ajaxRequest" data-pagination="false" data-sort-hours="true" data-sort-order="desc" data-row-style="rowStyle" data-row-attributes="rowAttributes">
+            <div class="row">
+                <div class="input-group">
+                    <div class="col-lg-12 date-fields">
+                        <div id="reportrange" class="selectbox pull-left">
+                            <!-- <i class="fa fa-calendar"></i>&nbsp; -->
+                            <span></span> <i class="fa fa-caret-down"></i>
+                        </div>
+                        <input type="hidden" name="to" id="to" value="">
+                        <input type="hidden" name="from" id="from" value="">
+                        <div class="input-group-append">
+                            <button id="dataSubmitButton" type="submit" class="btn btn-primary">
+                                <span id='spinner' class="spinner-border spinner-border-sm" role="status"></span>
+                                <span id='submitLabel'>Get Hours</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <input type="hidden" name="to" id="to" value="">
-            <input type="hidden" name="from" id="from" value="">
-            <div class="input-group-append">
-              <button id="dataSubmitButton" type="submit" class="btn btn-primary">
-                <span id='spinner' class="spinner-border spinner-border-sm" role="status"></span>
-                <span id='submitLabel'>Get Hours</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <thead>
           <tr class="table-primary">
               <th data-field="rank" data-footer-formatter="rankFormatter">Rank</th>
               <th data-field="name" data-footer-formatter="nameFormatter">Name</th>
-              <th data-field="zone1" data-footer-formatter="zone1Formatter" data-sortable="true">% HR Zone 1</th>
-              <th data-field="zone2" data-footer-formatter="zone2Formatter" data-sortable="true">% HR Zone 2</th>
-              <th data-field="zone3" data-footer-formatter="zone3Formatter" data-sortable="true">% HR Zone 3</th>
-              <th data-field="zone4" data-footer-formatter="zone4Formatter" data-sortable="true">% HR Zone 4</th>
-              <th data-field="zone5" data-footer-formatter="zone5Formatter" data-sortable="true">% HR Zone 5</th>
+              <th data-field="zone1" data-footer-formatter="zone1Formatter" data-sortable="true">% HR Zone V</th>
+              <th data-field="zone2" data-footer-formatter="zone2Formatter" data-sortable="true">% HR Zone IV</th>
+              <th data-field="zone3" data-footer-formatter="zone3Formatter" data-sortable="true">% HR Zone III</th>
+              <th data-field="zone4" data-footer-formatter="zone4Formatter" data-sortable="true">% HR Zone II</th>
+              <th data-field="zone5" data-footer-formatter="zone5Formatter" data-sortable="true">% HR Zone I</th>
               <th data-field="rounded_hours" data-footer-formatter="hoursFormatter" data-sortable="true">Hours</th>
           </tr>
       </thead>
     </table>
   </div>
 </section>
-
 <!-- #F65058FF #FBDE44FF #339E66FF -->
 <!-- #00FFCO GREEEN #40FFFF BLUE #FF4040 RED #FFFF40 YELLOW -->
-
 {% endblock content %}
