@@ -29,3 +29,9 @@ def getData():
         athletes = None
         response = 404
     return jsonify(athletes), response
+
+@data1.route("/data/updateData", methods=['POST'])
+@requires_access_level(ACCESS['user'])
+def updateData():
+    athlete_hours.updateWorkoutsIfNecessary()
+    return "Results updated"

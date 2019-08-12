@@ -37,8 +37,6 @@ def getHoursForAllAthletes(start_date, end_date):
         JSON object - Json object with an array of athletes, along with their hours, and
         the total number of hours for all athletes.
     """
-    # Update workouts if they are old
-    updateWorkoutsIfNecessary()
 
     # Run SQL query against DB for hours
     result = db_functions.dbSelect(sql.getAllHoursSQL(start_date, end_date))

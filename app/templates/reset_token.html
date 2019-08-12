@@ -2,70 +2,66 @@
 {% set active_page = "reset_request" %}
 {% block content %}
 <link rel="stylesheet" href="/static/css/login.css">
-
-
 <section id="login">
-
-  <div class="login-container">
-
-    <!-- Handles any alerts -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="container">
-      <div class="row">
-        <div class="col"></div>
-        <div class="col">
-          <div class="text-center alert alert-{{ category }}">
-            {{ message }}
-          </div>
+    <div class="login-container">
+        <!-- Handles any alerts -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="container">
+            <div class="row">
+                <div class="col"></div>
+                <div class="col">
+                    <div class="text-center alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
         </div>
-        <div class="col"></div>
-      </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <div class="container text-center animated fadeInDown">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group border-bottom">
+                    <legend class="border-bottom">
+                        <h1>Reset Password</h1>
+                    </legend>
+                    <div class="form-group">
+                        {{ form.password.label(class="form-control-label") }}
+                        {%if form.password.errors %}
+                        {{ form.password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}
+                            <span> {{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.password(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.confirm_password.label(class="form-control-label") }}
+                        {%if form.confirm_password.errors %}
+                        {{ form.confirm_password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.confirm_password.errors %}
+                            <span> {{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.confirm_password(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group submit">
+                        {{ form.submit(class="btn-lg btn-outline-info") }}
+                    </div>
+                </fieldset>
+                <!-- </form> -->
+            </form>
+        </div>
     </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
-
-    <div class="container text-center animated fadeInDown">
-      <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        <fieldset class="form-group border-bottom">
-          <legend class="border-bottom"><h1>Reset Password</h1></legend>
-          <div class="form-group">
-            {{ form.password.label(class="form-control-label") }}
-            {%if form.password.errors %}
-            {{ form.password(class="form-control form-control-lg is-invalid") }}
-            <div class="invalid-feedback">
-              {% for error in form.password.errors %}
-              <span> {{ error }}</span>
-              {% endfor %}
-            </div>
-            {% else %}
-            {{ form.password(class="form-control form-control-lg") }}
-            {% endif %}
-            </div>
-            <div class="form-group">
-            {{ form.confirm_password.label(class="form-control-label") }}
-            {%if form.confirm_password.errors %}
-            {{ form.confirm_password(class="form-control form-control-lg is-invalid") }}
-            <div class="invalid-feedback">
-              {% for error in form.confirm_password.errors %}
-              <span> {{ error }}</span>
-              {% endfor %}
-            </div>
-            {% else %}
-            {{ form.confirm_password(class="form-control form-control-lg") }}
-            {% endif %}
-            </div>
-            <div class="form-group submit">
-              {{ form.submit(class="btn-lg btn-outline-info") }}
-            </div>
-          </fieldset>
-        <!-- </form> -->
-        </form>
-      </div>
-
-    </div>
-  </section>
-  {% endblock content %}
+</section>
+{% endblock content %}

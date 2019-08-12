@@ -26,7 +26,7 @@ At this time, you must be a member of C150 in order to access this site.
 ## Features
 
 * Secure login system to keep data private.
-* Data page that displays athletes' total training hours within a given date range. The page has sorting and filtering functionality.
+* Data page that displays athletes' total training hours and intensity zones within a given date range. The page has sorting and filtering functionality.
 * Contact page that allows users to reach out to administrators with comments, questions, or concerns.
 
 ## Site
@@ -52,41 +52,58 @@ Since this application is in active development, feedback on our website is extr
 ![Contact Photo](app/static/img/contact_filled.jpg)
 
 ## Project Layout
+
+We used Flask Blueprints and python packages to structure our app to allow for easy extensibility.
 ```
 .
+├── README.md
 ├── app
-│   ├── admin
-│   │   └── admin.py              -- Flask-Admin site with views to allow db oversight
+│   ├── __init__.py              -- Initializes app, db, log, and all Blueprints
+│   ├── admin                    -- Flask-Admin site with views to allow db oversight
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── routes.py
+│   │   └── utils.py
 │   ├── api
-│   │   ├── api_requester.py      -- Handles direct calls to TP API
-│   │   ├── api_service.py        -- TP API functions to handl large amounts of similar data
-│   │   ├── oauth.py              -- Gets/Updates access tokens for TP API
-│   │   └── urls.py               -- Build urls to make API requests
-│   ├── data
-│   │   └── data.py              -- Holds functions necessary to display hours table
+│   │   ├── api_requester.py     -- Handles direct calls to TP API
+│   │   ├── api_service.py       -- TP API functions to handl large amounts of similar data
+│   │   ├── oauth.py             -- Gets/Updates access tokens for TP API
+│   │   ├── urls.py              -- Build urls to make API requests
+│   │   └── utils.py             -- Holds athlete and workout mappers for api and db functions
+│   ├── data                     -- Implements hours and zone table for all athletes
+│   │   ├── __init__.py
+│   │   ├── hours.py
+│   │   ├── routes.py
+│   │   └── utils.py
 │   ├── database
-│   │   ├── db_filler.py          -- DB functions for large batch requests to TP API
-│   │   ├── db_functions.py       -- Handles basic SQL functions
-│   │   ├── db_updater.py         -- DB functions for updating database
-│   │   └── sql_statements.py     -- Commonly used SQL expressions
-│   ├── db_models.py              -- Defines DB objects used in app
-│   ├── forms
-│   │   └── forms.py              -- Uses flask_wtf to create forms for app
-│   ├── __init__.py               -- Initializes app, db, log, etc.
-│   ├── mappers
-│   │   ├── athlete_mapper.py     -- Handles mapping involving athlete object
-│   │   └── workout_mapper.py     -- Handles mapping involving workout object
-│   ├── routes.py                 -- Handles all url endpoints - Main driver of app
-│   ├── site.db                   -- SQLite DB
-│   ├── static                    -- Static files for app
+│   │   ├── db_filler.py         -- DB functions for large batch requests to TP API
+│   │   ├── db_functions.py      -- Handles basic SQL functions
+│   │   ├── db_updater.py        -- DB functions for updating database
+│   │   ├── sql_statements.py    -- Commonly used SQL expressions
+│   │   └── db_models.py         -- Defines DB objects used in app
+│   ├── errors                   -- Catches 404/500 errors
+│   │   ├── __init__.py
+│   │   └── handlers.py
+│   ├── main                     -- Handles main app routes and contact page
+│   │   ├── __init__.py
+│   │   ├── forms.py
+│   │   ├── routes.py
+│   │   └── utils.py
+│   ├── site.db                  -- SQLite DB
+│   ├── static                   -- Static files for app
 │   │   ├── css
 │   │   ├── img
 │   │   ├── js
 │   │   └── lib
-│   └── templates                 -- Templates for app
-├── config.py                     -- Config file
-├── README.md
-└── run.py                        -- Calls __init__ to initialize package structure
+│   ├── templates                -- Templates for app
+│   ├── users                    -- Builds User object and handles Login/Logout/Registration
+│   │   ├── __init__.py
+│   │   ├── forms.py
+│   │   ├── routes.py
+│   │   └── utils.py
+│   └── utils.py                 -- Utility functions for entire app
+├── config.py                    -- Config file
+└── run.py                       -- Calls __init__ to initializes app package structure
 ```
 
 ## Technologies
