@@ -147,10 +147,9 @@ def updateWorkouts(lastUpdatedTime):
 
     total_num_deleted, total_num_modified = 0, 0
     for athlete in active_athletes:
-        api_response = api_requester.getWorkoutsChangedSince(
+        response_json = api_requester.getWorkoutsChangedSince(
             athlete['id'], lastUpdatedTime)
-        num_deleted, num_modified = db_updater.processWorkoutUpdateJSON(
-            api_response.json())
+        num_deleted, num_modified = db_updater.processWorkoutUpdateJSON(response_json)
         total_num_deleted += num_deleted
         total_num_modified += num_modified
 
