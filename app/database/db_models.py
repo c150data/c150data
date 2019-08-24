@@ -49,15 +49,17 @@ class AuthToken(db.Model):
     expires_at = Column(DateTime, nullable=False)
     refresh_token = Column(String(1000), nullable=False)
     scope = Column(String(500), nullable=False)
+    server = Column(String(100), nullable=False)
 
     def __repr__(self):
-        return "AuthToken('{}', '{}', '{}', '{}', '{}', '{}')".format(
+        return "AuthToken('{}', '{}', '{}', '{}', '{}', '{}', '{})".format(
             self.id,
             self.access_token,
             self.token_type,
             self.expires_at,
             self.refresh_token,
-            self.scope
+            self.scope,
+            self.server
         )
 
 

@@ -27,7 +27,7 @@ def user_authorization():
         log.exception(
             "Error occurred while getting the authorization url: {}".format(e))
         flash("An error occurred while getting the authorization url", 'danger')
-        return render_template("about.html")
+        return render_template("/admin/home.html")
 
 
 @admin1.route("/admin/insertNewToken")
@@ -40,7 +40,7 @@ def insertNewToken():
     except Exception as e:
         log.exception("Error occurred while inserting new token: {}".format(e))
         flash("An error occurred while inserting a new acccess token into the database.", 'danger')
-    return render_template("/admin/home.html")
+    return render_template("about.html")
 
 
 @admin1.route("/admin/insertAllAthletes")

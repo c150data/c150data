@@ -5,6 +5,7 @@ Eventually, when more fields and statistics are added to this
 """
 from app import db, log
 from app.data.utils import getZonePercents
+from app.api.utils import InvalidZoneAthletes
 from app.database import db_functions, db_filler, sql_statements as sql, db_updater
 from app.api import api_requester
 from app.database.db_models import Athlete
@@ -150,6 +151,10 @@ def updateWorkouts(lastUpdatedTime):
         total_num_deleted += num_deleted
         total_num_modified += num_modified
 
+    log.info("Wrong num HR zones: {}".format(InvalidZoneAthletes.wrongNumHrZones))
+    log.info("Wrong num power zones: {}".format(InvalidZoneAthletes.wrongNumPowerZones))
+    log.info("Reverse HR zones: {}".format(InvalidZoneAthletes.reverseHrZones))
+    log.info("Reverse Power zones: {}".format(InvalidZoneAthletes.reversePowerZones))
     log.info("Deleted {num_deleted} workouts and modified {num_modified} workouts since {lastUpdatedTime}."
              .format(num_deleted=total_num_deleted, num_modified=total_num_modified, lastUpdatedTime=lastUpdatedTime))
 
