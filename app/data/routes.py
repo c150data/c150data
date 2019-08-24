@@ -2,6 +2,7 @@ from flask import Blueprint, request, render_template, flash, jsonify
 from app import log, ACCESS
 from app.data import hours as athlete_hours
 from app.utils import requires_access_level
+from app.api import api_service # TEMPORARY FOR TESTING
 
 data1 = Blueprint('data1', __name__)
 

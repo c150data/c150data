@@ -7,20 +7,21 @@ from authlib.client import OAuth2Session
 from app import log, app
 from app.database import db_functions
 from app.database.db_models import AuthToken
+from app.api import urls
 from datetime import datetime, timedelta
 
-remote = app.config['IS_REMOTE']
+is_production = app.config['ENV'] == 'production'
+is_production_tp_server = app.config['TP_SERVER'] == 'production'
+server = 'production' if is_production_tp_server else 'sandbox'
 client_id = app.config['CLIENT_ID']
 client_secret = app.config['CLIENT_SECRET']
 coach_scope = ["coach:athletes", "workouts:read"]
 grant_type = "refresh_token"
 
-# These URLs will need to change when we are using TrainingPeaks production service
-api_base_url = 'https://api.sandbox.trainingpeaks.com'
-refresh_url = "https://oauth.sandbox.trainingpeaks.com/oauth/token"
-authorization_base_url = 'https://oauth.sandbox.trainingpeaks.com/OAuth/Authorize'
-token_base_url = 'https://oauth.sandbox.trainingpeaks.com/oauth/token'
-redirect_uri = "https://www.c150data.com/admin" if remote else "https://localhost:5000/admin"
+refresh_url = urls.token_url() 
+authorization_url = urls.authorization_url() 
+token_base_url = urls.token_url() 
+redirect_uri = "https://www.c150data.com/admin" if is_production else "https://127.0.0.1:5000/admin"
 
 refresh_padding_time = 300
 
@@ -33,14 +34,14 @@ def getValidAuthToken():
         Row: The Row object of a valid token
     """
     refreshAuthTokenIfNeeded()
-    return AuthToken.query.order_by(AuthToken.id.desc()).first()
+    return AuthToken.query.filter_by(server=server).order_by(AuthToken.id.desc()).first()
 
 
 def refreshAuthTokenIfNeeded():
     """
     Checks if auth_token needs refreshing, and refreshes if necessary
     """
-    most_recent_token = AuthToken.query.order_by(AuthToken.id.desc())[0]
+    most_recent_token = AuthToken.query.filter_by(server=server).order_by(AuthToken.id.desc()).first()
 
     if most_recent_token is None or most_recent_token.refresh_token is None:
         raise Exception("Error while getting refresh token from database.")
@@ -66,7 +67,7 @@ def insertNewToken(token):
     ) + timedelta(seconds=(int(expires_in)-refresh_padding_time))
 
     token = AuthToken(access_token=access_token, token_type=token_type,
-                      expires_at=expires_at_date, refresh_token=refresh_token, scope=scope)
+                      expires_at=expires_at_date, refresh_token=refresh_token, scope=scope, server=server)
 
     if token is None:
         raise Exception("Error while creating authlib AuthToken.")
@@ -81,7 +82,6 @@ def refreshAndInsertToken(refresh_token):
 
     Args:
         refresh_token (str): Refresh token
-    ""
     """
     newToken = getNewTokenWithRefreshToken(refresh_token)
     if newToken is None:
@@ -135,7 +135,7 @@ def getNewTokenWithRefreshToken(refresh_token):
 def getAuthorizationUrl():
     session = getOAuthSessionForAuthorization()
     # Returns a tuple of authorization_url and state, just returning the url
-    return session.create_authorization_url(authorization_base_url)[0]
+    return session.create_authorization_url(authorization_url)[0]
 
 
 def getOAuthSessionForAuthorization():
