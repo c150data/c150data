@@ -50,7 +50,7 @@ bcrypt = Bcrypt(app)
 
 
 # position important to avoid circular importation
-from app.database.db_models import User, AuthToken, Athlete, Workout
+from app.database.db_models import User, AuthToken, Athlete, Workout, PrescribedTrainingDay
 
 from app.errors.handlers import errors
 from app.data.routes import data1
@@ -65,6 +65,7 @@ app.register_blueprint(data1)
 app.register_blueprint(errors)
 
 # Workout.__table__.drop(db.engine) # Use if you want to drop the table and reset it
+# PrescribedTrainingDay.__table__.drop(db.engine) # Use if you want to drop the table and reset it
 # Athlete.__table__.drop(db.engine) # Use if you want to drop the table and reset it
 # AuthToken.__table__.drop(db.engine) # Use if you want to drop the table and reset it
 db.create_all()  # Only creates tables when they do not already exist

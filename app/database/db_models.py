@@ -4,8 +4,11 @@ Models class that defines the database objects that we use in the application.
 from app import db, ACCESS, app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
-from sqlalchemy import Column, Float, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Float, Integer, String, Boolean, DateTime, ForeignKey, Date
 from sqlalchemy.orm import relationship
+
+
+
 
 
 class User(db.Model, UserMixin):
@@ -40,6 +43,35 @@ class User(db.Model, UserMixin):
         return "User('{}','{}')".format(self.username, self.email)
 
 
+class PrescribedTrainingDay(db.Model):
+    __tablename__ = 'prescribed_training_days'
+
+    id = Column(Integer, primary_key=True)
+    day = Column(Date, nullable=False)
+    total_minutes = Column(Integer, nullable=False)
+    num_lifts = Column(Integer, nullable=False)
+    num_regan = Column(Integer, nullable=False)
+    zone_1_time = Column(Integer, nullable=False)
+    zone_2_time = Column(Integer, nullable=False)
+    zone_3_time = Column(Integer, nullable=False)
+    zone_4_time = Column(Integer, nullable=False)
+    zone_5_time = Column(Integer, nullable=False)
+
+    def __repr__(self):
+        return "PrescribedTrainingDay('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+            self.id,
+            self.day,
+            self.total_hours,
+            self.num_lifts,
+            self.num_regan,
+            self.zone_1_time,
+            self.zone_2_time,
+            self.zone_3_time,
+            self.zone_4_time,
+            self.zone_5_time
+        )
+
+
 class AuthToken(db.Model):
     __tablename__ = 'authtoken'
 
@@ -52,7 +84,7 @@ class AuthToken(db.Model):
     server = Column(String(100), nullable=False)
 
     def __repr__(self):
-        return "AuthToken('{}', '{}', '{}', '{}', '{}', '{}', '{})".format(
+        return "AuthToken('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
             self.id,
             self.access_token,
             self.token_type,
@@ -151,6 +183,9 @@ class Workout(db.Model):
     powerZone3Time = Column(Float, nullable=True)
     powerZone4Time = Column(Float, nullable=True)
     powerZone5Time = Column(Float, nullable=True)
+    isTeamLift = Column(Boolean, nullable=False)
+    isTeamCore = Column(Boolean, nullable=False)
+
 
     def __repr__(self):
         return """Workout('{}', '{}', '{}', '{}', '{}',
@@ -165,7 +200,7 @@ class Workout(db.Model):
                         '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}',
                         '{}', '{}', '{}', '{}', '{}',
-                        '{}', '{}', '{}')""".format(
+                        '{}', '{}', '{}', '{}', '{}')""".format(
             self.id,
             self.athleteId,
             self.completed,
@@ -229,4 +264,6 @@ class Workout(db.Model):
             self.powerZone3Time,
             self.powerZone4Time,
             self.powerZone5Time,
+            self.isTeamLift,
+            self.isTeamCore
         )
