@@ -5,6 +5,7 @@ var $table = $('#table')
 var firstTime = 1
 var total = 0
 var average_zones = [null, null, null, null, null]
+var average_tp_score = 0
 
 // Date Functions
 
@@ -103,6 +104,10 @@ function hoursFormatter() {
     return total;
 }
 
+function tpScoreFormatter() {
+    return average_tp_score;
+}
+
 function zone1Formatter() {
     return getZone(average_zones['avgZone1']);
 }
@@ -167,6 +172,7 @@ function ajaxRequest(params) {
         success: function(response) {
             total = response['total_hours']
             average_zones = response['average_zones']
+            average_tp_score = response['average_tp_score']
             params.success(response['athlete_list'], response['total_hours']);
             $.ajax({
                 type: "POST",
