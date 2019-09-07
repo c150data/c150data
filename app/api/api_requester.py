@@ -28,7 +28,7 @@ def getWorkoutsForAthlete(id, start_date, end_date):
     response = requests.get(base_url, headers=headers, params=params)
     try:
         return response.json()
-    except Exception as e:
+    except Exception:
         # Invalid response that is not able to be jsonified
         return None
 
@@ -46,7 +46,8 @@ def getWorkoutsChangedSince(athlete_id, sinceDate):
         'Modified': []
     }
     while True:
-        response_json = requests.get(base_url, headers=headers, params=params).json()
+        response = requests.get(base_url, headers=headers, params=params)
+        response_json = response.json()
         full_response['Deleted'] = full_response['Deleted'] + response_json['Deleted']
         full_response['Modified'] = full_response['Modified'] + response_json['Modified']
         if len(response_json['Modified']) < PAGE_SIZE:
@@ -66,7 +67,7 @@ def getZonesForWorkout(athlete_id, workout_id):
     response = requests.get(base_url, headers=headers)
     try:
         return response.json()
-    except Exception as e:
+    except Exception:
         # Invalid response that is not able to be jsonified
         return None
 
@@ -75,5 +76,5 @@ def getAPIRequestHeaders(valid_token):
     if valid_token is None:
         raise Exception("Authentication token is None.")
 
-    return {'host': 'api.sandbox.trainingpeaks.com', 'content-type':
+    return {'host': urls.get_api_host(), 'content-type':
             'application/json', 'Authorization': 'Bearer ' + valid_token.access_token, 'User-Agent': 'columbiac150'}

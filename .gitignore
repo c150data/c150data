@@ -1,4 +1,5 @@
 *.un~
+*~
 *.pyc
 *.vscode
 site.db
@@ -7,3 +8,5 @@ config.py
 *.code-workspace
 *.DS_Store
 venv
+requirements.txt
+package-lock.json

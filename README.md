@@ -26,7 +26,7 @@ At this time, you must be a member of C150 in order to access this site.
 ## Features
 
 * Secure login system to keep data private.
-* Data page that displays athletes' total training hours within a given date range. The page has sorting and filtering functionality.
+* Data page that displays athletes' total training hours and intensity zones within a given date range. The page has sorting and filtering functionality.
 * Contact page that allows users to reach out to administrators with comments, questions, or concerns.
 
 ## Site

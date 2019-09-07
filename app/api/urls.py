@@ -1,7 +1,28 @@
 """
 Module used to build the urls to make API requests to
 """
-api_base_url = 'https://api.sandbox.trainingpeaks.com'
+from app import app
+
+is_production = app.config['TP_SERVER'] == 'production'
+
+api_base_url = 'https://api.trainingpeaks.com' if is_production else 'https://api.sandbox.trainingpeaks.com' 
+api_host =  'api.trainingpeaks.com' if is_production else 'api.sandbox.trainingpeaks.com' 
+oauth_base_url = 'https://oauth.trainingpeaks.com' if is_production else 'https://oauth.sandbox.trainingpeaks.com'
+
+
+def get_api_base_url():
+    return api_base_url
+
+def get_api_host():
+    return api_host
+
+
+def token_url():
+    return "{}/oauth/token".format(oauth_base_url) 
+
+
+def authorization_url():
+    return '{}/OAuth/Authorize'.format(oauth_base_url)
 
 
 def COACH_ATHLETES_URL():
