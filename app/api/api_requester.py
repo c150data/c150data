@@ -47,9 +47,12 @@ def getWorkoutsChangedSince(athlete_id, sinceDate):
     }
     while True:
         response = requests.get(base_url, headers=headers, params=params)
-        response_json = response.json()
-        full_response['Deleted'] = full_response['Deleted'] + response_json['Deleted']
-        full_response['Modified'] = full_response['Modified'] + response_json['Modified']
+        try:
+            response_json = response.json()
+            full_response['Deleted'] = full_response['Deleted'] + response_json['Deleted']
+            full_response['Modified'] = full_response['Modified'] + response_json['Modified']
+        except Exception:
+            print('error')
         if len(response_json['Modified']) < PAGE_SIZE:
             break
         else:
