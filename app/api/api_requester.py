@@ -47,16 +47,20 @@ def getWorkoutsChangedSince(athlete_id, sinceDate):
     }
     while True:
         response = requests.get(base_url, headers=headers, params=params)
-        try:
-            response_json = response.json()
-            full_response['Deleted'] = full_response['Deleted'] + response_json['Deleted']
-            full_response['Modified'] = full_response['Modified'] + response_json['Modified']
-        except Exception:
-            print('error')
-        if len(response_json['Modified']) < PAGE_SIZE:
-            break
+        if response.status_code == 200:
+            try:
+                response_json = response.json()
+                full_response['Deleted'] = full_response['Deleted'] + response_json['Deleted']
+                full_response['Modified'] = full_response['Modified'] + response_json['Modified']
+            except Exception:
+                print('Error while parsing workouts changed response')
+            if len(response_json['Modified']) < PAGE_SIZE:
+                break
+            else:
+                params['page'] += 1
         else:
-            params['page'] += 1
+            log.info('NOTE: athlete with id {} does not have a TP premium account. We should deactivate this athlete.'.format(athlete_id))
+            break
     return full_response
 
 
