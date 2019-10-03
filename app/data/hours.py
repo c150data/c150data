@@ -61,7 +61,10 @@ def getHoursForAllAthletes(start_date, end_date):
 
     for row in result:
         hr_zones, power_zones = getZonePercents(row)
-        tp_score = getTpScore(row, prescribed)
+        if len(prescribed) == 0:
+            tp_score = getTpScore(row, None)
+        else:
+            tp_score = getTpScore(row, prescribed)
         tp_scores.append(tp_score)
         athlete_info = {
             "rank": rank,

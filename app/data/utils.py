@@ -69,6 +69,8 @@ def getZonePercents(data):
 
 
 def getTpScore(athlete_data, prescribed_data):
+    if prescribed_data is None:
+        return 
     # Hours
     total_minutes_completed = athlete_data['hours']*60
     total_minutes_prescribed = prescribed_data['minutes_prescribed']
