@@ -23,7 +23,7 @@ def testbot():
     return Response('Received and sent a message!')
     
 @groupme.route("/groupme/ishanbot", methods=['POST'])
-def testbot():
+def ishanbot():
     log.info('Groupme received the following args: {}'.format(request.args.items))
     name = request.args['name'].lower()
     test = request.args['text']
