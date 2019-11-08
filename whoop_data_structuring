@@ -1,0 +1,41 @@
+Example data for Whoop:
+
+Whoop Athlete:
+First Name
+Last Name
+WhoopAthleteId
+TPAthleteId
+AuthorizationToken
+
+WhoopDays:
+WhoopAthleteId
+Date
+lastUpdatedAt
+
+Recovery (Future)
+Sleep (Future)
+
+Strain:
+averageHeartRate
+kilojoules
+maxHeartRate
+rawScore
+score
+state
+
+Workouts:
+WorkoutId
+averageHeartRate
+startTime
+endTime
+kilojoules
+maxHeartRate
+sportID
+state
+timezoneOffset
+Zones (Future, since this probably needs to be stored in a seperate table)
+
+HeartRate:
+WhoopAthleteId
+Time: current time in ms
+data: HR at that time

@@ -80,3 +80,24 @@ def insertAllWorkoutsApp():
         result = "danger"
         message = "Error while inserting workouts."
     return render_template("alert.html", alert_type=result, alert_message=message)
+
+
+@admin1.route("/admin/insertWhoopData")
+@requires_access_level(ACCESS['admin'])
+def insertAllWhoopWorkouts():
+    start_date, end_date = request.args.get('start_date'), request.args.get('end_date')
+    try:
+        log.info("Inserting all whoop workouts between {} and {}".format(start_date, end_date))
+        num_days_affected, total_workouts_affected = db_filler.insertWhoopData(start_date, end_date)
+        result = "success"
+        message = "Successfully inserted {} days worth of data into the database, including a total of {} workouts".format(
+            num_days_affected,
+            total_workouts_affected
+        )
+    except Exception as e:
+        log.exception(
+            "Error occurred while inserting all whoop workouts: {}".format(e))
+        result = "danger"
+        message = "Error while inserting workouts."
+    return render_template("alert.html", alert_type=result, alert_message=message)
+

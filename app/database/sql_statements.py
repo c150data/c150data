@@ -81,6 +81,11 @@ def getOldestLastWorkoutTimeSQL():
 def getAllActiveAthletesSQL():
     return "SELECT * FROM athletes where is_active = True;"
 
+def getAllWhoopAthletesSQL():
+    return "SELECT * FROM whoop_athletes"
+
+def getAuthorizationTokenSQL(whoopAthleteId):
+    return "SELECT authorizationToken FROM whoop_athletes WHERE whoopAthleteId = {}".format(whoopAthleteId)
 
 def getAthleteNameFromId(id):
     if type(id) is not int:

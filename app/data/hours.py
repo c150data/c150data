@@ -23,7 +23,7 @@ REFRESH_WORKOUT_MINUTES = 30
 # - Previously inactive athletes are now active
 # Ask Ben about this??
 # DEFAULT_LAST_UPDATED_TIME = datetime(year=2014, month=1, day=1) 
-DEFAULT_LAST_UPDATED_TIME = datetime(year=2019, month=9, day=4) 
+DEFAULT_LAST_UPDATED_TIME = datetime(year=2019, month=11, day=4) 
 
 
 def getHoursForAllAthletes(start_date, end_date):
@@ -93,7 +93,9 @@ def getHoursForAllAthletes(start_date, end_date):
             zoneAverages[4][0] += hr_zones['hrZone5Percent']
             zoneAverages[4][1] += 1
         athleteHourList.append(athlete_info)
-        total_hours += row['hours']
+        hours = row['hours']
+        if hours:
+            total_hours += row['hours']
         rank += 1
 
     avgZone1 = round(zoneAverages[0][0]/zoneAverages[0][1], 1) if zoneAverages[0][1] is not 0 else None

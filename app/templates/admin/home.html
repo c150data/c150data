@@ -79,5 +79,30 @@
         </div>
         <div id="alert-div"></div>
     </div>
+    <div class="row admin-button">
+        <div class='col-lg-5 align-self-center'>
+            <div class="form-group">
+                <div class="input-group date">
+                    <label for="start_date_whoop">Start</label>
+                    <input type="text" id="start_date_whoop" placeholder="Format: MM/DD/YYYY" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class='col-lg-5 align-self-center'>
+            <div class="form-group">
+                <div class="input-group date">
+                    <label for="end_date_whoop">End</label>
+                    <input type="text" id="end_date_whoop" placeholder="Format: MM/DD/YYYY" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <button type="submit" id="insertAllWhoopData" class="btn btn-primary">
+                <span id='spinner' class="spinner-border spinner-border-sm" role="status" hidden></span>
+                <span id='submitLabel'>Insert All Whoop Data!</span>
+            </button>
+        </div>
+        <div id="alert-div"></div>
+    </div>
 </div>
 {% endblock %}

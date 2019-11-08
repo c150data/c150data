@@ -8,7 +8,7 @@ Note: the workouts request accepts a date range and gets all requests within tha
 from app import log
 from app.database.db_models import Athlete, Workout
 from app.database import db_functions, sql_statements as sql
-from app.api import api_requester, oauth, api_service
+from app.api import api_requester, oauth, api_service, api_whoop_service
 from app.api.utils import InvalidZoneAthletes
 from datetime import datetime, timedelta
 import math
@@ -61,6 +61,38 @@ def insertWorkoutsIntoDb(start_date, end_date):
     db_functions.dbInsert(workoutsList)
     return len(workoutsList)
 
+
+def insertWhoopData(start_date, end_date):
+    """
+    Inserts all whoop workouts from start_date to end_date into whoop workout table
+
+    Args:
+        start_date (datetime): Date in form MM/DD/YYYY 
+        end_date (datetime): Date in form MM/DD/YYYY 
+
+    Returns:
+        int: number of datab 
+    """
+    whoop_athletes = db_functions.dbSelect(sql.getAllWhoopAthletesSQL())
+    all_db_objects_to_insert = list()
+    total_workouts = 0 
+    dStart = datetime.strptime(start_date, '%m/%d/%Y')
+    dEnd = datetime.strptime(end_date, '%m/%d/%Y')
+
+    for athlete in whoop_athletes:
+        # Note that each day has several database objects within it. For example
+        # a single day should have a WhoopDay, WhoopStrain, and possibly several WhoopWorkout objects
+        day_db_object, strain_db_object, workout_db_objects = api_whoop_service.getDBObjectsForDay(
+            athlete.whoopAthleteId, dStart, dEnd)
+        # TODO: Should probably add here the call to insert all HR data between start and end date of the workout objects
+        total_workouts += len(workout_db_objects) 
+        
+        all_db_objects_to_insert.append(day_db_object)
+        all_db_objects_to_insert.append(strain_db_object)
+        all_db_objects_to_insert += workout_db_objects
+
+    db_functions.dbInsert(all_db_objects_to_insert)
+    return num_days, total_workouts 
 
 def getListOfStartEndDates(start_date, end_date, max_date_range):
     """

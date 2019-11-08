@@ -22,7 +22,11 @@ def getZonePercents(data):
     else:
         powerZonesSum = powerZone1 + powerZone2 + powerZone3 + powerZone4 + powerZone5
 
-    totalMinutes = data['hours'] * 60
+    totalHours=data['hours']
+    if totalHours is None:
+        totalMinutes = None
+    else:
+        totalMinutes = totalHours * 60
 
     invalid_hr_zones = {
         'hrZone1Percent': '-',
@@ -40,7 +44,7 @@ def getZonePercents(data):
         'powerZone5Percent': '-'
     }
 
-    if totalMinutes == 0 or hrZonesSum is None or powerZonesSum is None:
+    if totalMinutes is None or hrZonesSum is None or powerZonesSum is None or totalMinutes == 0:
         return invalid_hr_zones, invalid_power_zones
 
     if(hrZonesSum/totalMinutes > MIN_PERCENTAGE):
@@ -72,7 +76,10 @@ def getTpScore(athlete_data, prescribed_data):
     if prescribed_data is None:
         return 
     # Hours
-    total_minutes_completed = athlete_data['hours']*60
+    total_hours_completed = athlete_data['hours']
+    if total_hours_completed is None:
+        return 0
+    total_minutes_completed = total_hours_completed*60
     total_minutes_prescribed = prescribed_data['minutes_prescribed']
 
     if total_minutes_prescribed == 0:

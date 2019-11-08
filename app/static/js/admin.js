@@ -31,4 +31,22 @@ $(document).ready(function() {
             }
         });
     });
+
+    $("#insertAllWhoopData").click(function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: "/admin/insertWhoopData",
+            type: "get",
+            data: {
+                'start_date': $("#start_date_whoop").val(),
+                'end_date': $("#end_date_whoop").val()
+            },
+            success: function(response) {
+                $("alert-div").html(response)
+            },
+            error: function(xhr) {
+                //handle error
+            }
+        });
+    });
 });
