@@ -84,6 +84,17 @@ def getAllActiveAthletesSQL():
 def getAllWhoopAthletesSQL():
     return "SELECT * FROM whoop_athletes"
 
+def getWhoopAthleteByIdSQL(whoopAthleteId):
+    return "SELECT * FROM whoop_athletes WHERE whoopAthleteId = '{}'".format(whoopAthleteId)
+
+def updateWhoopTokenAndExpiresAtByIdSQL(whoopAthleteId, newToken, newExpiresAt):
+    # Might throw an error because updating a datetime field
+    return "UPDATE whoop_athletes SET authorizationToken = {} AND expires_at = {} WHERE whoopAthleteId = {}".format(
+        newToken,
+        newExpiresAt, 
+        whoopAthleteId
+    )
+
 def getAuthorizationTokenSQL(whoopAthleteId):
     return "SELECT authorizationToken FROM whoop_athletes WHERE whoopAthleteId = {}".format(whoopAthleteId)
 

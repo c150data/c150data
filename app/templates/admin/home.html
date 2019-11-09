@@ -77,7 +77,6 @@
                 <span id='submitLabel'>Insert All Workouts!</span>
             </button>
         </div>
-        <div id="alert-div"></div>
     </div>
     <div class="row admin-button">
         <div class='col-lg-5 align-self-center'>
@@ -102,6 +101,24 @@
                 <span id='submitLabel'>Insert All Whoop Data!</span>
             </button>
         </div>
+    </div>
+    <div class="row admin-button">
+        <div class='col-lg-5 align-self-center'>
+            <label for="whoop_username">Username:</label>
+            <input type='text' id='whoop_username' placeholder="Username"/>
+        </div>
+        <div class='col-lg-5 align-self-center'>
+            <label for="whoop_password">Password:</label>
+            <input type='text' id='whoop_password' placeholder="Password"/>
+        </div>
+        <div class="col-lg-2">
+            <button type="submit" id="insertWhoopAthlete" class="btn btn-primary">
+                <span id='spinner' class="spinner-border spinner-border-sm" role="status" hidden></span>
+                <span id='submitLabel'>Insert a New Whoop Athlete</span>
+            </button>
+        </div>
+    </div>
+    <div class="row admin-button">
         <div id="alert-div"></div>
     </div>
 </div>

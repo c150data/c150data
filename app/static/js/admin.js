@@ -49,4 +49,22 @@ $(document).ready(function() {
             }
         });
     });
+
+    $("#insertWhoopAthlete").click(function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: "/admin/insertWhoopAthlete",
+            type: "get",
+            data: {
+                'username': $("#whoop_username").val(),
+                'password': $("#whoop_password").val()
+            },
+            success: function(response) {
+                $("alert-div").html(response)
+            },
+            error: function(xhr) {
+                //handle error
+            }
+        });
+    });
 });

@@ -50,7 +50,7 @@ bcrypt = Bcrypt(app)
 
 
 # position important to avoid circular importation
-from app.database.db_models import User, AuthToken, Athlete, Workout, PrescribedTrainingDay
+from app.database.db_models import User, AuthToken, Athlete, Workout, PrescribedTrainingDay, WhoopAthlete, WhoopDay, WhoopStrain, WhoopWorkout, WhoopHeartRate
 
 from app.errors.handlers import errors
 from app.data.routes import data1

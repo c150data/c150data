@@ -122,12 +122,20 @@ class WhoopAthlete(db.Model):
     __tablename__ = 'whoop_athletes'
 
     whoopAthleteId = Column(Integer, primary_key=True)
+    firstName = Column(String(200), nullable=False)
+    lastName = Column(String(200), nullable=False)
+    username = Column(String(200), nullable=False)
+    password = Column(String(60), nullable=False) # TODO hash this
     authorizationToken = Column(String(1000), nullable=True)
+    expires_at = Column(DateTime, nullable=True)
 
     def __repr__(self):
-        return "WhoopAthlete('{}', '{}')".format(
+        return "WhoopAthlete('{}', '{}', '{}', '{}', '{}')".format(
             self.whoopAthleteId, 
-            self.authorizationToken
+            self.username,
+            self.password,
+            self.authorizationToken,
+            self.expires_at
         )
 
 class WhoopDay(db.Model):

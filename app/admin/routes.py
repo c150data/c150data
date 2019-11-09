@@ -1,8 +1,9 @@
 from flask import Blueprint, request, render_template, redirect, flash
 from app.admin import admin
-from app import log, ACCESS
-from app.database import db_filler
-from app.api import oauth
+from app import log, ACCESS, db
+from app.database import db_filler 
+from app.database.db_models import WhoopAthlete
+from app.api import oauth, oauth_whoop
 from app.utils import requires_access_level
 
 admin1 = Blueprint('admin1', __name__)
@@ -101,3 +102,30 @@ def insertAllWhoopWorkouts():
         message = "Error while inserting workouts."
     return render_template("alert.html", alert_type=result, alert_message=message)
 
+
+@admin1.route("/admin/insertWhoopAthlete")
+@requires_access_level(ACCESS['admin'])
+def insertWhoopAthlete():
+    username, password = request.args.get('username'), request.args.get('password')
+    try:
+        athlete_info = oauth_whoop.getInfoForNewAthlete(username, password)
+        athlete_to_insert = WhoopAthlete(
+            whoopAthleteId=athlete_info['whoopAthleteId'], 
+            firstName=athlete_info['firstName'],
+            lastName=athlete_info['lastName'],
+            username=username, 
+            password=password,
+            authorizationToken=athlete_info['token'], 
+            expires_at=athlete_info['expiresAt']
+        )
+        db.session.add(athlete_to_insert)
+        db.session.commit()
+        result='success'
+        message='Successfully inserted a new Whoop Athlete with id {}'.format(athlete_info['whoopAthleteId'])
+    except Exception as e:
+        log.exception('Error occurred while inserting a new whoop athlete: {}'.format(e))
+        result='danger'
+        message='Error while inserting new whoop athlete.'
+    return render_template("alert.html", alert_type=result, alert_message=message)
+
+    
