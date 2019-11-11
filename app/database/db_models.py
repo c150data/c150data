@@ -128,14 +128,16 @@ class WhoopAthlete(db.Model):
     password = Column(String(60), nullable=False) # TODO hash this
     authorizationToken = Column(String(1000), nullable=True)
     expires_at = Column(DateTime, nullable=True)
+    last_updated_data = Column(DateTime, nullable=True)
 
     def __repr__(self):
-        return "WhoopAthlete('{}', '{}', '{}', '{}', '{}')".format(
+        return "WhoopAthlete('{}', '{}', '{}', '{}', '{}', '{}')".format(
             self.whoopAthleteId, 
             self.username,
             self.password,
             self.authorizationToken,
-            self.expires_at
+            self.expires_at,
+            self.last_updated_data
         )
 
 class WhoopDay(db.Model):
@@ -144,12 +146,18 @@ class WhoopDay(db.Model):
     whoopDayId = Column(Integer, primary_key=True)
     whoopAthleteId = Column(Integer, nullable=False)
     day = Column(DateTime, nullable=False)
+    start_time = Column(DateTime, nullable=False)
+    end_time = Column(DateTime, nullable=False)
+    last_updated_at = Column(DateTime, nullable=False)
 
     def __repr__(self):
-        return "WhoopDay('{}', '{}', '{}')".format(
+        return "WhoopDay('{}', '{}', '{}', '{}', '{}', '{}')".format(
             self.whoopDayId,
             self.whoopAthleteId, 
-            self.day
+            self.day,
+            self.start_time,
+            self.end_time,
+            self.last_updated_at
         )
 
 
@@ -201,13 +209,13 @@ class WhoopWorkout(db.Model):
 class WhoopHeartRate(db.Model):
     __tablename__ = 'whoop_heart_rate'
 
-    whoopId = Column(Integer, primary_key=True)
-    time = Column(Integer, primary_key=True)
+    whoopAthleteId = Column(Integer, primary_key=True)
+    time = Column(DateTime, primary_key=True)
     data = Column(Integer, nullable=False)
 
     def __repr__(self):
         return "WhoopHeartRate('{}', '{}', '{}')".format(
-            self.whoopId,
+            self.whoopAthleteId,
             self.time, 
             self.data
         )

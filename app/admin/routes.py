@@ -5,8 +5,12 @@ from app.database import db_filler
 from app.database.db_models import WhoopAthlete
 from app.api import oauth, oauth_whoop
 from app.utils import requires_access_level
+from datetime import datetime
 
 admin1 = Blueprint('admin1', __name__)
+
+# The beginning of the 2019-2020 season
+Whoop_Default_Last_Updated_Date = datetime(year=2019, month=9, day=1)
 
 
 # ADMIN
@@ -86,10 +90,9 @@ def insertAllWorkoutsApp():
 @admin1.route("/admin/insertWhoopData")
 @requires_access_level(ACCESS['admin'])
 def insertAllWhoopWorkouts():
-    start_date, end_date = request.args.get('start_date'), request.args.get('end_date')
     try:
-        log.info("Inserting all whoop workouts between {} and {}".format(start_date, end_date))
-        num_days_affected, total_workouts_affected = db_filler.insertWhoopData(start_date, end_date)
+        log.info("Refreshing Whoop Data...")
+        num_days_affected, total_workouts_affected = db_filler.refreshWhoopData()
         result = "success"
         message = "Successfully inserted {} days worth of data into the database, including a total of {} workouts".format(
             num_days_affected,
@@ -106,6 +109,7 @@ def insertAllWhoopWorkouts():
 @admin1.route("/admin/insertWhoopAthlete")
 @requires_access_level(ACCESS['admin'])
 def insertWhoopAthlete():
+    # TODO add checks here to alert the user if their password/userid did not match a whoop account
     username, password = request.args.get('username'), request.args.get('password')
     try:
         athlete_info = oauth_whoop.getInfoForNewAthlete(username, password)
@@ -116,7 +120,8 @@ def insertWhoopAthlete():
             username=username, 
             password=password,
             authorizationToken=athlete_info['token'], 
-            expires_at=athlete_info['expiresAt']
+            expires_at=athlete_info['expiresAt'],
+            last_updated_data = Whoop_Default_Last_Updated_Date
         )
         db.session.add(athlete_to_insert)
         db.session.commit()

@@ -5,13 +5,14 @@ Generally, will make one or more Whoop API requests and parse the response into
 the respective database objects
 """
 from app import log
+from app.database.db_models import WhoopDay
 from app.api import api_whoop_requester
 from datetime import datetime
 from dateutil.parser import parse
-from app.database.db_models import WhoopDay, WhoopStrain, WhoopWorkout
+from app.database.db_models import WhoopDay, WhoopStrain, WhoopWorkout, WhoopHeartRate
 
-def getDBObjectsForDays(whoopAthleteId, start_date, end_date):
-    days_response = api_whoop_requester.getDays(whoopAthleteId, start_date, end_date)
+def getDBObjectsSince(whoopAthleteId, since_date):
+    days_response = api_whoop_requester.getDaysSince(whoopAthleteId, since_date)
 
     if days_response.status_code != 200:
         raise Exception('Whoop API returned status code: {}'.format(days_response.status_code))
@@ -20,13 +21,33 @@ def getDBObjectsForDays(whoopAthleteId, start_date, end_date):
     day_db_objects = list()
     strain_db_objects = list()
     workout_db_objects = list()
+    
+    # Deleting then reinserting a new day every time a call is made may be an inefficieny, TODO
+    hasDeleted = False
 
     for day in response_json:
+        curr_id = day.get('id')
+
+        result = WhoopDay.query.filter_by(whoopDayId=curr_id)
+
+        if result.count() > 0:
+            # The current day already exists in the database, but we should update it. We will simply delete the existing record
+            WhoopDay.query.filter_by(whoopDayId=curr_id).delete()
+            hasDeleted = True
+
+        # Have to convert these to datetime!
+        start_time = day.get('during').get('lower')
+        end_time = day.get('during').get('upper')
+        last_updated_at = day.get('lastUpdatedAt')
+
         day_dt = datetime.strptime(day.get('days')[0], '%Y-%m-%d')
         curr_day = WhoopDay(
             whoopDayId=day.get('id'),
             whoopAthleteId=whoopAthleteId,
-            day=day_dt
+            day=day_dt,
+            start_time=start_time,
+            end_time=end_time,
+            last_updated_at=last_updated_at
         )
         day_db_objects.append(curr_day)
 
@@ -36,6 +57,10 @@ def getDBObjectsForDays(whoopAthleteId, start_date, end_date):
         for workout in day.get('strain').get('workouts'):
             curr_workout = buildWorkoutDbObject(day.get('id'), workout)
             workout_db_objects.append(curr_workout)
+
+    if hasDeleted:
+        # We may see a slow down right here...
+        db.session.commit()
 
     return day_db_objects, strain_db_objects, workout_db_objects
 
@@ -47,8 +72,14 @@ def getHeartRateDBObjects(athleteId, start_date, end_date):
     
     r_json = heart_rate_response.json()
     hr_db_objects = list()
-
-    # Figure out format of heart rate objects and parse into hr db objects
+    for hr_point in r_json.get('values'):
+        curr_datetime = datetime.fromtimestamp(hr_point.get('time')/1000) # Convert time in ms to seconds timestamp, convert to datetime
+        curr_hr_db_obj = WhoopHeartRate(
+            whoopAthleteId=athleteId,
+            time = curr_datetime,
+            data = hr_point.get('data')
+        )
+        hr_db_objects.append(curr_hr_db_obj)
 
     return hr_db_objects
     

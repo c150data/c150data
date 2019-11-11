@@ -6,14 +6,15 @@ makes the request, and returns the API response
 """
 
 import requests
+from datetime import datetime
 from app.api import whoop_urls
 from app.database import db_functions, sql_statements as sql
 
 
-def getDays(whoopAthleteId, start_date, end_date):
+def getDaysSince(whoopAthleteId, since_date):
     valid_token = getValidTokenForAthlete(whoopAthleteId)
     headers = getAPIRequestHeaders(valid_token)
-    return requests.get(whoop_urls.WHOOP_DAYS_URL(whoopAthleteId, start_date, end_date),
+    return requests.get(whoop_urls.WHOOP_DAYS_URL(whoopAthleteId, since_date, datetime.now()),
                         headers=headers)
 
 def getHeartRate(whoopAthleteId, start_date, end_date):

@@ -6,7 +6,7 @@ Can also insert all workouts for every athlete under the current coach (Nich), a
 Note: the workouts request accepts a date range and gets all requests within that range.
 """
 from app import log
-from app.database.db_models import Athlete, Workout
+from app.database.db_models import Athlete, Workout, WhoopAthlete
 from app.database import db_functions, sql_statements as sql
 from app.api import api_requester, oauth, oauth_whoop, api_service, api_whoop_service
 from app.api.utils import InvalidZoneAthletes
@@ -62,39 +62,35 @@ def insertWorkoutsIntoDb(start_date, end_date):
     return len(workoutsList)
 
 
-def insertWhoopData(start_date, end_date):
+def refreshWhoopData():
     """
-    Inserts all whoop workouts from start_date to end_date into whoop workout table
-
-    Args:
-        start_date (datetime): Date in form MM/DD/YYYY 
-        end_date (datetime): Date in form MM/DD/YYYY 
+    Refreshes all whoop data from the last time it was refreshed, for 
+    every athlete on the team. Takes all the new data and inserts in to the 
+    local database.
 
     Returns:
-        int: number of datab 
+        int: Total number of workouts updated in the system
     """
-    whoop_athletes = db_functions.dbSelect(sql.getAllWhoopAthletesSQL())
-    # Eventually should add some field to a whoop athlete tracking the last
-    # time that data was gotten for that athlete, instead of start and end dates
+    whoop_athletes = WhoopAthlete.query.all() 
+
     db_days_to_insert = list()
     db_strain_to_insert = list()
     db_workouts_to_insert = list()
     db_hr_to_insert = list()
 
     total_workouts = 0 
-    dStart = datetime.strptime(start_date, '%m/%d/%Y')
-    dEnd = datetime.strptime(end_date, '%m/%d/%Y')
 
     for athlete in whoop_athletes:
-        log.info('Getting workouts for {} {} from {} to {}'.format(athlete.firstName, athlete.lastName, start_date, end_date))
+        log.info('Getting whoop data for {} {} since {}...'.format(athlete.firstName, athlete.lastName, athlete.last_updated_data))
         # Need to check to make sure each athlete has an up to date auth token
         oauth_whoop.refreshTokenIfNeeded(athlete.whoopAthleteId)
 
         # Note that each day has several database objects within it. For example
         # a single day should have a WhoopDay, WhoopStrain, and possibly several WhoopWorkout objects
-        day_db_objects, strain_db_objects, workout_db_objects = api_whoop_service.getDBObjectsForDays(
-            athlete.whoopAthleteId, dStart, dEnd)
+        day_db_objects, strain_db_objects, workout_db_objects = api_whoop_service.getDBObjectsSince(
+            athlete.whoopAthleteId, athlete.last_updated_data)
         
+        log.info('\t Getting heart rate data for {} workouts...'.format(len(workout_db_objects)))
         for workout_db_object in workout_db_objects:
             db_hr_to_insert += api_whoop_service.getHeartRateDBObjects(
                 athlete.whoopAthleteId, workout_db_object.startTime, workout_db_object.endTime)
@@ -108,8 +104,19 @@ def insertWhoopData(start_date, end_date):
     db_functions.dbInsert(db_strain_to_insert)
     db_functions.dbInsert(db_workouts_to_insert)
     db_functions.dbInsert(db_hr_to_insert)
+
+    updateAthletesLastUpdatedField()
     return len(db_days_to_insert), len(db_workouts_to_insert)
 
+
+def updateAthletesLastUpdatedField():
+    whoop_athletes = WhoopAthlete.query.all()
+
+    for athlete in whoop_athletes:
+        athlete.last_updated_data = datetime.now()
+
+    db.session.commit()
+    
 
 def getListOfStartEndDates(start_date, end_date, max_date_range):
     """
