@@ -20,3 +20,13 @@ def WHOOP_DAYS_URL(athleteId, start_date, end_date):
         start_date_f,
         end_date_f
     )
+
+def WHOOP_HEART_RATE_URL(athleteId, start_date, end_date):
+    start_date_f = start_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    end_date_f = end_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    return "{}/users/{}/metrics/heart_rate?start={}&end={}".format(
+        api_base_url,
+        athleteId,
+        start_date_f,
+        end_date_f
+    )  # Possibly need to add order to this?

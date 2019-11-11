@@ -33,7 +33,7 @@ def getAndInsertNewToken(whoopAthleteId, whoopUsername, whoopPassword):
     new_auth_token = r_json.get("access_token")
     new_expires_at = datetime.now() + timedelta(seconds=r_json.get("expires_in")) - timedelta(seconds=offset)  # Subtracting offset from the date
 
-    whoop_athlete = WhoopAthlete.query.filter_by(whoopAthleteId=whoopAthleteId)
+    whoop_athlete = WhoopAthlete.query.filter_by(whoopAthleteId=whoopAthleteId).first()
     whoop_athlete.authorizationToken = new_auth_token
     whoop_athlete.expires_at = new_expires_at
     db.session.commit()

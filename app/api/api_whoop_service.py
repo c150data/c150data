@@ -38,6 +38,19 @@ def getDBObjectsForDays(whoopAthleteId, start_date, end_date):
             workout_db_objects.append(curr_workout)
 
     return day_db_objects, strain_db_objects, workout_db_objects
+
+def getHeartRateDBObjects(athleteId, start_date, end_date):
+    heart_rate_response = api_whoop_requester.getHeartRate(athleteId, start_date, end_date)
+    
+    if heart_rate_response.status_code != 200:
+        raise Exception('Whoop API returned status code {}'.foramt(heart_rate_response.status_code))
+    
+    r_json = heart_rate_response.json()
+    hr_db_objects = list()
+
+    # Figure out format of heart rate objects and parse into hr db objects
+
+    return hr_db_objects
     
 
 def buildStrainDbObject(day_json):

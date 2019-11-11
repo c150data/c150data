@@ -16,6 +16,12 @@ def getDays(whoopAthleteId, start_date, end_date):
     return requests.get(whoop_urls.WHOOP_DAYS_URL(whoopAthleteId, start_date, end_date),
                         headers=headers)
 
+def getHeartRate(whoopAthleteId, start_date, end_date):
+    valid_token = getValidTokenForAthlete(whoopAthleteId)
+    headers = getAPIRequestHeaders(valid_token)
+    return requests.get(whoop_urls.WHOOP_HEART_RATE_URL(whoopAthleteId, start_date, end_date),
+                        headers=headers)
+
 
 def getAPIRequestHeaders(valid_token):
     if valid_token is None:

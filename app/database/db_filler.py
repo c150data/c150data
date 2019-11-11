@@ -74,6 +74,8 @@ def insertWhoopData(start_date, end_date):
         int: number of datab 
     """
     whoop_athletes = db_functions.dbSelect(sql.getAllWhoopAthletesSQL())
+    # Eventually should add some field to a whoop athlete tracking the last
+    # time that data was gotten for that athlete, instead of start and end dates
     db_days_to_insert = list()
     db_strain_to_insert = list()
     db_workouts_to_insert = list()
@@ -94,7 +96,8 @@ def insertWhoopData(start_date, end_date):
             athlete.whoopAthleteId, dStart, dEnd)
         
         for workout_db_object in workout_db_objects:
-            db_hr_to_insert += api_whoop_service.getHeartRateDBObjectsForWorkout(workout_db_object.startTime, workout_db_object.endTime)
+            db_hr_to_insert += api_whoop_service.getHeartRateDBObjects(
+                athlete.whoopAthleteId, workout_db_object.startTime, workout_db_object.endTime)
         total_workouts += len(workout_db_objects) 
         
         db_days_to_insert += day_db_objects
