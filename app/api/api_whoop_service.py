@@ -4,8 +4,8 @@ Handles getting alrge amounts of similar data using the Whoop API.
 Generally, will make one or more Whoop API requests and parse the response into 
 the respective database objects
 """
-from app import log
-from app.database.db_models import WhoopDay
+from app import log, db
+from app.database.db_models import WhoopDay, WhoopStrain, WhoopWorkout
 from app.api import api_whoop_requester
 from datetime import datetime
 from dateutil.parser import parse
@@ -22,23 +22,25 @@ def getDBObjectsSince(whoopAthleteId, since_date):
     strain_db_objects = list()
     workout_db_objects = list()
     
-    # Deleting then reinserting a new day every time a call is made may be an inefficieny, TODO
-    hasDeleted = False
-
     for day in response_json:
         curr_id = day.get('id')
 
         result = WhoopDay.query.filter_by(whoopDayId=curr_id)
 
         if result.count() > 0:
-            # The current day already exists in the database, but we should update it. We will simply delete the existing record
-            WhoopDay.query.filter_by(whoopDayId=curr_id).delete()
-            hasDeleted = True
+            continue
 
         # Have to convert these to datetime!
         start_time = day.get('during').get('lower')
         end_time = day.get('during').get('upper')
         last_updated_at = day.get('lastUpdatedAt')
+
+        if start_time:
+            start_time = parse(start_time)
+        if end_time:
+            end_time = parse(end_time)
+        if last_updated_at:
+            last_updated_at = parse(last_updated_at)
 
         day_dt = datetime.strptime(day.get('days')[0], '%Y-%m-%d')
         curr_day = WhoopDay(
@@ -58,17 +60,14 @@ def getDBObjectsSince(whoopAthleteId, since_date):
             curr_workout = buildWorkoutDbObject(day.get('id'), workout)
             workout_db_objects.append(curr_workout)
 
-    if hasDeleted:
-        # We may see a slow down right here...
-        db.session.commit()
-
     return day_db_objects, strain_db_objects, workout_db_objects
+
 
 def getHeartRateDBObjects(athleteId, start_date, end_date):
     heart_rate_response = api_whoop_requester.getHeartRate(athleteId, start_date, end_date)
     
     if heart_rate_response.status_code != 200:
-        raise Exception('Whoop API returned status code {}'.foramt(heart_rate_response.status_code))
+        raise Exception('Whoop API returned status code {}'.format(heart_rate_response.status_code))
     
     r_json = heart_rate_response.json()
     hr_db_objects = list()

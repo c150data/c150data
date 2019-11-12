@@ -87,15 +87,14 @@ def insertAllWorkoutsApp():
     return render_template("alert.html", alert_type=result, alert_message=message)
 
 
-@admin1.route("/admin/insertWhoopData")
+@admin1.route("/admin/refreshWhoopData")
 @requires_access_level(ACCESS['admin'])
-def insertAllWhoopWorkouts():
+def refreshWhoopData():
     try:
         log.info("Refreshing Whoop Data...")
-        num_days_affected, total_workouts_affected = db_filler.refreshWhoopData()
+        total_workouts_affected = db_filler.refreshWhoopData()
         result = "success"
-        message = "Successfully inserted {} days worth of data into the database, including a total of {} workouts".format(
-            num_days_affected,
+        message = "Successfully inserted whoop data, including {} workouts".format(
             total_workouts_affected
         )
     except Exception as e:

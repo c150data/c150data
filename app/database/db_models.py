@@ -146,9 +146,9 @@ class WhoopDay(db.Model):
     whoopDayId = Column(Integer, primary_key=True)
     whoopAthleteId = Column(Integer, nullable=False)
     day = Column(DateTime, nullable=False)
-    start_time = Column(DateTime, nullable=False)
-    end_time = Column(DateTime, nullable=False)
-    last_updated_at = Column(DateTime, nullable=False)
+    start_time = Column(DateTime, nullable=True)
+    end_time = Column(DateTime, nullable=True)
+    last_updated_at = Column(DateTime, nullable=True)
 
     def __repr__(self):
         return "WhoopDay('{}', '{}', '{}', '{}', '{}', '{}')".format(
