@@ -103,33 +103,3 @@ def refreshWhoopData():
         result = "danger"
         message = "Error while inserting workouts."
     return render_template("alert.html", alert_type=result, alert_message=message)
-
-
-@admin1.route("/admin/insertWhoopAthlete")
-@requires_access_level(ACCESS['admin'])
-def insertWhoopAthlete():
-    # TODO add checks here to alert the user if their password/userid did not match a whoop account
-    username, password = request.args.get('username'), request.args.get('password')
-    try:
-        athlete_info = oauth_whoop.getInfoForNewAthlete(username, password)
-        athlete_to_insert = WhoopAthlete(
-            whoopAthleteId=athlete_info['whoopAthleteId'], 
-            firstName=athlete_info['firstName'],
-            lastName=athlete_info['lastName'],
-            username=username, 
-            password=password,
-            authorizationToken=athlete_info['token'], 
-            expires_at=athlete_info['expiresAt'],
-            last_updated_data = Whoop_Default_Last_Updated_Date
-        )
-        db.session.add(athlete_to_insert)
-        db.session.commit()
-        result='success'
-        message='Successfully inserted a new Whoop Athlete with id {}'.format(athlete_info['whoopAthleteId'])
-    except Exception as e:
-        log.exception('Error occurred while inserting a new whoop athlete: {}'.format(e))
-        result='danger'
-        message='Error while inserting new whoop athlete.'
-    return render_template("alert.html", alert_type=result, alert_message=message)
-
-    

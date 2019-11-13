@@ -1,7 +1,10 @@
 from flask import render_template, url_for, redirect, request, Blueprint, flash
-from app.main.forms import ContactForm
+from app.main.forms import ContactForm, WhoopTPSyncForm 
 from flask_mail import Message
 from app import app, log, mail, ACCESS
+from requests import exceptions
+from app.api import oauth_whoop
+from app.database.db_models import Athlete, WhoopAthlete
 from app.utils import requires_access_level
 
 main = Blueprint('main', __name__)
@@ -39,3 +42,42 @@ def contact():
             return render_template('contact.html', form=form)
     elif request.method == 'GET':
         return render_template("contact.html", form=form)
+
+
+@main.route('/whoop', methods=['GET', 'POST'])
+def whoop():
+    form = WhoopTPSyncForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            tp_athlete = Athlete.query.filter_by(email=form.tp_email.data).first()
+            if not user:
+                flash('Could not find a TrainingPeaks account with that email. Check your email and try again.')
+            r = insertWhoopAthlete
+    else:
+        return render_template('whoop.html', form=form)
+
+
+##########################################################################
+
+def insertWhoopAthlete(username, password):
+    try:
+        athlete_info = oauth_whoop.getInfoForNewAthlete(username, password)
+        athlete_to_insert = WhoopAthlete(
+            whoopAthleteId=athlete_info['whoopAthleteId'], 
+            firstName=athlete_info['firstName'],
+            lastName=athlete_info['lastName'],
+            username=username, 
+            password=password,
+            authorizationToken=athlete_info['token'], 
+            expires_at=athlete_info['expiresAt'],
+            last_updated_data = Whoop_Default_Last_Updated_Date
+        )
+        db.session.add(athlete_to_insert)
+        db.session.commit()
+        result='success'
+        message='Successfully inserted a new Whoop Athlete with id {}'.format(athlete_info['whoopAthleteId'])
+    except ValueError as e:
+        return False, "Incorrect username or password for athlete."
+    except exceptions.BaseHTTPError as e:
+        return False, ""
+    return render_template("alert.html", alert_type=result, alert_message=message)

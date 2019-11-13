@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+{% set active_page = "whoop" %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/whoop.css">
+<section id="whoop">
+    <div class="whoop-container">
+        <!-- Handles any alerts -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="container">
+            <div class="row">
+                <div class="col"></div>
+                <div class="col">
+                    <div class="text-center alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <div class="container text-center animated fadeInDown">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group border-bottom">
+                    <legend class="border-bottom">
+                        <h1>Activate Whoop Sync With TrainingPeaks</h1>
+                    </legend>
+                    <div class="form-group">
+                        {{ form.tp_email.label(class="form-control-label") }}
+                        {%if form.tp_email.errors %}
+                            {{ form.tp_email(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.tp_email.errors %}
+                                    <span> {{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.tp_email(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.whoop_email.label(class="form-control-label") }}
+                        {%if form.whoop_email.errors %}
+                            {{ form.whoop_email(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.whoop_email.errors %}
+                                    <span> {{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.whoop_email(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.whoop_password.label(class="form-control-label") }}
+                        {%if form.whoop_password.errors %}
+                            {{ form.whoop_password(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.whoop_password.errors %}
+                                    <span> {{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.whoop_password(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group submit">
+                        {{ form.submit(class="btn-lg btn-outline-info") }}
+                    </div>
+                </fieldset>
+                <!-- </form> -->
+                <div class="row align-center">
+                    <div class="col pt-2">
+                        <small id="whoop-admin" class="text-white">
+                            <h5>Having Trouble? <a class="ml-1 " href="{{ url_for('main.contact') }}">Contact an Administrator</a></h5>
+                        </small>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock content %}
