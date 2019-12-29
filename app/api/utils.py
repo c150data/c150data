@@ -37,8 +37,12 @@ def getWorkoutObjectFromJSON(workout_json, zones_json):
     """
 
     athleteName = dbSelect(getAthleteNameFromId(workout_json['AthleteId']))[0][0]
+    workoutTitle = workout_json.get('Title', None)
     workoutType = workout_json.get('WorkoutType', None)
     hrZones, powerZones = getTimeInZones(athleteName, workoutType, zones_json)
+    
+    isTeamLift = determineIsTeamLift(workoutTitle)
+    isTeamCore = determineIsTeamCore(workoutTitle)
 
     return Workout(
         id=workout_json.get('Id', None),
@@ -103,9 +107,23 @@ def getWorkoutObjectFromJSON(workout_json, zones_json):
         powerZone2Time=powerZones[1],
         powerZone3Time=powerZones[2],
         powerZone4Time=powerZones[3],
-        powerZone5Time=powerZones[4]
+        powerZone5Time=powerZones[4],
+        isTeamLift=isTeamLift,
+        isTeamCore=isTeamCore
     )
 
+
+def determineIsTeamLift(workout_title):
+    if workout_title is None:
+        return False
+    else:
+        return 'jordan' in workout_title.lower()
+
+def determineIsTeamCore(workout_title):
+    if workout_title is None:
+        return False
+    else:
+        return 'regan' in workout_title.lower()
 
 def getTimeInZones(athlete_name, workout_type, zones_obj):
     hrZonesList = [None, None, None, None, None]

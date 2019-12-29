@@ -4,13 +4,13 @@ Eventually, when more fields and statistics are added to this
 'ranking' page, this module will have to be broken up further
 """
 from app import db, log
-from app.data.utils import getZonePercents
+from app.data.utils import getZonePercents, getTpScore
 from app.api.utils import InvalidZoneAthletes
 from app.database import db_functions, db_filler, sql_statements as sql, db_updater
 from app.api import api_requester
 from app.database.db_models import Athlete
 import operator
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 # Workouts will be refreshed when they are 30 minutes old or older
 REFRESH_WORKOUT_MINUTES = 30
@@ -22,7 +22,8 @@ REFRESH_WORKOUT_MINUTES = 30
 # - New athletes are added to the coach
 # - Previously inactive athletes are now active
 # Ask Ben about this??
-DEFAULT_LAST_UPDATED_TIME = datetime.utcnow() - timedelta(days=14)
+# DEFAULT_LAST_UPDATED_TIME = datetime(year=2014, month=1, day=1) 
+DEFAULT_LAST_UPDATED_TIME = datetime(year=2019, month=9, day=4) 
 
 
 def getHoursForAllAthletes(start_date, end_date):
@@ -40,6 +41,7 @@ def getHoursForAllAthletes(start_date, end_date):
 
     # Run SQL query against DB for hours
     result = db_functions.dbSelect(sql.getAllHoursSQL(start_date, end_date))
+    prescribed = db_functions.dbSelect(sql.getPrescribedDataSQL(start_date, end_date))[0]
     if result is None:
         raise Exception("Get data call returned none.")
 
@@ -55,9 +57,15 @@ def getHoursForAllAthletes(start_date, end_date):
         [0, 0],
         [0, 0]
     ]
+    tp_scores = list()
 
     for row in result:
         hr_zones, power_zones = getZonePercents(row)
+        if len(prescribed) == 0:
+            tp_score = getTpScore(row, None)
+        else:
+            tp_score = getTpScore(row, prescribed)
+        tp_scores.append(tp_score)
         athlete_info = {
             "rank": rank,
             "name": row['name'],
@@ -66,7 +74,8 @@ def getHoursForAllAthletes(start_date, end_date):
             "zone3": hr_zones['hrZone3Percent'],
             "zone4": hr_zones['hrZone4Percent'],
             "zone5": hr_zones['hrZone5Percent'],
-            "rounded_hours": row['hours']
+            "rounded_hours": row['hours'],
+            "tp_score": round(tp_score, 0)
         }
         if(hr_zones['hrZone1Percent'] is not '-'):
             zoneAverages[0][0] += hr_zones['hrZone1Percent']
@@ -92,9 +101,11 @@ def getHoursForAllAthletes(start_date, end_date):
     avgZone3 = round(zoneAverages[2][0]/zoneAverages[2][1], 1) if zoneAverages[2][1] is not 0 else None
     avgZone4 = round(zoneAverages[3][0]/zoneAverages[3][1], 1) if zoneAverages[3][1] is not 0 else None
     avgZone5 = round(zoneAverages[4][0]/zoneAverages[4][1], 1) if zoneAverages[4][1] is not 0 else None
+    avgTpScore = round(sum(tp_scores)/len(tp_scores), 0)
     jsonToReturn = {
         "athlete_list": athleteHourList,
         "total_hours": round(total_hours, 2),
+        "average_tp_score": avgTpScore,
         "average_zones": {
             "avgZone1": avgZone1,
             "avgZone2": avgZone2,

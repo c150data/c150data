@@ -66,3 +66,58 @@ def getZonePercents(data):
         power_zones = invalid_power_zones
 
     return hr_zones, power_zones
+
+
+def getTpScore(athlete_data, prescribed_data):
+    if prescribed_data is None:
+        return 
+    # Hours
+    total_minutes_completed = athlete_data['hours']*60
+    total_minutes_prescribed = prescribed_data['minutes_prescribed']
+
+    if total_minutes_prescribed == 0:
+        hours_score = 100.0
+    else:
+        hours_score = min(100*total_minutes_completed/total_minutes_prescribed, 100.0)  # If the score is over 100, give a score of 100
+
+    # Lift/Regan
+    lifts_completed = athlete_data['numLifts']
+    regan_completed = athlete_data['numRegan']
+    lifts_prescribed = prescribed_data['lifts_prescribed']
+    regan_prescribed = prescribed_data['regan_prescribed']
+    if lifts_prescribed + regan_prescribed == 0:
+        lift_and_regan_score = 100
+    else:
+        lift_and_regan_score = min(100*(lifts_completed+regan_completed)/(lifts_prescribed+regan_prescribed), 100.0)
+
+    # HR Tracking
+    completedZones = [athlete_data['hrZone1'], athlete_data['hrZone2'], athlete_data['hrZone3'], athlete_data['hrZone4'], athlete_data['hrZone5']]
+    prescribedZones = [prescribed_data['zone_1_time'], prescribed_data['zone_2_time'], prescribed_data['zone_3_time'], prescribed_data['zone_4_time'], prescribed_data['zone_5_time']]
+    totalZoneComp = sum(completedZones) 
+    totalZonePresc = sum(prescribedZones) 
+
+    if totalZonePresc == 0:
+        hr_tracking_score = 100.0
+    else:
+        hr_tracking_score = min(100*totalZoneComp/totalZonePresc, 100.0)
+
+    # Zone Adherence
+    if totalZoneComp == 0:
+        completedZonePercents = [0]*5
+    else:
+        completedZonePercents = [100*currZone/totalZoneComp for currZone in completedZones]
+    if totalZonePresc == 0:
+        prescribedZonePrecents = [0]*5
+    else:
+        prescribedZonePrecents = [100*currZone/totalZonePresc for currZone in prescribedZones]
+    percentDiffs = list() 
+    for i in range(5):
+        percentDiffs.append(abs(completedZonePercents[i]-prescribedZonePrecents[i]))
+    
+    if totalZoneComp == 0:
+        zone_adherence_score = 0
+    else:
+        zone_adherence_score = min(100 - (sum(percentDiffs)/2), 100.0)
+
+    tp_score = (hours_score*.6 + lift_and_regan_score*.2 + hr_tracking_score * .15 + zone_adherence_score * .05)
+    return tp_score

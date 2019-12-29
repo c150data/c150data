@@ -3,7 +3,7 @@ Handles the admin page, specifically adding the database table views
 """
 from flask_admin import Admin, AdminIndexView
 from app import app, db
-from app.database.db_models import User, Athlete, Workout, AuthToken
+from app.database.db_models import User, Athlete, Workout, AuthToken, PrescribedTrainingDay
 from flask import redirect, url_for, flash, request, render_template
 from flask_login import current_user
 from flask_admin.contrib.sqla import ModelView
@@ -38,3 +38,4 @@ admin.add_view(AdminView(User, db.session))
 admin.add_view(AdminView(Athlete, db.session))
 admin.add_view(AdminView(Workout, db.session))
 admin.add_view(AdminView(AuthToken, db.session))
+admin.add_view(AdminView(PrescribedTrainingDay, db.session))
