@@ -1,11 +1,16 @@
 from flask import Blueprint, request, render_template, redirect, flash
 from app.admin import admin
-from app import log, ACCESS
-from app.database import db_filler
-from app.api import oauth
+from app import log, ACCESS, db
+from app.database import db_filler 
+from app.database.db_models import WhoopAthlete
+from app.api import oauth, oauth_whoop
 from app.utils import requires_access_level
+from datetime import datetime
 
 admin1 = Blueprint('admin1', __name__)
+
+# The beginning of the 2019-2020 season
+Whoop_Default_Last_Updated_Date = datetime(year=2019, month=9, day=1)
 
 
 # ADMIN
@@ -77,6 +82,24 @@ def insertAllWorkoutsApp():
     except Exception as e:
         log.exception(
             "Error occurred while inserting all workouts: {}".format(e))
+        result = "danger"
+        message = "Error while inserting workouts."
+    return render_template("alert.html", alert_type=result, alert_message=message)
+
+
+@admin1.route("/admin/refreshWhoopData")
+@requires_access_level(ACCESS['admin'])
+def refreshWhoopData():
+    try:
+        log.info("Refreshing Whoop Data...")
+        total_workouts_affected = db_filler.refreshWhoopData()
+        result = "success"
+        message = "Successfully inserted whoop data, including {} workouts".format(
+            total_workouts_affected
+        )
+    except Exception as e:
+        log.exception(
+            "Error occurred while inserting all whoop workouts: {}".format(e))
         result = "danger"
         message = "Error while inserting workouts."
     return render_template("alert.html", alert_type=result, alert_message=message)

@@ -100,6 +100,7 @@ class Athlete(db.Model):
 
     id = Column(Integer, primary_key=True,
                 autoincrement=True, unique=True)
+    whoopAthleteId = Column(Integer, nullable=True)
     name = Column(String(200), nullable=False)
     email = Column(String(200), nullable=True)
     is_active = Column(Boolean, nullable=False)
@@ -107,13 +108,116 @@ class Athlete(db.Model):
     last_updated_workouts = Column(DateTime, nullable=True)
 
     def __repr__(self):
-        return "Athlete('{}', '{}', '{}', '{}', '{}', '{}')".format(
+        return "Athlete('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
             self.id,
+            self.whoopAthleteId,
             self.name,
             self.email,
             self.is_active,
             self.workouts,
             self.last_updated_workouts
+        )
+
+class WhoopAthlete(db.Model):
+    __tablename__ = 'whoop_athletes'
+
+    whoopAthleteId = Column(Integer, primary_key=True)
+    firstName = Column(String(200), nullable=False)
+    lastName = Column(String(200), nullable=False)
+    username = Column(String(200), nullable=False)
+    password = Column(String(60), nullable=False) # TODO hash this
+    authorizationToken = Column(String(1000), nullable=True)
+    expires_at = Column(DateTime, nullable=True)
+    last_updated_data = Column(DateTime, nullable=True)
+
+    def __repr__(self):
+        return "WhoopAthlete('{}', '{}', '{}', '{}', '{}', '{}')".format(
+            self.whoopAthleteId, 
+            self.username,
+            self.password,
+            self.authorizationToken,
+            self.expires_at,
+            self.last_updated_data
+        )
+
+class WhoopDay(db.Model):
+    __tablename__ = 'whoop_days'
+
+    whoopDayId = Column(Integer, primary_key=True)
+    whoopAthleteId = Column(Integer, nullable=False)
+    day = Column(DateTime, nullable=False)
+    start_time = Column(DateTime, nullable=True)
+    end_time = Column(DateTime, nullable=True)
+    last_updated_at = Column(DateTime, nullable=True)
+
+    def __repr__(self):
+        return "WhoopDay('{}', '{}', '{}', '{}', '{}', '{}')".format(
+            self.whoopDayId,
+            self.whoopAthleteId, 
+            self.day,
+            self.start_time,
+            self.end_time,
+            self.last_updated_at
+        )
+
+
+class WhoopStrain(db.Model):
+    __tablename__ = 'whoop_strain'
+
+    whoopDayId = Column(Integer, primary_key=True)
+    averageHeartRate = Column(Integer)
+    kilojoules = Column(Float)
+    maxHeartRate = Column(Integer)
+    score = Column(Float)
+
+    def __repr__(self):
+        return "WhoopStrain('{}', '{}', '{}', '{}', '{}')".format(
+            self.whoopDayId,
+            self.averageHeartRate,
+            self.kilojoules, 
+            self.maxHeartRate, 
+            self.score
+        )
+
+
+class WhoopWorkout(db.Model):
+    __tablename__ = 'whoop_workouts'
+
+    workoutId = Column(Integer, primary_key=True)
+    whoopDayId = Column(Integer, nullable=False)
+    startTime = Column(DateTime, nullable=False)
+    endTime = Column(DateTime, nullable=False)
+    kilojoules = Column(Float)
+    averageHeartRate = Column(Integer)
+    maxHeartRate = Column(Integer)
+    sportId = Column(Integer)
+    timeZoneOffset = Column(String(100))
+
+    def __repr__(self):
+        return "WhoopWorkout('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+            self.workoutId,
+            self.whoopDayId,
+            self.startTime,
+            self.endTime, 
+            self.kilojoules,
+            self.averageHeartRate, 
+            self.maxHeartRate, 
+            self.sportId,
+            self.timeZoneOffset
+        )
+
+class WhoopHeartRate(db.Model):
+    __tablename__ = 'whoop_heart_rate'
+
+    whoopAthleteId = Column(Integer, primary_key=True)
+    time = Column(DateTime, primary_key=True)
+    data = Column(Integer, nullable=False)
+
+    def __repr__(self):
+        return "WhoopHeartRate('{}', '{}', '{}')".format(
+            self.whoopAthleteId,
+            self.time, 
+            self.data
         )
 
 

@@ -5,10 +5,10 @@ Currently, able to get all the athletes under the current coach (Nich), and inse
 Can also insert all workouts for every athlete under the current coach (Nich), and insert them all into the database.
 Note: the workouts request accepts a date range and gets all requests within that range.
 """
-from app import log
-from app.database.db_models import Athlete, Workout
+from app import log, db
+from app.database.db_models import Athlete, Workout, WhoopAthlete
 from app.database import db_functions, sql_statements as sql
-from app.api import api_requester, oauth, api_service
+from app.api import api_requester, oauth, oauth_whoop, api_service, api_whoop_service
 from app.api.utils import InvalidZoneAthletes
 from datetime import datetime, timedelta
 import math
@@ -54,12 +54,62 @@ def insertWorkoutsIntoDb(start_date, end_date):
         log.info("{} workouts found for {} from {} to {}".format(
             athlete_num_workouts, athlete['name'], start_date, end_date))
 
-    log.info("Wrong num HR zones: {}".format(InvalidZoneAthletes.wrongNumHrZones))
-    log.info("Wrong num power zones: {}".format(InvalidZoneAthletes.wrongNumPowerZones))
+    log.info("Wrong num HR zones: {}".format(
+        InvalidZoneAthletes.wrongNumHrZones))
+    log.info("Wrong num power zones: {}".format(
+        InvalidZoneAthletes.wrongNumPowerZones))
     log.info("Reverse HR zones: {}".format(InvalidZoneAthletes.reverseHrZones))
-    log.info("Reverse Power zones: {}".format(InvalidZoneAthletes.reversePowerZones))
+    log.info("Reverse Power zones: {}".format(
+        InvalidZoneAthletes.reversePowerZones))
     db_functions.dbInsert(workoutsList)
     return len(workoutsList)
+
+
+def refreshWhoopData():
+    """
+    Refreshes all whoop data from the last time it was refreshed, for 
+    every athlete on the team. Takes all the new data and inserts in to the 
+    local database.
+
+    Returns:
+        int: Total number of workouts updated in the system
+    """
+    whoop_athletes = WhoopAthlete.query.all()
+
+    total_workouts = 0
+
+    for athlete in whoop_athletes:
+        log.info('Getting whoop data for {} {} since {}...'.format(
+            athlete.firstName, athlete.lastName, athlete.last_updated_data))
+        # Need to check to make sure each athlete has an up to date auth token
+        oauth_whoop.refreshTokenIfNeeded(athlete.whoopAthleteId)
+
+        # Note that each day has several database objects within it. For example
+        # a single day should have a WhoopDay, WhoopStrain, and possibly several WhoopWorkout objects
+        day_db_objects, strain_db_objects, workout_db_objects = api_whoop_service.getDBObjectsSince(
+            athlete.whoopAthleteId, athlete.last_updated_data)
+
+        log.info('\t Getting heart rate data for {} workouts...'.format(
+            len(workout_db_objects)))
+        for workout_db_object in workout_db_objects:
+            db.session.add_all(api_whoop_service.getHeartRateDBObjects(
+                athlete.whoopAthleteId, workout_db_object.startTime, workout_db_object.endTime))
+        total_workouts += len(workout_db_objects)
+
+        db.session.add_all(day_db_objects)
+        db.session.add_all(strain_db_objects)
+        db.session.add_all(workout_db_objects)
+
+    updateAthletesLastUpdatedField()
+    db.session.commit()
+    return total_workouts
+
+
+def updateAthletesLastUpdatedField():
+    whoop_athletes = WhoopAthlete.query.all()
+
+    for athlete in whoop_athletes:
+        athlete.last_updated_data = datetime.now()
 
 
 def getListOfStartEndDates(start_date, end_date, max_date_range):
@@ -89,7 +139,7 @@ def getListOfStartEndDates(start_date, end_date, max_date_range):
     num_api_calls = math.ceil(total_days/max_date_range)
     listStartEndTuples = list()
     currStart = dStart
-    for i in range(num_api_calls):
+    for _ in range(num_api_calls):
         start = currStart
         # Have to do minus 1 since the range from start to end is inclusive for both
         end = currStart + timedelta(days=max_date_range-1)

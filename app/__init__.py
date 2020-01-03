@@ -50,21 +50,19 @@ bcrypt = Bcrypt(app)
 
 
 # position important to avoid circular importation
-from app.database.db_models import User, AuthToken, Athlete, Workout, PrescribedTrainingDay
+from app.database.db_models import User, AuthToken, Athlete, Workout, PrescribedTrainingDay, WhoopAthlete, WhoopDay, WhoopStrain, WhoopWorkout, WhoopHeartRate
 
 from app.errors.handlers import errors
 from app.data.routes import data1
 from app.main.routes import main
 from app.admin.routes import admin1
 from app.users.routes import users
-from app.groupme_bots.routes import groupme
 
 app.register_blueprint(users)
 app.register_blueprint(admin1)
 app.register_blueprint(main)
 app.register_blueprint(data1)
 app.register_blueprint(errors)
-app.register_blueprint(groupme)
 
 # Workout.__table__.drop(db.engine) # Use if you want to drop the table and reset it
 # PrescribedTrainingDay.__table__.drop(db.engine) # Use if you want to drop the table and reset it
